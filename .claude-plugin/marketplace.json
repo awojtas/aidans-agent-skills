@@ -1,0 +1,13 @@
+{
+  "name": "aidans-agent-skills",
+  "owner": {
+    "name": "Aidan Wojtas"
+  },
+  "plugins": [
+    {
+      "name": "builder-fixer-plugin",
+      "source": "./plugins/build-fixer-plugin",
+      "description": "Adds a /build-fixer skill for fixing builds"
+    }
+  ]
+}

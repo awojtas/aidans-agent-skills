@@ -1,0 +1,11 @@
+{
+	"name": "builder-fixer-plugin",
+	"description": "Adds a /build-fixer skill for fixing builds",
+	"version": "1.0.0",
+	"author": {
+		"name": "Aidan Wojtas",
+		"url": "https://github.com/awojtas/agent-skills"
+	},
+	"repository": "https://github.com/awojtas/agent-skills",
+	"skills": "./skills/"
+}

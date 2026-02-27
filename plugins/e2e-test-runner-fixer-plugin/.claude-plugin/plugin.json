@@ -1,0 +1,11 @@
+{
+	"name": "e2e-test-runner-fixer-plugin",
+	"description": "Adds a /e2e-test-runner-fixer skill for fixing E2E test issues",
+	"version": "1.0.0",
+	"author": {
+		"name": "Aidan Wojtas",
+		"url": "https://github.com/awojtas/agent-skills"
+	},
+	"repository": "https://github.com/awojtas/agent-skills",
+	"skills": "./skills/"
+}

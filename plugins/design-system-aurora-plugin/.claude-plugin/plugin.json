@@ -1,0 +1,11 @@
+{
+	"name": "design-system-aurora-plugin",
+	"description": "Adds an /design-system-aurora skill for managing the Design System with an Aurora theme",
+	"version": "1.0.0",
+	"author": {
+		"name": "Aidan Wojtas",
+		"url": "https://github.com/awojtas/agent-skills"
+	},
+	"repository": "https://github.com/awojtas/agent-skills",
+	"skills": "./skills/"
+}

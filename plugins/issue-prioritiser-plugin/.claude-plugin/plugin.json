@@ -1,0 +1,11 @@
+{
+	"name": "issue-prioritiser-plugin",
+	"description": "Adds an /issues-prioritiser skill for triaging and prioritising GitHub issues",
+	"version": "1.0.0",
+	"author": {
+		"name": "Aidan Wojtas",
+		"url": "https://github.com/awojtas/agent-skills"
+	},
+	"repository": "https://github.com/awojtas/agent-skills",
+	"skills": "./skills/"
+}

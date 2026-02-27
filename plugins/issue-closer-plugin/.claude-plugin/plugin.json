@@ -1,0 +1,11 @@
+{
+	"name": "issue-closer-plugin",
+	"description": "Adds an /issue-closer skill for reviewing and closing completed GitHub issues",
+	"version": "1.0.0",
+	"author": {
+		"name": "Aidan Wojtas",
+		"url": "https://github.com/awojtas/agent-skills"
+	},
+	"repository": "https://github.com/awojtas/agent-skills",
+	"skills": "./skills/"
+}

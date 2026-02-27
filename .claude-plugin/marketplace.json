@@ -5,9 +5,39 @@
   },
   "plugins": [
     {
-      "name": "builder-fixer-plugin",
+      "name": "build-fixer-plugin",
       "source": "./plugins/build-fixer-plugin",
-      "description": "Adds a /build-fixer skill for fixing builds"
+      "description": "Iteratively fixes build errors and lint warnings until the project compiles cleanly. Supports .NET, Node.js, Rust, Go, Java, Make, and more."
+    },
+    {
+      "name": "design-system-aurora-plugin",
+      "source": "./plugins/design-system-aurora-plugin",
+      "description": "Glass Aurora design system — ethereal glassmorphism, aurora gradients, neon glows, and a purple-cyan color scheme for consistent UI components."
+    },
+    {
+      "name": "e2e-test-runner-fixer-plugin",
+      "source": "./plugins/e2e-test-runner-fixer-plugin",
+      "description": "Diagnoses and fixes end-to-end test failures with deterministic setup, isolation, and iterative reruns. Supports Playwright, Cypress, and WebDriver."
+    },
+    {
+      "name": "issue-closer-plugin",
+      "source": "./plugins/issue-closer-plugin",
+      "description": "Reviews open GitHub issues and closes any where the work has been fully completed and checked in."
+    },
+    {
+      "name": "issue-prioritiser-plugin",
+      "source": "./plugins/issue-prioritiser-plugin",
+      "description": "Reviews open GitHub issues, applies priority labels, checks relevance, and recommends the next issues to work on."
+    },
+    {
+      "name": "issue-worker-plugin",
+      "source": "./plugins/issue-worker-plugin",
+      "description": "Implements a GitHub issue end-to-end — reads the issue, explores the project, writes code, adds tests, and verifies everything passes."
+    },
+    {
+      "name": "sentry-recent-issues-plugin",
+      "source": "./plugins/sentry-recent-issues-plugin",
+      "description": "Investigates recent or specific Sentry issues, determines frequency and recurrence, researches root cause in the codebase, and recommends fixes."
     }
   ]
 }

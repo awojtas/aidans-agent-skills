@@ -1,0 +1,11 @@
+{
+	"name": "issue-worker-plugin",
+	"description": "Adds an /issue-worker skill for working on GitHub issues end-to-end (investigate, fix, PR, close)",
+	"version": "1.0.0",
+	"author": {
+		"name": "Aidan Wojtas",
+		"url": "https://github.com/awojtas/agent-skills"
+	},
+	"repository": "https://github.com/awojtas/agent-skills",
+	"skills": "./skills/"
+}

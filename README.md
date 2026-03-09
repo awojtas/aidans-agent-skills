@@ -125,3 +125,21 @@ Investigates recent or specific Sentry issues, determines frequency and recurren
 - Recommends a root-cause fix and an appropriate regression test
 
 **Trigger it** when you want to triage production errors, investigate Sentry alerts, or review recent exceptions.
+
+---
+
+### Teams to Confluence (`/teams-to-confluence`)
+
+Transfers information from Microsoft Teams chats into well-structured Confluence pages.
+
+**Requires:** "claude.ai Atlassian" and "claude.ai Microsoft 365" MCP servers.
+
+**What it does:**
+
+- Gathers requirements (chat name, what to extract, date range)
+- Identifies and confirms the correct Teams chat before pulling messages
+- Retrieves and synthesizes chat content into a structured page (decisions, action items, technical details)
+- Proposes a title, Confluence space/parent page, and content preview for approval
+- Creates the page and verifies it was published correctly
+
+**Trigger it** by asking to save a Teams chat to Confluence, create a wiki page from a Teams discussion, or migrate chat content into Confluence.

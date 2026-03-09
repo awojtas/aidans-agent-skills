@@ -38,6 +38,11 @@
       "name": "sentry-recent-issues-plugin",
       "source": "./plugins/sentry-recent-issues-plugin",
       "description": "Investigates recent or specific Sentry issues, determines frequency and recurrence, researches root cause in the codebase, and recommends fixes."
+    },
+    {
+        "name": "teams-to-confluence-plugin",
+        "source": "./plugins/teams-to-confluence-plugin",
+        "description": "Adds a /teams-to-confluence skill for taking Teams chat content and creating/updating Confluence pages"
     }
   ]
 }

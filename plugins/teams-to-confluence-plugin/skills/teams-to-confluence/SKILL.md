@@ -40,7 +40,7 @@ Resolve the chat name to a confirmed chat ID before retrieving messages. Do NOT 
 
 1. **Use KQL `in:` scoping**: The search tool uses Keyword Query Language (KQL). Use the `in:` scope term to restrict results to a specific chat by name, e.g. `query: 'in:"Claude users" keyword'`. This is the most reliable way to find the correct chat.
 2. Extract the `chatId` from the result.
-3. Read the chat via its messages URI (`teams:///chats/{chatId}/messages`) using `mcp__claude_ai_Microsoft_365__read_resource` to confirm it's the right chat — check participants and recent content against the user's description.
+3. Read the chat via its messages URI (`teams:///chats/{chatId}/messages`) using `mcp__claude_ai_Microsoft_365__read_resource` to confirm it's the right chat - check participants and recent content against the user's description.
 4. If search results contain messages from multiple chats, cross-reference each chatId with the user's description. Present ambiguous matches to the user and ask them to confirm.
 5. Once confirmed, use that `chatId` for all subsequent message retrieval.
 
@@ -63,6 +63,7 @@ Transform the raw chat messages into a well-structured Confluence page. Do NOT j
 - Attribute important points to their authors where relevant.
 - Remove noise: greetings, off-topic tangents, emoji reactions, duplicate messages.
 - Use clear headings, bullet points, and tables where appropriate.
+- **Writing style**: Write like a human, not an AI. Use regular dashes (-) instead of em dashes. Keep language natural and concise.
 
 ### 5. Propose Page Details
 

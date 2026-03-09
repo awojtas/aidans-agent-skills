@@ -1,0 +1,11 @@
+{
+	"name": "teams-to-confluence-plugin",
+	"description": "Adds a /teams-to-confluence skill for taking Teams chat content and creating/updating Confluence pages",
+	"version": "1.0.0",
+	"author": {
+		"name": "Aidan Wojtas",
+		"url": "https://github.com/awojtas/aidans-agent-skills"
+	},
+	"repository": "https://github.com/awojtas/aidans-agent-skills",
+	"skills": "./skills/"
+}

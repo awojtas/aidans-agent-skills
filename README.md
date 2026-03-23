@@ -1,162 +1,162 @@
 # Aidan's Agent Skills
 
-A collection of skills for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) that extend its capabilities for common development tasks.
+A collection of skills for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) that give it new tricks for common dev work.
 
-## Using with Claude Code
+## Getting started
 
-1. Open Claude Code
-2. Run:
-   ```
-   /plugin marketplace add awojtas/aidans-agent-skills
-   ```
+Open Claude Code and run:
+
+```
+/plugin marketplace add awojtas/aidans-agent-skills
+```
+
+That's it. The skills show up as slash commands you can use right away.
 
 ## Skills
 
 ### Build Fixer (`/build-fixer`)
 
-Iteratively fixes build errors and lint warnings until your project compiles cleanly.
+Runs your build, reads the errors, fixes them, runs it again. Keeps going until it compiles or it's clear something needs human attention.
 
-**Supported ecosystems:** .NET, Node.js (npm/pnpm/yarn/bun), Rust, Go, Java (gradle/maven), Make, and more.
+Works with .NET, Node.js (npm/pnpm/yarn/bun), Rust, Go, Java (gradle/maven), Make, and others.
 
-**What it does:**
+What it does:
 
-- Auto-detects your build command from project files
-- Runs the build, classifies errors as fixable vs. environment-level
-- Fixes code errors in a loop (type errors, syntax issues, unused variables, etc.)
-- Stops when the build passes or no more progress can be made
-- Reports results with troubleshooting suggestions for any remaining issues
+- Figures out your build command from project files
+- Classifies errors as fixable code problems vs. environment issues it can't solve
+- Loops through fixes until the build passes or it stops making progress
+- Tells you what's left if anything still fails
 
-**Trigger it** by asking Claude to fix build errors, resolve compilation failures, or clean up lint warnings — or just paste your build output.
+Ask Claude to fix build errors, clean up lint warnings, or just paste your build output.
 
 ---
 
 ### Design System Aurora (`/design-system-aurora`)
 
-Glass Aurora design system — ethereal glassmorphism, aurora gradients, neon glows, and a purple-cyan color scheme.
+A full design system built around glassmorphism, aurora gradients, neon glows, and a purple-cyan palette. Think frosted glass cards with glowing edges.
 
-**What it does:**
+What it does:
 
-- Provides comprehensive design tokens (colors, typography, spacing, shadows)
-- Guides glassmorphic component styling with backdrop blur, translucent borders, and neon glow
-- Includes aurora gradient animation patterns and gradient text for emphasis
-- Covers responsive design, dark mode, accessibility, and animation best practices
-- Ships with reference docs for design tokens, glassmorphism patterns, and component examples
+- Gives you design tokens for colors, typography, spacing, and shadows
+- Walks you through glassmorphic styling - backdrop blur, translucent borders, neon glow effects
+- Includes aurora gradient animations and gradient text patterns
+- Covers responsive design, dark mode, accessibility, and animation
+- Comes with reference docs for tokens, glass patterns, and component examples
 
-**Trigger it** when creating or modifying UI components to ensure consistency with the Glass Aurora aesthetic.
+Use it when you're building or tweaking UI components and want them to match the Aurora look.
 
 ---
 
-### E2E Test Runner & Fixer (`/e2e-test-runner-fixer`)
+### E2E Test Runner and Fixer (`/e2e-test-runner-fixer`)
 
-Diagnoses and fixes end-to-end test failures with deterministic setup, isolation, and iterative reruns.
+Your E2E tests are failing. This skill figures out why and fixes them.
 
-**Supported frameworks:** Playwright, Cypress, WebDriver.
+Works with Playwright, Cypress, and WebDriver.
 
-**What it does:**
+What it does:
 
-- Discovers runner config, test specs, helpers, and seed scripts
-- Reproduces failures in isolation before attempting fixes
-- Classifies failures (real bug, flaky, environment-dependent, platform-specific)
-- Triages root causes: data/setup mismatch, race conditions, locator drift, auth leakage, environment instability
-- Applies smallest safe fix, then re-runs to verify stability
+- Finds your runner config, test specs, helpers, and seed scripts
+- Reproduces failures in isolation before touching anything
+- Sorts failures into categories: real bug, flaky test, environment-dependent, platform-specific
+- Digs into root causes like data setup mismatches, race conditions, stale locators, or auth leakage
+- Makes the smallest fix that actually solves the problem, then re-runs to confirm
 
-**Trigger it** when E2E tests fail, specs are flaky, or CI test jobs break.
+Use it when E2E tests break, specs are flaky, or your CI test job is red.
 
 ---
 
 ### Issue Closer (`/issue-closer`)
 
-Reviews open GitHub issues and closes any where the work has been fully completed and checked in.
+Goes through your open GitHub issues and closes the ones where the work is already done.
 
-**What it does:**
+What it does:
 
-- Lists all open issues in the current repo
-- Gathers evidence of completion (merged PRs, commits, codebase search)
-- Closes confirmed-done issues with an explanatory comment
-- Reports a summary of issues closed and issues left open
+- Pulls up all open issues in the current repo
+- Checks for evidence that they're finished - merged PRs, commits, code that matches the request
+- Closes anything that's clearly done, with a comment explaining why
+- Gives you a summary of what got closed and what's still open
 
-**Trigger it** when you want to clean up done issues, close stale tickets, or tidy the backlog.
+Good for cleaning up a backlog that's gotten stale, or after a sprint where tickets didn't get closed along the way.
 
 ---
 
 ### Issue Prioritiser (`/issue-prioritiser`)
 
-Reviews open GitHub issues, applies priority labels, checks relevance, and recommends the next issues to work on.
+Looks at your open GitHub issues and helps you figure out what to work on next.
 
-**What it does:**
+What it does:
 
-- Fetches all open issues matching a filter (milestone, label, or all)
-- Assesses relevance (still needed?), clarity (well-defined?), and priority (impact, frequency, effort)
-- Applies priority labels: highest, high, medium, low, nice to have
-- Flags potentially done or stale issues
-- Ranks and recommends the top issues to work on next
+- Pulls issues matching a filter (milestone, label, or everything)
+- Checks whether each issue is still relevant and well-defined enough to act on
+- Rates priority based on impact, how often people hit the problem, and effort to fix
+- Labels them: highest, high, medium, low, nice to have
+- Flags issues that might already be done or too stale to matter
+- Recommends a ranked list of what to tackle first
 
-**Trigger it** when you want to triage the backlog, rank issues, or decide what to work on next.
+Use it when the backlog feels like a mess and you need a starting point.
 
 ---
 
 ### Issue Worker (`/issue-worker`)
 
-Implements a GitHub issue end-to-end — reads the issue, explores the project, writes code, adds tests, and verifies everything passes.
+Give it a GitHub issue and it does the whole thing - reads the ticket, understands the codebase, writes code, adds tests, and makes sure everything passes.
 
-**What it does:**
+What it does:
 
-- Reads the issue and identifies acceptance criteria and scope
-- Explores the codebase to understand conventions, build system, and tech stack
-- Creates a working branch and implements the minimum changes needed
-- Adds unit and integration/E2E tests using existing test patterns
-- Runs lint, type-check, build, and tests — fixes anything that fails
-- Self-checks against acceptance criteria before reporting
+- Reads the issue and pulls out acceptance criteria and scope
+- Explores the repo to understand conventions, build system, and stack
+- Creates a branch and writes the minimum changes needed
+- Adds unit and integration tests using whatever patterns already exist
+- Runs lint, type-check, build, and tests, fixing anything that fails
+- Double-checks against the acceptance criteria before reporting back
 
-**Trigger it** by saying "work on issue #123", "implement this ticket", or providing a GitHub issue link.
+Say "work on issue #123" or drop in a GitHub issue link.
 
 ---
 
 ### Sentry Recent Issues (`/sentry-recent-issues`)
 
-Investigates recent or specific Sentry issues, determines frequency and recurrence, researches root cause in the codebase, and recommends fixes.
+Pulls recent Sentry issues, figures out what's going on in the code, and tells you how to fix them.
 
-**What it does:**
+What it does:
 
-- Fetches recent issues from Sentry for a given org, project, and environment
-- Classifies each issue as recurring, regression, or new
-- Summarises affected users/transactions, frequency, and timestamps
-- Searches the codebase for code referenced in stack traces
-- Recommends a root-cause fix and an appropriate regression test
+- Fetches issues from Sentry for a given org, project, and environment
+- Classifies each one as recurring, regression, or new
+- Summarizes affected users, frequency, and timing
+- Traces stack traces back to actual code in your repo
+- Suggests a root-cause fix and a regression test
 
-**Trigger it** when you want to triage production errors, investigate Sentry alerts, or review recent exceptions.
+Use it when production errors pile up or you get a Sentry alert you need to triage.
 
 ---
 
 ### Teams to Confluence (`/teams-to-confluence`)
 
-Transfers information from Microsoft Teams chats into well-structured Confluence pages.
+Takes a Microsoft Teams chat and turns it into a proper Confluence page. Requires the "claude.ai Atlassian" and "claude.ai Microsoft 365" MCP servers.
 
-**Requires:** "claude.ai Atlassian" and "claude.ai Microsoft 365" MCP servers.
+What it does:
 
-**What it does:**
+- Asks what chat, what to extract, and what date range
+- Finds and confirms the right Teams chat before pulling anything
+- Pulls messages and organizes them into a real page with decisions, action items, and technical details
+- Shows you the proposed title, space, parent page, and content before creating anything
+- Creates the page and confirms it published correctly
 
-- Gathers requirements (chat name, what to extract, date range)
-- Identifies and confirms the correct Teams chat before pulling messages
-- Retrieves and synthesizes chat content into a structured page (decisions, action items, technical details)
-- Proposes a title, Confluence space/parent page, and content preview for approval
-- Creates the page and verifies it was published correctly
-
-**Trigger it** by asking to save a Teams chat to Confluence, create a wiki page from a Teams discussion, or migrate chat content into Confluence.
+Ask it to save a Teams chat to Confluence or create a wiki page from a discussion.
 
 ---
 
 ### Write Like a Human (`/write-like-a-human`)
 
-Produces prose that sounds authentically human and avoids detectable AI patterns.
+Makes your text sound like a person wrote it, not a language model.
 
-**What it does:**
+What it does:
 
-- Eliminates AI vocabulary fingerprints (delve, crucial, tapestry, underscore, etc.)
-- Replaces em dashes and curly quotes with keyboard-native punctuation
-- Enforces dramatic sentence length variation and natural imperfections
-- Breaks formulaic structures (intro-body-conclusion, rule of three, negative parallelisms)
-- Strips promotional puffery, overwrought emotion, and vague attributions
-- Includes a 10-point voice checklist to verify output before delivery
+- Strips out the AI vocabulary that gives the game away (words like "delve," "tapestry," "underscore")
+- Swaps em dashes and curly quotes for the plain punctuation people actually type
+- Mixes up sentence length and structure so it doesn't read like a template
+- Breaks the formulaic patterns AI falls into - the rule of three, the "not just X but Y" construction, the tidy intro-body-conclusion
+- Cuts promotional language, fake hedging, and vague claims about significance
+- Runs a 17-point checklist on everything before handing it over
 
-**Trigger it** when writing, rewriting, or editing any text that should sound natural and human - blog posts, articles, essays, emails, creative writing, or marketing copy.
+Use it for blog posts, articles, essays, emails, creative writing, marketing copy - anything that should sound like you wrote it.

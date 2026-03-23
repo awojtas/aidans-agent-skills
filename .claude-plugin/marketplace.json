@@ -43,6 +43,11 @@
         "name": "teams-to-confluence-plugin",
         "source": "./plugins/teams-to-confluence-plugin",
         "description": "Adds a /teams-to-confluence skill for taking Teams chat content and creating/updating Confluence pages"
+    },
+    {
+        "name": "write-like-a-human-plugin",
+        "source": "./plugins/write-like-a-human-plugin",
+        "description": "Write prose that sounds authentically human and avoids detectable AI patterns. Covers vocabulary, punctuation, structure, and tone."
     }
   ]
 }

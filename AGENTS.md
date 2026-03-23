@@ -5,14 +5,16 @@ This repo is a collection of Claude Code plugins, each containing one or more sk
 ## Repo structure
 
 ```
+.claude-plugin/
+  marketplace.json           # Registry of all plugins — must be updated when adding a new plugin
 plugins/
   <plugin-name>-plugin/
     .claude-plugin/
-      plugin.json          # Plugin metadata (name, description, version, author, skills path)
+      plugin.json            # Plugin metadata (name, description, version, author, skills path)
     skills/
       <skill-name>/
-        SKILL.md            # Skill definition (frontmatter + instructions)
-        references/         # Optional — supplementary docs the skill can reference
+        SKILL.md             # Skill definition (frontmatter + instructions)
+        references/          # Optional — supplementary docs the skill can reference
           *.md
 ```
 

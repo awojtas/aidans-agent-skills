@@ -10,7 +10,9 @@ Open Claude Code and run:
 /plugin marketplace add awojtas/aidans-agent-skills
 ```
 
-That's it. The skills show up as slash commands you can use right away.
+After that, open `/marketplace` again, navigate to "Aidan's Agent Skills", and pick which plugins you want to install.
+
+Then close and re-open Claude Code - skills don't hot-reload, so you need a fresh session for them to show up.
 
 ## Skills
 

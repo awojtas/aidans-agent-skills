@@ -46,20 +46,30 @@ These aren't off-limits, but reach for something more specific and less stock. T
 - "despite these challenges"
 - "looking ahead"
 - "symbolizing its ongoing/enduring"
-- "contributing to the"
+- "contributing to the" (when tacked onto the end of a sentence as a participle tail)
 - "focal point"
 - "indelible mark"
 - "deeply rooted"
 - "valuable insights"
 - "resonates/aligns with"
 - "maintains an active social media presence"
+
+**Chatbot voice phrases** (especially relevant for emails and conversational text):
+
 - "I hope this helps"
 - "Certainly!" / "Of course!"
+- "You're absolutely right!"
 - "Would you like me to..."
 - "Let me know if"
+- "Is there anything else"
+- "Here is a"
+
+**Knowledge-gap hedging** (don't dress up uncertainty in formal language):
+
 - "While specific details are limited/scarce"
 - "based on available information"
-- "not widely documented"
+- "not widely documented/disclosed"
+- "keeps much of their personal life private"
 
 ## Banned sentence-starting transitions
 
@@ -96,3 +106,9 @@ Do not start sentences with these mechanical AI connectors:
 | innovative | new, clever |
 | renowned | well-known, famous |
 | embark on | start, begin |
+| resonate with | connect with, remind people of, feel familiar |
+| focal point | center, focus, main thing |
+| indelible | lasting, permanent |
+| deeply rooted | long-standing, old |
+| featuring | with, including, that has |
+| cultivate | build, develop, grow |

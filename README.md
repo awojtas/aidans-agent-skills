@@ -14,6 +14,10 @@ After that, open `/marketplace` again, navigate to "Aidan's Agent Skills", and p
 
 Then close and re-open Claude Code - skills don't hot-reload, so you need a fresh session for them to show up.
 
+## How to contribute
+
+Want to add a skill? Point your AI coding agent at this repo and tell it what you want to build. The [AGENTS.md](AGENTS.md) file has the full walkthrough for adding a new plugin and skill, so the agent can handle the scaffolding, file structure, and marketplace registration on its own.
+
 ## Skills
 
 ### Build Fixer (`/build-fixer`)

@@ -1,0 +1,11 @@
+{
+	"name": "write-like-a-human-plugin",
+	"description": "Adds a /write-like-a-human skill for producing natural, human-sounding prose",
+	"version": "1.0.0",
+	"author": {
+		"name": "Aidan Wojtas",
+		"url": "https://github.com/awojtas/aidans-agent-skills"
+	},
+	"repository": "https://github.com/awojtas/aidans-agent-skills",
+	"skills": "./skills/"
+}

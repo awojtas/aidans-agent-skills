@@ -143,3 +143,20 @@ Transfers information from Microsoft Teams chats into well-structured Confluence
 - Creates the page and verifies it was published correctly
 
 **Trigger it** by asking to save a Teams chat to Confluence, create a wiki page from a Teams discussion, or migrate chat content into Confluence.
+
+---
+
+### Write Like a Human (`/write-like-a-human`)
+
+Produces prose that sounds authentically human and avoids detectable AI patterns.
+
+**What it does:**
+
+- Eliminates AI vocabulary fingerprints (delve, crucial, tapestry, underscore, etc.)
+- Replaces em dashes and curly quotes with keyboard-native punctuation
+- Enforces dramatic sentence length variation and natural imperfections
+- Breaks formulaic structures (intro-body-conclusion, rule of three, negative parallelisms)
+- Strips promotional puffery, overwrought emotion, and vague attributions
+- Includes a 10-point voice checklist to verify output before delivery
+
+**Trigger it** when writing, rewriting, or editing any text that should sound natural and human - blog posts, articles, essays, emails, creative writing, or marketing copy.

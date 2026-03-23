@@ -163,6 +163,6 @@ What it does:
 - Mixes up sentence length and structure so it doesn't read like a template
 - Breaks the formulaic patterns AI falls into - the rule of three, the "not just X but Y" construction, the tidy intro-body-conclusion
 - Cuts promotional language, fake hedging, and vague claims about significance
-- Runs a 17-point checklist on everything before handing it over
+- Runs a voice checklist on everything before handing it over
 
 Use it for blog posts, articles, essays, emails, creative writing, marketing copy - anything that should sound like you wrote it.

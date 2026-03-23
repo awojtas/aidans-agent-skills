@@ -44,28 +44,32 @@ Is it relentlessly even, always at an 8 out of 10? Dial some parts down. Let som
 
 ## 11. Check for imperfections
 
-Is every sentence grammatically pristine? Add a natural rough edge or two. A sentence that starts with "And." A thought that could be tighter but feels more real as-is.
+Is every sentence grammatically pristine? Add a natural rough edge or two. A sentence that starts with "And." A thought that could be tighter but feels more real as-is. But don't mistake sloppy for natural - if an imperfection makes the meaning harder to follow, it's not helping.
 
-## 12. Check specificity
+## 12. Check for personality
+
+Does the text have any humor, asides, or tangents? If it reads as purely functional and flat the whole way through, it's missing a human voice. Not every piece needs jokes, but a dry observation, a brief aside, or a moment where the writer's personality shows through goes a long way.
+
+## 13. Check specificity
 
 Any generic claims about significance, legacy, or broader impact? Replace with specifics or cut entirely.
 
-## 13. Check imagery and similes
+## 14. Check imagery and similes
 
 Any weather similes, light/dark metaphors, or scent descriptions using "something X, something Y"? Are there clusters of atmospheric words like "quiet," "chaos," "brittle," "raw," "ache," "whisper"? Swap for something more specific and less stock.
 
-## 14. Check syntax variety
+## 15. Check syntax variety
 
 Are you only writing simple (subject-verb-object) and compound sentences? Is there at least one genuinely complex sentence with dependent clauses or nested thoughts? If everything parses cleanly into textbook sentence types, loosen it up.
 
-## 15. Check for participle tails
+## 16. Check for participle tails
 
 Are there sentences that state a fact then tack on an "-ing" phrase editorializing about its significance? ("...built in 1923, contributing to the region's development.") Cut the tail or make it a real sentence with real specifics.
 
-## 16. Check for chatbot voice
+## 17. Check for chatbot voice
 
 Any "I hope this helps," "Certainly!," "Would you like me to...," "Let me know if"? Any "While specific details are limited..." hedging? Cut all of it.
 
-## 17. Check formatting
+## 18. Check formatting
 
-Any bullet lists where every item has a **Bold Header:** pattern? Any excessive bolding for emphasis? Any unnecessary tables? Simplify.
+Any bullet lists where every item follows the **Bold Header:** pattern? That's the AI tell - not bold itself, but the uniform repetition of it. Bold is fine for genuine emphasis. Check that it's used selectively, not stamped on every list item. If there are redundant tables, simplify - tables can be helpful but only when they genuinely add clarity.

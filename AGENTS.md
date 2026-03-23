@@ -79,7 +79,21 @@ The full instructions Claude follows when the skill is invoked. Write this as a 
 
 If your skill needs supplementary material (design tokens, API specs, lookup tables), put them in a `references/` subdirectory next to `SKILL.md`. Reference them from the skill body. See `design-system-aurora-plugin` for an example.
 
-### 5. Update `README.md`
+### 5. Register the plugin in `marketplace.json`
+
+Add an entry to the `plugins` array in `.claude-plugin/marketplace.json` at the repo root:
+
+```json
+{
+    "name": "<your-plugin-name>-plugin",
+    "source": "./plugins/<your-plugin-name>-plugin",
+    "description": "Short description of what the plugin does"
+}
+```
+
+This is how the marketplace knows which plugins to offer when users run `/plugin marketplace add`. If you skip this step, the plugin won't be installable.
+
+### 6. Update `README.md`
 
 Add a section for the new skill following the existing pattern: heading, description, "What it does" bullet list, and a "Trigger it" line.
 

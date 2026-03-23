@@ -47,7 +47,7 @@ Real people hedge. They qualify. They say "I think," "maybe," "it seems like," "
 
 ### Choose unexpected words
 
-AI picks the most statistically probable word. Humans don't. Instead of "important," try "big deal." Instead of "complex," maybe "messy" or "tangled." Throw in a colloquialism, an idiom, a turn of phrase that's specific to how real people actually talk. "That ship has sailed," "it's a wash," "the short version is." Not every sentence, but enough that the vocabulary feels lived-in and a little unpredictable.
+AI picks the most statistically probable word. Humans don't. Instead of "important," try "big deal." Instead of "complex," maybe "messy" or "tangled." Throw in a colloquialism, an idiom, a turn of phrase that's specific to how real people actually talk. "That ship has sailed," "it's a wash," "at the end of the day." Not every sentence, but enough that the vocabulary feels lived-in and a little unpredictable.
 
 ### Use humor, asides, and tangents where natural
 

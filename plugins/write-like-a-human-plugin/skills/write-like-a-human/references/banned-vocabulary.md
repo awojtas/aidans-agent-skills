@@ -53,6 +53,7 @@ These aren't off-limits, but reach for something more specific and less stock. T
 - "valuable insights"
 - "resonates/aligns with"
 - "maintains an active social media presence"
+- "the short version is" / "the short version:"
 
 **Chatbot voice phrases** (especially relevant for emails and conversational text):
 

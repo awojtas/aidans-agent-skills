@@ -1,0 +1,218 @@
+name: Promote "main" branch to Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      force_deploy:
+        description: 'Force deploy even if main deployment is not successful'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  statuses: read
+
+concurrency:
+  group: promote-to-production
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.PROMOTE_TO_PROD_TOKEN || github.token }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Fetch target branches
+        run: |
+          set -euo pipefail
+          git fetch origin main release/prod
+
+      - name: Ensure main is ahead of release/prod
+        id: compare-before
+        run: |
+          set -euo pipefail
+          read -r behind ahead <<< "$(git rev-list --left-right --count origin/release/prod...origin/main)"
+          echo "release/prod is behind main by ${ahead} commit(s)."
+          echo "main is behind release/prod by ${behind} commit(s)."
+          echo "ahead=${ahead}" >> "$GITHUB_OUTPUT"
+          if [ "${ahead}" -eq 0 ]; then
+            echo "::error::main is not ahead of release/prod. Nothing to promote."
+            exit 1
+          fi
+
+      - name: Ensure there is no existing promotion PR
+        run: |
+          set -euo pipefail
+          existing=$(gh pr list --base release/prod --head main --state open --json number --jq '.[0].number')
+          if [ -n "${existing}" ]; then
+            echo "::error::An open PR (#${existing}) from main to release/prod already exists."
+            exit 1
+          fi
+
+      - name: Verify main branch deployments are ready
+        run: |
+          set -euo pipefail
+
+          if [ "${{ inputs.force_deploy }}" == "true" ]; then
+            echo "⚠️ Force deploy enabled. Skipping deployment status check."
+            exit 0
+          fi
+
+          echo "Checking deployment status for main branch..."
+          main_sha=$(git rev-parse origin/main)
+
+          deployment_state=$(gh api "repos/${{ github.repository }}/commits/${main_sha}/status" \
+            --jq '.statuses[] | select(.context == "Vercel – {{REPO_NAME}}") | .state' \
+            | head -1)
+
+          if [ "${deployment_state}" != "success" ]; then
+            echo "::error::The 'main' branch deployment is not yet complete (state: ${deployment_state:-pending})."
+            echo "::error::"
+            echo "::error::This usually happens when you run this workflow immediately after merging a PR to main."
+            echo "::error::"
+            echo "::error::Please wait 1-2 minutes for the deployment to complete, then try again."
+            echo "::error::You can check deployment status at: https://github.com/${{ github.repository }}/commits/main"
+            exit 1
+          fi
+
+          echo "✓ Main branch deployment is successful and ready for promotion."
+
+      - name: Create promotion PR
+        id: create-pr
+        run: |
+          set -euo pipefail
+          pr_url=$(gh pr create \
+            --base release/prod \
+            --head main \
+            --title "Promote main to production" \
+            --body "Automated promotion of changes from \`main\` into \`release/prod\`.")
+          echo "Created PR: ${pr_url}"
+          echo "pr_url=${pr_url}" >> "$GITHUB_OUTPUT"
+          pr_number="${pr_url##*/}"
+          if ! [[ ${pr_number} =~ ^[0-9]+$ ]]; then
+            echo "::error::Unable to parse PR number from URL: ${pr_url}"
+            exit 1
+          fi
+          echo "pr_number=${pr_number}" >> "$GITHUB_OUTPUT"
+
+      - name: Disable branch protection rules if force_deploy enabled
+        if: inputs.force_deploy == true
+        id: disable-rules
+        run: |
+          set -euo pipefail
+          echo "⚠️ Disabling Production {{REPO_NAME_TITLE}} ruleset temporarily..."
+
+          ruleset=$(gh api repos/${{ github.repository }}/rulesets \
+            --method GET \
+            --jq '.[] | select(.name == "Production {{REPO_NAME_TITLE}}")')
+
+          if [ -z "${ruleset}" ]; then
+            echo "::error::Could not find 'Production {{REPO_NAME_TITLE}}' ruleset"
+            exit 1
+          fi
+
+          ruleset_id=$(echo "${ruleset}" | jq -r '.id')
+          echo "Found ruleset ID: ${ruleset_id}"
+          echo "ruleset_id=${ruleset_id}" >> "$GITHUB_OUTPUT"
+
+          echo "${ruleset}" | jq '.' > /tmp/ruleset_backup.json
+
+          echo "${ruleset}" | jq '{
+            name: .name,
+            target: .target,
+            enforcement: "disabled",
+            conditions: (.conditions // {}),
+            bypass_actors: (.bypass_actors // []),
+            rules: [(.rules // [])[] | {type: .type, parameters: (.parameters | del(.automatic_copilot_code_review_enabled))}]
+          }' > /tmp/ruleset_disabled.json
+
+          gh api repos/${{ github.repository }}/rulesets/${ruleset_id} \
+            --method PUT \
+            --input /tmp/ruleset_disabled.json
+
+          echo "✓ Ruleset disabled"
+          sleep 2
+
+      - name: Merge promotion PR
+        run: |
+          set -euo pipefail
+          pr_number="${{ steps.create-pr.outputs.pr_number }}"
+          echo "Merging promotion PR #${pr_number}..."
+          merge_result=$(gh api \
+            repos/${{ github.repository }}/pulls/${pr_number}/merge \
+            --method PUT \
+            -f merge_method=merge \
+            -f commit_title="Promote main to production" \
+            -f sha="$(git rev-parse origin/main)" \
+            --jq '.merged')
+
+          if [ "${merge_result}" != "true" ]; then
+            echo "::error::Failed to merge promotion PR."
+            exit 1
+          fi
+          echo "✓ Promotion PR merged successfully."
+
+      - name: Re-enable branch protection rules if force_deploy enabled
+        if: inputs.force_deploy == true && steps.disable-rules.outputs.ruleset_id != ''
+        run: |
+          set -euo pipefail
+          ruleset_id="${{ steps.disable-rules.outputs.ruleset_id }}"
+          cat /tmp/ruleset_backup.json | jq '{
+            name: .name,
+            target: .target,
+            enforcement: "active",
+            conditions: (.conditions // {}),
+            bypass_actors: (.bypass_actors // []),
+            rules: [(.rules // [])[] | {type: .type, parameters: (.parameters | del(.automatic_copilot_code_review_enabled))}]
+          }' > /tmp/ruleset_enabled.json
+
+          gh api repos/${{ github.repository }}/rulesets/${ruleset_id} \
+            --method PUT \
+            --input /tmp/ruleset_enabled.json
+          echo "✓ Ruleset re-enabled"
+
+      - name: Re-enable rules on failure if they were disabled
+        if: failure() && inputs.force_deploy == true && steps.disable-rules.outputs.ruleset_id != ''
+        run: |
+          set -euo pipefail
+          ruleset_id="${{ steps.disable-rules.outputs.ruleset_id }}"
+          cat /tmp/ruleset_backup.json | jq '{
+            name: .name,
+            target: .target,
+            enforcement: "active",
+            conditions: (.conditions // {}),
+            bypass_actors: (.bypass_actors // []),
+            rules: [(.rules // [])[] | {type: .type, parameters: (.parameters | del(.automatic_copilot_code_review_enabled))}]
+          }' > /tmp/ruleset_enabled_failsafe.json
+
+          gh api repos/${{ github.repository }}/rulesets/${ruleset_id} \
+            --method PUT \
+            --input /tmp/ruleset_enabled_failsafe.json
+          echo "✓ Ruleset re-enabled"
+
+      - name: Clean up PR on failure
+        if: failure()
+        run: |
+          set -euo pipefail
+          pr_number="${{ steps.create-pr.outputs.pr_number }}"
+          echo "Closing promotion PR #${pr_number} due to merge failure..."
+          gh pr close "${pr_number}"
+          echo "✓ Promotion PR closed."
+
+      - name: Verify promotion succeeded
+        run: |
+          set -euo pipefail
+          git fetch origin main release/prod
+          read -r behind ahead <<< "$(git rev-list --left-right --count origin/release/prod...origin/main)"
+          if [ "${ahead}" -ne 0 ]; then
+            echo "::error::release/prod is still behind main by ${ahead} commit(s)."
+            exit 1
+          fi
+          echo "Promotion verified: release/prod is up to date with main."

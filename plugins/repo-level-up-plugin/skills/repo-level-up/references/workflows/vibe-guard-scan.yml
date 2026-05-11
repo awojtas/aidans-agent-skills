@@ -1,0 +1,52 @@
+name: Vibe-Guard Security Scan
+
+# Static SARIF security scan. Node-based — only useful once a Node/TS stack is present.
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - 'release/**'
+      - 'preview/**'
+  pull_request:
+    branches:
+      - main
+      - 'release/**'
+
+jobs:
+  security-scan:
+    name: Vibe-Guard Vulnerability Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      - name: Install vibe-guard
+        run: npm install -g vibe-guard
+
+      - name: Run vibe-guard security scan
+        run: vibe-guard scan . --format sarif --output-file security-report.sarif
+        continue-on-error: true
+
+      - name: Upload SARIF results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v4
+        if: always() && hashFiles('security-report.sarif') != ''
+        with:
+          sarif_file: security-report.sarif
+          category: vibe-guard
+
+      - name: Upload scan results as artifact
+        uses: actions/upload-artifact@v7
+        if: always() && hashFiles('security-report.sarif') != ''
+        with:
+          name: vibe-guard-results
+          path: security-report.sarif
+          retention-days: 7

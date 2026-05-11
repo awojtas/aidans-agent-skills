@@ -1,0 +1,32 @@
+name: Copilot Setup Steps
+"on":
+  pull_request:
+    paths:
+    - .github/workflows/copilot-setup-steps.yml
+  push:
+    paths:
+    - .github/workflows/copilot-setup-steps.yml
+  workflow_dispatch: null
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+    # TODO: Add stack-specific setup steps below once the project has a stack.
+    # Examples (uncomment + adapt):
+    #
+    # - name: Install pnpm
+    #   uses: pnpm/action-setup@v5
+    # - name: Set up Node.js
+    #   uses: actions/setup-node@v6
+    #   with:
+    #     cache: pnpm
+    #     node-version: "22"
+    # - name: Install workspace dependencies
+    #   run: pnpm install --frozen-lockfile
+    #
+    # The purpose of this workflow is to keep GitHub Copilot's "agent" environment
+    # in sync with how the project builds locally. Update whenever build setup changes.

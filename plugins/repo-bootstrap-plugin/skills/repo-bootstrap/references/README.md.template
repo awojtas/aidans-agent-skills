@@ -1,0 +1,16 @@
+# {{PROJECT_NAME}}
+
+{{PROJECT_INTRO}}
+
+## Getting Started
+
+_To be documented once a stack is chosen._
+
+## Project Conventions
+
+- Agent guidance: see [`AGENTS.md`](AGENTS.md).
+- Documentation lives in `/docs`. Only `README.md`, `AGENTS.md`, and `CLAUDE.md` belong in the repo root.
+
+## Licensing
+
+See [`LICENSE`](LICENSE).

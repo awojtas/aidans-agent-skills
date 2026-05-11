@@ -1,0 +1,46 @@
+# OS
+.DS_Store
+Thumbs.db
+nul
+
+# Editors / IDEs
+.idea/
+.vscode/settings.json
+*.iml
+*.ipr
+*.iws
+.history
+.atom/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Env / secrets
+.env
+.env.local
+.env.*.local
+.secrets/
+*-key.json
+
+# Tool caches
+.eslintcache
+.cache/
+
+# Build / deps (common defaults — extend per stack)
+node_modules/
+dist/
+build/
+out/
+
+# Claude Code temp files
+tmpclaude-*-cwd
+tmpclaude*
+
+# Screenshots dumped at repo root (Playwright MCP, ad-hoc debugging)
+/*.png
+/*.jpeg
+/*.jpg

@@ -35,6 +35,11 @@
       "description": "Implements a GitHub issue end-to-end — reads the issue, explores the project, writes code, adds tests, and verifies everything passes."
     },
     {
+      "name": "repo-bootstrap-plugin",
+      "source": "./plugins/repo-bootstrap-plugin",
+      "description": "Bootstraps a brand-new GitHub repository end-to-end: creates a private repo, clones to ~/src, scaffolds AGENTS.md/CLAUDE.md/README/.gitignore/LICENSE/PR template/check-root-docs workflow, and pushes the initial commit."
+    },
+    {
       "name": "sentry-recent-issues-plugin",
       "source": "./plugins/sentry-recent-issues-plugin",
       "description": "Investigates recent or specific Sentry issues, determines frequency and recurrence, researches root cause in the codebase, and recommends fixes."

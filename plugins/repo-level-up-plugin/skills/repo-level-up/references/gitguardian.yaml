@@ -1,0 +1,7 @@
+# GitGuardian Configuration
+# Use this to whitelist known-safe fixtures or local-only test credentials.
+# Each entry is a path glob relative to the repo root.
+
+paths-to-ignore: []
+  # Example: allow emulator-only test fixtures that contain non-sensitive credentials
+  # - tests/fixtures/emulator-users.json

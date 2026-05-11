@@ -1,0 +1,11 @@
+{
+	"name": "repo-bootstrap-plugin",
+	"description": "Adds a /repo-bootstrap skill for spinning up a brand-new GitHub repo end-to-end (create, clone to ~/src, scaffold AGENTS.md/CLAUDE.md/README/.gitignore/LICENSE/workflows, initial commit + push)",
+	"version": "1.0.0",
+	"author": {
+		"name": "Aidan Wojtas",
+		"url": "https://github.com/awojtas/aidans-agent-skills"
+	},
+	"repository": "https://github.com/awojtas/aidans-agent-skills",
+	"skills": "./skills/"
+}

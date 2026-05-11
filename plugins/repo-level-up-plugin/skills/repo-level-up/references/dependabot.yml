@@ -1,0 +1,28 @@
+version: 2
+updates:
+  # GitHub Actions — universal, applies to every repo with workflows
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+
+  # TODO: Add stack-specific ecosystems once the project picks a stack. Examples:
+  #
+  # - package-ecosystem: "npm"
+  #   directory: "/"
+  #   schedule: { interval: "weekly", day: "monday", time: "09:00" }
+  #   open-pull-requests-limit: 5
+  #   versioning-strategy: increase
+  #   commit-message: { prefix: "deps" }
+  #   groups:
+  #     minor-and-patch:
+  #       update-types: ["minor", "patch"]
+  #
+  # - package-ecosystem: "pip"   (or "cargo", "gomod", "nuget", "gradle", ...)
+  #   directory: "/"
+  #   schedule: { interval: "weekly" }

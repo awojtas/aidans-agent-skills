@@ -1,0 +1,128 @@
+name: Promote "main" branch to UAT
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  statuses: read
+
+concurrency:
+  group: promote-to-uat
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.PROMOTE_TO_PROD_TOKEN || github.token }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Fetch target branches
+        run: |
+          set -euo pipefail
+          git fetch origin main release/uat
+
+      - name: Ensure main is ahead of release/uat
+        id: compare-before
+        run: |
+          set -euo pipefail
+          read -r behind ahead <<< "$(git rev-list --left-right --count origin/release/uat...origin/main)"
+          echo "release/uat is behind main by ${ahead} commit(s)."
+          echo "main is behind release/uat by ${behind} commit(s)."
+          echo "ahead=${ahead}" >> "$GITHUB_OUTPUT"
+          if [ "${ahead}" -eq 0 ]; then
+            echo "::error::main is not ahead of release/uat. Nothing to promote."
+            exit 1
+          fi
+
+      - name: Ensure there is no existing promotion PR
+        run: |
+          set -euo pipefail
+          existing=$(gh pr list --base release/uat --head main --state open --json number --jq '.[0].number')
+          if [ -n "${existing}" ]; then
+            echo "::error::An open PR (#${existing}) from main to release/uat already exists."
+            exit 1
+          fi
+
+      - name: Verify main branch deployments are ready
+        run: |
+          set -euo pipefail
+          echo "Checking deployment status for main branch..."
+          main_sha=$(git rev-parse origin/main)
+
+          deployment_state=$(gh api "repos/${{ github.repository }}/commits/${main_sha}/status" \
+            --jq '.statuses[] | select(.context == "Vercel – {{REPO_NAME}}") | .state' \
+            | head -1)
+
+          if [ "${deployment_state}" != "success" ]; then
+            echo "::error::The 'main' branch deployment is not yet complete (state: ${deployment_state:-pending})."
+            echo "::error::Please wait 1-2 minutes for the deployment to complete, then try again."
+            exit 1
+          fi
+
+          echo "✓ Main branch deployment is successful and ready for promotion."
+
+      - name: Create promotion PR
+        id: create-pr
+        run: |
+          set -euo pipefail
+          pr_url=$(gh pr create \
+            --base release/uat \
+            --head main \
+            --title "Promote main to UAT" \
+            --body "Automated promotion of changes from \`main\` into \`release/uat\`.")
+          echo "Created PR: ${pr_url}"
+          echo "pr_url=${pr_url}" >> "$GITHUB_OUTPUT"
+          pr_number="${pr_url##*/}"
+          if ! [[ ${pr_number} =~ ^[0-9]+$ ]]; then
+            echo "::error::Unable to parse PR number from URL: ${pr_url}"
+            exit 1
+          fi
+          echo "pr_number=${pr_number}" >> "$GITHUB_OUTPUT"
+
+      - name: Merge promotion PR
+        run: |
+          set -euo pipefail
+          pr_number="${{ steps.create-pr.outputs.pr_number }}"
+          echo "Merging promotion PR #${pr_number}..."
+          merge_result=$(gh api \
+            repos/${{ github.repository }}/pulls/${pr_number}/merge \
+            --method PUT \
+            -f merge_method=merge \
+            -f commit_title="Promote main to UAT" \
+            -f sha="$(git rev-parse origin/main)" \
+            --jq '.merged')
+
+          if [ "${merge_result}" != "true" ]; then
+            echo "::error::Failed to merge promotion PR."
+            exit 1
+          fi
+          echo "✓ Promotion PR merged successfully."
+
+      - name: Clean up PR on failure
+        if: failure()
+        run: |
+          set -euo pipefail
+          pr_number="${{ steps.create-pr.outputs.pr_number }}"
+          if [ -n "${pr_number}" ]; then
+            echo "Closing promotion PR #${pr_number} due to merge failure..."
+            gh pr close "${pr_number}"
+            echo "✓ Promotion PR closed."
+          fi
+
+      - name: Verify promotion succeeded
+        run: |
+          set -euo pipefail
+          git fetch origin main release/uat
+          read -r behind ahead <<< "$(git rev-list --left-right --count origin/release/uat...origin/main)"
+          if [ "${ahead}" -ne 0 ]; then
+            echo "::error::release/uat is still behind main by ${ahead} commit(s)."
+            exit 1
+          fi
+          echo "Promotion verified: release/uat is up to date with main."

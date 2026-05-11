@@ -120,6 +120,23 @@ Say "work on issue #123" or drop in a GitHub issue link.
 
 ---
 
+### Repo Bootstrap (`/repo-bootstrap`)
+
+Stands up a brand-new GitHub repo from nothing. Asks for a project name and a one-line intro, then does the rest.
+
+What it does:
+
+- Creates a private GitHub repo under your account
+- Clones it to `~/src/<repo-name>`
+- Scaffolds `.gitignore`, `.gitattributes`, `AGENTS.md`, `CLAUDE.md`, `README.md`, `LICENSE` (proprietary), `.github/copilot-instructions.md`, `.github/pull_request_template.md`, and a `check-root-docs` workflow that enforces only `README/AGENTS/CLAUDE.md` in the repo root
+- Makes the initial commit and pushes to `origin/main`
+
+Day-0 only — branching, CI, deploys, dependabot, observability, etc. are out of scope and belong to the companion `/repo-promote-maturity` skill (planned).
+
+Say "new project", "bootstrap a repo", or "spin up a project".
+
+---
+
 ### Sentry Recent Issues (`/sentry-recent-issues`)
 
 Pulls recent Sentry issues, figures out what's going on in the code, and tells you how to fix them.

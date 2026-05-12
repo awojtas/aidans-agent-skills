@@ -44,7 +44,7 @@ A flaky test is worse than no test. Rules:
 - **No real network in unit/integration.** Stub with `nock`, `msw`, `responses`, or in-memory queues.
 - **No shared mutable state across tests.** Each test sets up its own state and tears down.
 
-The QA enforces this in Phase 5 — any test with `Math.random()` or `Date.now()` driving outcomes is rejected.
+The QA enforces this in Phase 7 — any test with `Math.random()` or `Date.now()` driving outcomes is rejected.
 
 ## Test structure
 

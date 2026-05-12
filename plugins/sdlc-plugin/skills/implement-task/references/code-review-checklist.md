@@ -1,6 +1,6 @@
 # Code Review Checklist (PE Self-Review + Reviewer Reference)
 
-The Principal Engineer's self-review pass in Phase 9 walks this checklist. The same checklist is what a human reviewer applies when they pick up the PR. Drawn from Google's eng-practices, Fowler's writing on small commits, and the Conventional Commits standard.
+The Principal Engineer's self-review pass in Phase 10 walks this checklist. The same checklist is what a human reviewer applies when they pick up the PR. Drawn from Google's eng-practices, Fowler's writing on small commits, and the Conventional Commits standard.
 
 ## Why self-review
 
@@ -45,10 +45,10 @@ The PE's self-review is the first review the PR gets. It exists to catch the obv
 
 ### Tests
 
-- [ ] **AC clauses covered.** Every Acceptance Criterion from the issue maps to at least one test (QA produced the AC → Test map in Phase 5).
+- [ ] **AC clauses covered.** Every Acceptance Criterion from the issue maps to at least one test (QA produced the AC → Test map in Phase 7).
 - [ ] **No `.skip` / `xit` / `pytest.mark.skip` added.** Or, if added, there's a comment explaining why and a tracking issue.
 - [ ] **No flaky tests.** Tests use seeded factories and frozen clocks; no `Math.random()` / `Date.now()` driving outcomes.
-- [ ] **Tests pass locally.** PE ran the full suite after Phase 4-6.
+- [ ] **Tests pass locally.** PE ran the full suite after Phase 6-8 (TAE tests → QA test validation → PE lint+build).
 - [ ] **No test mocks the system under test.** Mocks are for collaborators (DB, network); not for the code being tested.
 - [ ] **Coverage shape is right.** Pyramid: more unit than integration than E2E.
 

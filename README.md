@@ -131,7 +131,7 @@ The next eight skills are bundled together under the **`sdlc-plugin`** marketpla
 | 3     | [`/create-requirements`](#create-requirements-create-requirements)        | `docs/requirements/` — interactively elicited functional + non-functional requirements. |
 | 4     | [`/confirm-requirements`](#confirm-requirements-confirm-requirements)     | Same folder, requirements validated and advanced through `Draft → Reviewed → Approved`. |
 | 5     | [`/plan-from-requirements`](#plan-from-requirements-plan-from-requirements)   | GitHub issues + milestones + labels — small-batch tasks, human-required work front-loaded. |
-| 6     | [`/implement-task`](#implement-task-implement-task)                 | One GitHub issue taken from picked-up to PR-ready, via a six-persona orchestration with audit-trail comments. |
+| 6     | [`/implement-task`](#implement-task-implement-task)                 | One GitHub issue taken from picked-up to PR-ready, via a seven-persona orchestration (incl. UX/UI Designer) with audit-trail comments. |
 | —     | [`/check-work`](#check-work-check-work)                         | A standalone "check your work carefully" audit pass over a slice of recent work — uncommitted changes, an unpushed branch, a commit range, a PR, or a path. Empirically catches defects ~80% of the time. |
 | —     | [`/rework`](#rework-rework)                                 | Assertively course-corrects both the requirements docs *and* the open GitHub issues when an implementation-time discovery invalidates the plan. |
 
@@ -242,25 +242,26 @@ Say "plan the implementation", "create issues from requirements", "break this in
 
 ### Implement Task (`/implement-task`)
 
-The heavyweight implementation skill. Takes a single GitHub issue from picked-up through to PR-ready via a six-persona orchestration. Designed for long-running runs (hours) on important tasks. The lighter `/issue-worker` is the right tool for small tasks; `/implement-task` is for tasks worth the audit gates.
+The heavyweight implementation skill. Takes a single GitHub issue from picked-up through to PR-ready via a seven-persona orchestration. Designed for long-running runs (hours) on important tasks. The lighter `/issue-worker` is the right tool for small tasks; `/implement-task` is for tasks worth the audit gates.
 
 What it does:
 
-- **Spawns six personas as focused sub-agents**, each with their own mandate and audit-trail comment on the GitHub issue:
+- **Spawns seven personas as focused sub-agents**, each with their own mandate and audit-trail comment on the GitHub issue:
   - **Principal Engineer** — branch setup, implementation, lint+build, PR + self-review, review-feedback handling
-  - **QA Engineer** — validates the AC is testable, validates the tests prove the AC, builds the AC → Test map
+  - **QA Engineer** — validates the AC is testable, validates the tests prove the AC, builds the AC → Test map. Can use Playwright for AC oversight
   - **Cloud Architect** — identifies IaC / pipeline / DevOps changes, applies what they can, surfaces human-required ones
+  - **UX/UI Designer** — establishes the design spec before implementation (Phase 3), verifies the rendered output after (Phase 5). Uses the project's design system if one exists; defines initial principles (typographic scale, palette, spacing, radius, shadows) if not. Uses Playwright + `axe-core` to verify states, responsive behaviour, and accessibility. For backend-only tasks the spec covers response shape, error messages, and observability semantics — UX still applies, just to a different surface
   - **Test Automation Engineer** — writes unit + integration + E2E tests at the right level of the test pyramid
   - **Project Manager** — diligence audit; bounces work back to any prior role if the audit finds gaps. Diligent — defaults to "prove it"
   - **Work Checker** — runs after **every** other persona. Asks *"please just check your work carefully on this"*. Empirically catches defects ~80% of the time (backed by Madaan et al.'s Self-Refine research)
-- **11 phases** in sequence: branch setup → ticket validation → cloud arch → implementation → tests → test validation → lint+build → PM diligence audit → PR + self-review → review feedback → summary
+- **13 phases** in sequence: branch setup → ticket validation → cloud arch → UX design spec → implementation → UX design review → tests → test validation → lint+build → PM diligence audit → PR + self-review → review feedback → summary
 - **Every persona posts a `[Role Name]` comment** on the GitHub issue, creating a durable audit trail
 - **Two Hats discipline** — refactors get their own commits, separate from feature commits
 - **Conventional Commits** for commit messages; small atomic PRs per Google's eng practices; PR body includes a **Self-review** section showing what the PE caught themselves
 - **Bounce-back limit:** if a role gets bounced 3 times by the WC or the PM, the skill escalates to the user — something deeper is wrong
-- **Pauses naturally between Phase 8 and Phase 9** so the human reviewer can comment; re-invoke to address review feedback
+- **Pauses naturally between Phase 10 and Phase 11** so the human reviewer can comment; re-invoke to address review feedback
 
-Grounded in Fowler (continuous integration, refactoring, Two Hats, test pyramid), Robert C. Martin (SOLID), Google eng-practices (small CLs), Conventional Commits, and Scrum.org Definition of Done.
+Grounded in Fowler (continuous integration, refactoring, Two Hats, test pyramid), Robert C. Martin (SOLID), Google eng-practices (small CLs), Conventional Commits, Scrum.org Definition of Done, Refactoring UI (Wathan & Schoger), Nielsen's usability heuristics, and WCAG 2.2 AA.
 
 Use it when quality matters more than speed. Say "implement task #X", "do issue #X properly", "fully implement issue #X", "take this through to PR", "comprehensive implementation".
 

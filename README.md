@@ -128,7 +128,7 @@ The next six skills are bundled together under the **`sdlc-plugin`** marketplace
 |-------|------------------------------------------|------------------------------------------------------------|
 | 1     | [`/repo-bootstrap`](#repo-bootstrap-repo-bootstrap)             | A new private GitHub repo, cloned to `~/src/<name>`, with starter files. |
 | 2     | [`/repo-level-up`](#repo-level-up-repo-level-up)               | Release branches, promotion workflows, secret scanning, branch protections. |
-| 3     | [`/repo-requirements`](#repo-requirements-repo-requirements)        | `docs/requirements/` — interactively elicited functional + non-functional requirements. |
+| 3     | [`/create-requirements`](#create-requirements-create-requirements)        | `docs/requirements/` — interactively elicited functional + non-functional requirements. |
 | 4     | [`/confirm-requirements`](#confirm-requirements-confirm-requirements)     | Same folder, requirements validated and advanced through `Draft → Reviewed → Approved`. |
 | 5     | [`/plan-from-requirements`](#plan-from-requirements-plan-from-requirements)   | GitHub issues + milestones + labels — small-batch tasks, human-required work front-loaded. |
 | —     | [`/rework`](#rework-rework)                                 | Assertively course-corrects both the requirements docs *and* the open GitHub issues when an implementation-time discovery invalidates the plan. |
@@ -170,13 +170,13 @@ Run it after `/repo-bootstrap` when you're ready to lock down branches and start
 
 ---
 
-### Repo Requirements (`/repo-requirements`)
+### Create Requirements (`/create-requirements`)
 
 Interactively elicits software requirements (both functional and non-functional) from you and writes them up as a structured set of short markdown files in `docs/requirements/`.
 
 What it does:
 
-- Reads your `README.md` and any existing context, then runs a stakeholder + goals + scope discovery interview
+- Reads your `README.md` (default grounding source) and any existing context, then runs a stakeholder + goals + scope discovery interview. If no `README.md` exists, asks you to supply an alternative source — describe the project in chat, or point at a local file, URL, PDF, or doc-server page
 - Captures **goals AND non-goals** explicitly — the non-goals section is treated as more important than the goals one (most project blow-outs come from under-documented "won't do" items)
 - Walks each functional domain (auth, billing, admin, ...) one at a time with question banks adapted from BABOK
 - Walks every ISO 25010 quality attribute (performance, security, reliability, usability, maintainability, compatibility, portability) plus modern additions (observability, privacy/compliance, accessibility, i18n, cost) — won't let you skip a category
@@ -187,13 +187,13 @@ What it does:
 
 Grounded in [Volere](https://www.volere.org/), [ISO/IEC/IEEE 29148:2018](https://www.iso.org/standard/72089.html), [ISO/IEC 25010](https://en.wikipedia.org/wiki/ISO/IEC_25010), the INCOSE Guide for Writing Requirements, [BABOK](https://www.iiba.org/standards-and-resources/babok/), and [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119). The output feeds a downstream architecture-design phase.
 
-Highly interactive — set aside 30–90 minutes for a first useful pass. Pause and resume any time. Say "elicit requirements", "document requirements", "what should this project do", or "scope this out".
+Highly interactive — set aside 30–90 minutes for a first useful pass. Pause and resume any time. Say "create requirements", "elicit requirements", "document requirements", "what should this project do", or "scope this out".
 
 ---
 
 ### Confirm Requirements (`/confirm-requirements`)
 
-The refining companion to `/repo-requirements`. Where the eliciter produces requirements from interview, this one validates the ones already on disk and advances them through the status lifecycle.
+The refining companion to `/create-requirements`. Where the eliciter produces requirements from interview, this one validates the ones already on disk and advances them through the status lifecycle.
 
 What it does:
 
@@ -217,7 +217,7 @@ Use it periodically (after stakeholder conversations, after market changes, afte
 
 ### Plan from Requirements (`/plan-from-requirements`)
 
-Turns the requirements you've already documented (via `/repo-requirements` and refined via `/confirm-requirements`) into a concrete plan of GitHub issues. Pure planning — no code generation.
+Turns the requirements you've already documented (via `/create-requirements` and refined via `/confirm-requirements`) into a concrete plan of GitHub issues. Pure planning — no code generation.
 
 What it does:
 
@@ -232,7 +232,7 @@ What it does:
 - **Shows you the full plan as a markdown document first** (`docs/implementation-plan.md`) so you can edit it before any GitHub issue is created. Nothing is created without your explicit approval.
 - Detects existing labels, milestones, and issues by title — never duplicates on re-run
 
-Companion to `/repo-requirements` and `/confirm-requirements`. Run it once the requirements are mostly Reviewed and you're ready to start work.
+Companion to `/create-requirements` and `/confirm-requirements`. Run it once the requirements are mostly Reviewed and you're ready to start work.
 
 Say "plan the implementation", "create issues from requirements", "break this into tasks", "what do we build first", or "make me a backlog".
 
@@ -248,7 +248,7 @@ What it does:
 - **Walks every requirement** — classifies each as Keep / Update / Delete / Archive
 - **Walks every open issue** — classifies each as Keep / Update / Close, plus checks recently closed issues for any to Reopen
 - **Cascades through assumptions and open questions** — falsified assumption → every linked requirement re-inspected; resolved question → entry moves to Resolved with the answer
-- **Gap analysis** — identifies new requirements / new tasks the new direction needs (kept narrow; if the gap is huge, suggests a fresh `/repo-requirements` session instead)
+- **Gap analysis** — identifies new requirements / new tasks the new direction needs (kept narrow; if the gap is huge, suggests a fresh `/create-requirements` session instead)
 - **Shows the proposed change set as a single markdown document** for explicit approval before any destructive action
 - **Default behaviour is assertive cleanup.** Git preserves deleted files; closed GitHub issues are recoverable. `docs/archive/` exists only for artefacts with specific posterity value, and only with a documented rationale. No `wontfix` label sprawl on issues.
 - Appends a structured **rework entry to `docs/requirements/session-log.md`** as the durable audit trail

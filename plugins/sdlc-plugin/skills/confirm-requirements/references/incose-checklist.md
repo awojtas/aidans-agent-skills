@@ -1,6 +1,6 @@
 # INCOSE Quality Checklist (self-contained)
 
-Apply these tests to every requirement during a confirmation pass. Adapted from INCOSE's *Guide for Writing Requirements* and ISO/IEC/IEEE 29148:2018. Duplicated into this plugin so it stands alone — the `repo-requirements` plugin has the same content for the elicitation phase.
+Apply these tests to every requirement during a confirmation pass. Adapted from INCOSE's *Guide for Writing Requirements* and ISO/IEC/IEEE 29148:2018. Duplicated into this plugin so it stands alone — the `create-requirements` plugin has the same content for the elicitation phase.
 
 ## Per-requirement criteria
 

@@ -36,7 +36,7 @@ The middle path: produce a **small-batch** plan, phase by phase, that's concrete
 
 ## Prerequisites
 
-1. **`docs/requirements/` exists and has content.** If it's missing or all stub templates, stop and point the user at `/repo-requirements`.
+1. **`docs/requirements/` exists and has content.** If it's missing or all stub templates, stop and point the user at `/create-requirements`.
 2. **Most requirements are at Status: Reviewed (or better).** If the doc is mostly `Draft`, the plan will inherit ambiguity. Suggest a pass of `/confirm-requirements` first.
 3. **`gh` CLI authenticated with write access** to the target repo. `gh auth status` should show repo write/admin scope. Without it, the skill can produce the plan markdown but cannot create issues.
 4. **Working directory is inside the target git repo.** `gh` uses the local git remote to know which repo to write to.
@@ -235,8 +235,8 @@ Also commit the `docs/implementation-plan.md` file so the plan is preserved in g
 
 ## Edge cases
 
-- **`docs/requirements/` is missing.** Stop and point at `/repo-requirements`.
-- **`docs/requirements/` is all stubs.** Stop and point at `/repo-requirements` to populate.
+- **`docs/requirements/` is missing.** Stop and point at `/create-requirements`.
+- **`docs/requirements/` is all stubs.** Stop and point at `/create-requirements` to populate.
 - **Most requirements are `Draft`.** Suggest `/confirm-requirements` to firm them up first, but offer to plan anyway with all-issues-marked-Draft.
 - **`gh` not authenticated.** Produce the plan markdown but skip Steps 7-9. Tell the user to authenticate and re-run.
 - **Labels exist with different colours.** Leave them alone — the user has a system, don't override it.

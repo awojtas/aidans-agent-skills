@@ -1,6 +1,6 @@
 ---
-name: repo-requirements
-description: Interactively elicits and documents software requirements (functional + non-functional) into docs/requirements/ as a structured set of focused markdown files. Starts from the project README, runs a stakeholder/goals/scope discovery interview, then walks the user through each functional domain and each ISO/IEC 25010 quality attribute one at a time. Captures every assumption in 07-assumptions.md and every deferred item in 08-open-questions.md so nothing implicit survives. Produces output suitable as input to a downstream architecture-design phase. Grounded in Volere, ISO/IEC/IEEE 29148, ISO 25010, INCOSE Guide for Writing Requirements, BABOK Knowledge Area 4, and RFC 2119. Use when the user says "elicit requirements", "document requirements", "what should this project do", "scope this out", "write a requirements spec", "create an SRS", "start documenting what we're building", or asks for help nailing down what's in/out of scope. Designed as a multi-session skill — re-invoke to continue where the previous session stopped.
+name: create-requirements
+description: Interactively elicits and documents software requirements (functional + non-functional) into docs/requirements/ as a structured set of focused markdown files. Uses the project's README.md as the default starting context; if no README exists, asks the user for an alternative source (interactive description, a linked PDF, a markdown brief, etc.) before the interview begins. Then runs a stakeholder/goals/scope discovery interview and walks the user through each functional domain and each ISO/IEC 25010 quality attribute one at a time. Captures every assumption in 07-assumptions.md and every deferred item in 08-open-questions.md so nothing implicit survives. Produces output suitable as input to a downstream architecture-design phase. Grounded in Volere, ISO/IEC/IEEE 29148, ISO 25010, INCOSE Guide for Writing Requirements, BABOK Knowledge Area 4, and RFC 2119. Use when the user says "create requirements", "elicit requirements", "document requirements", "what should this project do", "scope this out", "write a requirements spec", "create an SRS", "start documenting what we're building", or asks for help nailing down what's in/out of scope. Designed as a multi-session skill — re-invoke to continue where the previous session stopped.
 ---
 
 # Eliciting and Documenting Software Requirements
@@ -43,9 +43,24 @@ If the user wants the skill to "just generate everything from the README", **dec
 
 ## Prerequisites
 
-1. **Working directory is inside a git repo** (or at least a project directory with a `README.md`).
-2. **A `README.md` exists.** If it doesn't, ask the user to write one paragraph stating the project's purpose first — without that grounding, the interview has no anchor.
+1. **Working directory is a project directory** (ideally a git repo, but not required).
+2. **A grounding source exists.** The skill needs *something* describing the project's purpose before the interview is useful. The default is the repo's `README.md`. If it isn't present, see "Choosing a grounding source" below — the skill will ask the user to supply an alternative rather than refusing to start.
 3. **The user has time for a real conversation.** Set expectation: a first useful pass is typically 30–90 minutes. They can pause and resume.
+
+### Choosing a grounding source
+
+`README.md` in the working directory is the default. If it exists, read it and move on — no question needed.
+
+If `README.md` is missing or empty, do **not** stop. Ask the user (single AskUserQuestion turn) how they want to supply project context:
+
+| Option                       | What the agent does                                                                                       |
+|------------------------------|------------------------------------------------------------------------------------------------------------|
+| Describe interactively        | Ask the user for a 3–5 sentence paragraph in chat. Save it to `docs/requirements/00-source-brief.md` so the source is recoverable. |
+| Point to a local file         | User gives a path to a `.md`, `.txt`, or `.pdf` already in the working directory. Read it (use the Read tool — it handles PDFs).   |
+| Point to a URL                | User gives a link to a public page, gist, or hosted PDF. Fetch with WebFetch.                              |
+| Point to a Google Doc / Notion / Confluence page | Use the matching MCP server if available (Google Drive, Notion, Atlassian). If none is configured, ask the user to paste the contents or export to markdown/PDF and pick one of the options above. |
+
+Whichever option is chosen, treat the resulting text as the equivalent of a README for the rest of the workflow. If the supplied source is very thin (under ~3 sentences of substance), pause and ask 2–3 grounding questions before scaffolding, so Step 4 has something to build on.
 
 ## Workflow
 
@@ -76,7 +91,7 @@ Throughout: assumptions go in `07-assumptions.md`, deferred items go in `08-open
 
 Read in this order, surfacing what you learn back to the user:
 
-1. `README.md` — purpose, intended users, any feature list.
+1. **Grounding source** — `README.md` is the default. If it's present and non-empty, read it for purpose, intended users, and any feature list. If it's missing or empty, run the "Choosing a grounding source" flow from the Prerequisites section before continuing. Do not proceed past this step without a grounding source.
 2. `AGENTS.md` if present — additional context.
 3. `docs/requirements/` if present — **this is a continuation, not a fresh start**. Read all existing files and ask the user where they want to resume. Do not overwrite without permission.
 4. `package.json` / `pyproject.toml` / `Cargo.toml` / `go.mod` — confirms tech stack (informs constraints).
@@ -274,7 +289,7 @@ If `docs/requirements/` already exists when the skill is invoked:
 
 ## Edge cases
 
-- **README is missing or empty.** Stop and ask the user to write one paragraph stating the project's purpose before continuing.
+- **README is missing or empty.** Don't stop — run the "Choosing a grounding source" flow in the Prerequisites section so the user can supply an alternative (interactive description, local file, URL, doc-server link). Only stop if the user declines to supply any source at all.
 - **User wants the skill to "just produce a draft".** Explain the failure mode (see "Operating mode" above) and offer a structured option: the agent can produce *empty-but-scaffolded* files, populated only with what's in the README, and mark every section as `Draft — pending interview`. This is honest and still useful.
 - **The project is a hard fork or rewrite of an existing system.** Ask for the original system's docs; use `references/elicitation-playbook.md`'s "document analysis" technique. Capture differences from the original explicitly.
 - **Multi-stakeholder review (rare for solo founders).** Each stakeholder gets a turn at the relevant sections; conflicts go to `08-open-questions.md` with both viewpoints captured.

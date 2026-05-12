@@ -37,7 +37,7 @@
     {
       "name": "sdlc-plugin",
       "source": "./plugins/sdlc-plugin",
-      "description": "Software Development Lifecycle skills, bundled. Six skills covering idea-to-backlog and course-correction: /repo-bootstrap (new GitHub repo from scratch), /repo-level-up (release/uat + release/prod branches, promotion workflows, secret scanning, branch-protection rulesets), /repo-requirements (interactively elicit functional + non-functional requirements into docs/requirements/), /confirm-requirements (validate and advance the status of existing requirements), /plan-from-requirements (turn the requirements into a staged plan of small-batch GitHub issues), /rework (assertively course-correct requirements and issues when an implementation-time discovery invalidates the plan)."
+      "description": "Software Development Lifecycle skills, bundled. Six skills covering idea-to-backlog and course-correction: /repo-bootstrap (new GitHub repo from scratch), /repo-level-up (release/uat + release/prod branches, promotion workflows, secret scanning, branch-protection rulesets), /create-requirements (interactively elicit functional + non-functional requirements into docs/requirements/ — defaults to README.md as the source, asks for an alternative if missing), /confirm-requirements (validate and advance the status of existing requirements), /plan-from-requirements (turn the requirements into a staged plan of small-batch GitHub issues), /rework (assertively course-correct requirements and issues when an implementation-time discovery invalidates the plan)."
     },
     {
       "name": "sentry-recent-issues-plugin",

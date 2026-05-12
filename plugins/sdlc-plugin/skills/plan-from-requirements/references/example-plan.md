@@ -1,10 +1,10 @@
 # Worked Example: Plan from the File-View Toggle Requirements
 
-A full plan generated from the GitHub Preview/Code/Blame toggle requirements in the `repo-requirements` plugin's `example-worked-requirement.md`. Shows the staged numbering, phase decomposition, human-required front-loading, labels, and milestone structure.
+A full plan generated from the GitHub Preview/Code/Blame toggle requirements in the `create-requirements` plugin's `example-worked-requirement.md`. Shows the staged numbering, phase decomposition, human-required front-loading, labels, and milestone structure.
 
 **Input.** A `docs/requirements/` folder containing:
 
-- 8 functional requirements (`FR-FILEVIEW-001` to `FR-FILEVIEW-008`) — see the `repo-requirements` plugin example.
+- 8 functional requirements (`FR-FILEVIEW-001` to `FR-FILEVIEW-008`) — see the `create-requirements` plugin example.
 - 1 NFR (`NFR-PERF-003` — blame compute budget).
 - Open questions OQ-005 (renderable extension list), OQ-006 (history-entry semantics — assumed resolved here), OQ-007 (SVG/Jupyter edge cases).
 - Assumptions A-003 (renderable-types list), A-004 (canonical Blame URL — Validated), A-005 (Preview position-preservation best-effort).

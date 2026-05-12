@@ -155,6 +155,27 @@ Run it after `/repo-bootstrap` when you're ready to lock down branches and start
 
 ---
 
+### Repo Requirements (`/repo-requirements`)
+
+Interactively elicits software requirements (both functional and non-functional) from you and writes them up as a structured set of short markdown files in `docs/requirements/`.
+
+What it does:
+
+- Reads your `README.md` and any existing context, then runs a stakeholder + goals + scope discovery interview
+- Captures **goals AND non-goals** explicitly — the non-goals section is treated as more important than the goals one (most project blow-outs come from under-documented "won't do" items)
+- Walks each functional domain (auth, billing, admin, ...) one at a time with question banks adapted from BABOK
+- Walks every ISO 25010 quality attribute (performance, security, reliability, usability, maintainability, compatibility, portability) plus modern additions (observability, privacy/compliance, accessibility, i18n, cost) — won't let you skip a category
+- Captures every assumption in `07-assumptions.md` and every deferred decision in `08-open-questions.md`, so nothing implicit survives
+- Force-ranks Musts in a MoSCoW pass to surface the real MVP
+- Runs an INCOSE quality-checklist sweep at the end (necessary / unambiguous / singular / verifiable / traceable, etc.)
+- Designed as a multi-session skill — re-invoke to pick up where the last session stopped
+
+Grounded in [Volere](https://www.volere.org/), [ISO/IEC/IEEE 29148:2018](https://www.iso.org/standard/72089.html), [ISO/IEC 25010](https://en.wikipedia.org/wiki/ISO/IEC_25010), the INCOSE Guide for Writing Requirements, [BABOK](https://www.iiba.org/standards-and-resources/babok/), and [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119). The output feeds a downstream architecture-design phase.
+
+Highly interactive — set aside 30–90 minutes for a first useful pass. Pause and resume any time. Say "elicit requirements", "document requirements", "what should this project do", or "scope this out".
+
+---
+
 ### Sentry Recent Issues (`/sentry-recent-issues`)
 
 Pulls recent Sentry issues, figures out what's going on in the code, and tells you how to fix them.

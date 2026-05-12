@@ -45,6 +45,11 @@
       "description": "Takes a freshly bootstrapped repo to release-ready: release/uat + release/prod branches, promote-to-uat / promote-to-production workflows with Vercel gating, GitGuardian secret scan, Claude On-Demand, vibe-guard SARIF, Copilot setup stub, Dependabot, version-aware PR template, branch protection rulesets, and a 'Checklist for Human Admin' issue."
     },
     {
+      "name": "repo-requirements-plugin",
+      "source": "./plugins/repo-requirements-plugin",
+      "description": "Interactively elicits and documents software requirements (functional + non-functional) into docs/requirements/ as focused markdown files. Grounded in Volere, ISO 29148, ISO 25010, INCOSE, BABOK, RFC 2119. Captures every assumption and every non-goal explicitly to prevent the inaccurate-requirements failure mode that causes project blow-outs."
+    },
+    {
       "name": "sentry-recent-issues-plugin",
       "source": "./plugins/sentry-recent-issues-plugin",
       "description": "Investigates recent or specific Sentry issues, determines frequency and recurrence, researches root cause in the codebase, and recommends fixes."

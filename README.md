@@ -122,17 +122,18 @@ Say "work on issue #123" or drop in a GitHub issue link.
 
 ## SDLC bundle — `/sdlc-plugin`
 
-The next nine skills are bundled together under the **`sdlc-plugin`** marketplace entry. Install once, get the full workflow: bootstrap a fresh repo → level it up to release-ready → sketch the initial architecture → elicit requirements → confirm them → plan the implementation as GitHub issues → implement one issue end-to-end with audited handoffs → check your work whenever you want a focused critical audit → rework when a discovery during implementation changes direction. They're designed to be used in sequence but each is useful on its own.
+The next ten skills are bundled together under the **`sdlc-plugin`** marketplace entry. Install once, get the full workflow: bootstrap a fresh repo → level it up to release-ready → sketch the initial architecture → provision the cloud platforms the architecture names → elicit requirements → confirm them → plan the implementation as GitHub issues → implement one issue end-to-end with audited handoffs → check your work whenever you want a focused critical audit → rework when a discovery during implementation changes direction. They're designed to be used in sequence but each is useful on its own.
 
 | Order | Skill                                    | What it produces                                           |
 |-------|------------------------------------------|------------------------------------------------------------|
 | 1     | [`/repo-bootstrap`](#repo-bootstrap-repo-bootstrap)             | A new private GitHub repo, cloned to `~/src/<name>`, with starter files. |
 | 2     | [`/repo-level-up`](#repo-level-up-repo-level-up)               | Release branches, promotion workflows, secret scanning, branch protections. |
 | 3     | [`/initial-design`](#initial-design-initial-design)             | `docs/architecture/` — first-stab architectural sketch (system type, components, hosting, stack, data, integrations, lightweight ADRs, open questions). |
-| 4     | [`/create-requirements`](#create-requirements-create-requirements)        | `docs/requirements/` — interactively elicited functional + non-functional requirements (reads `docs/architecture/` first). |
-| 5     | [`/confirm-requirements`](#confirm-requirements-confirm-requirements)     | Same folder, requirements validated and advanced through `Draft → Reviewed → Approved`. |
-| 6     | [`/tasks-from-requirements`](#tasks-from-requirements-tasks-from-requirements)   | GitHub issues + milestones + labels — small-batch tasks, human-required work front-loaded. |
-| 7     | [`/implement-task`](#implement-task-implement-task)                 | One GitHub issue taken from picked-up to PR-ready, via a seven-persona orchestration (incl. UX/UI Designer) with audit-trail comments. |
+| 4     | [`/provision-platform`](#provision-platform-provision-platform)        | The cloud/SaaS platforms named in `docs/architecture/` actually provisioned — hosting, observability, DBs, auth, etc. Secrets wired into GH Actions; results logged to `docs/architecture/provisioning-log.md`. |
+| 5     | [`/create-requirements`](#create-requirements-create-requirements)        | `docs/requirements/` — interactively elicited functional + non-functional requirements (reads `docs/architecture/` first). |
+| 6     | [`/confirm-requirements`](#confirm-requirements-confirm-requirements)     | Same folder, requirements validated and advanced through `Draft → Reviewed → Approved`. |
+| 7     | [`/tasks-from-requirements`](#tasks-from-requirements-tasks-from-requirements)   | GitHub issues + milestones + labels — small-batch tasks, human-required work front-loaded. |
+| 8     | [`/implement-task`](#implement-task-implement-task)                 | One GitHub issue taken from picked-up to PR-ready, via a seven-persona orchestration (incl. UX/UI Designer) with audit-trail comments. |
 | —     | [`/check-work`](#check-work-check-work)                         | A generic "please just check your work carefully" second-pass skill. Works on anything — code, plans, writing, analysis. Saves typing the phrase. |
 | —     | [`/rework`](#rework-rework)                                 | Assertively course-corrects both the requirements docs *and* the open GitHub issues when an implementation-time discovery invalidates the plan. |
 
@@ -195,6 +196,23 @@ What it does:
 Grounded in [Simon Brown's C4 model](https://c4model.com/), [Michael Nygard's ADR format](https://github.com/joelparkerhenderson/architecture-decision-record), Fowler's [`MonolithFirst`](https://martinfowler.com/bliki/MonolithFirst.html), and [The Twelve-Factor App](https://12factor.net/).
 
 Use it right after `/repo-bootstrap` (and before `/create-requirements`). Say "initial design", "design the architecture", "what's the technical shape", or "sketch the architecture".
+
+---
+
+### Provision Platform (`/provision-platform`)
+
+Stands up the cloud platforms and SaaS services the architecture names — and then wires the resulting secrets into GitHub Actions so the deployed system can actually run.
+
+What it does:
+
+- Reads `docs/architecture/` to inventory every external thing the system depends on (hosting, observability, DBs, auth, email, queues, AI providers, analytics, ...) — not restricted to a fixed catalogue
+- For each one, **tries every channel it has** — connected MCP servers, locally installed CLIs, HTTP APIs via WebFetch — until something works. Open-ended on purpose: anything Claude can reach is fair game
+- Provisions what it can autonomously and captures the outputs (project IDs, regions, DSNs, URLs, tokens)
+- Batches the bits **only a human can do** (account signups, billing decisions, OAuth, copying secrets out of dashboards) into a **single checklist** rather than dripping prompts one at a time
+- Wires secrets into GitHub Actions (`gh secret set`) and the platforms' env stores; updates `.env.example` with the names (never the values)
+- Records everything in `docs/architecture/provisioning-log.md` — the bridge between the architecture doc and the actual state of the cloud
+
+Run it after `/initial-design` and before you really start building. Say "provision the platform", "stand up the stack", "set up the infrastructure", "wire up the cloud services", or "spin up the runtime".
 
 ---
 

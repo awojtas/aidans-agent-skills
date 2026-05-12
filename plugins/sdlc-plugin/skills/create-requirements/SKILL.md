@@ -93,8 +93,11 @@ Read in this order, surfacing what you learn back to the user:
 
 1. **Grounding source** — `README.md` is the default. If it's present and non-empty, read it for purpose, intended users, and any feature list. If it's missing or empty, run the "Choosing a grounding source" flow from the Prerequisites section before continuing. Do not proceed past this step without a grounding source.
 2. `AGENTS.md` if present — additional context.
-3. `docs/requirements/` if present — **this is a continuation, not a fresh start**. Read all existing files and ask the user where they want to resume. Do not overwrite without permission.
-4. `package.json` / `pyproject.toml` / `Cargo.toml` / `go.mod` — confirms tech stack (informs constraints).
+3. **`docs/architecture/` if present** — the initial architectural design (produced by `/initial-design`). Read every file. The architecture defines the technical shape of the system (web app vs CLI, cloud vs on-device, monolith vs microservices, which integrations, which data stores). **Requirements work must respect this shape** — a "messaging" requirement looks very different on a serial-cable system vs a cloud system, and the architecture tells you which. Note any open questions in `docs/architecture/05-open-questions.md` — these may surface during requirements work as things that need to be decided before a requirement can be made concrete.
+4. `docs/requirements/` if present — **this is a continuation, not a fresh start**. Read all existing files and ask the user where they want to resume. Do not overwrite without permission.
+5. `package.json` / `pyproject.toml` / `Cargo.toml` / `go.mod` — confirms tech stack (informs constraints; cross-check with `docs/architecture/01-stack-and-hosting.md` if present).
+
+If `docs/architecture/` is missing, **mention it to the user** before starting the requirements interview — *"There's no `docs/architecture/` folder. Requirements work without an architectural sketch tends to bake in hidden technical assumptions. Want to pause and run `/initial-design` first? It's a 30-90 minute conversation that captures the system's technical shape."* If the user says "no, proceed", continue — but capture any system-shape assumptions the requirements make as explicit ASSUMPTION entries in `07-assumptions.md`.
 
 If `docs/requirements/` exists, jump to a *resume* mode: skim the existing files, identify gaps (Draft requirements, empty sections, open questions older than 14 days), and propose where to focus this session.
 

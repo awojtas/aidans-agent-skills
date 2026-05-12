@@ -51,9 +51,13 @@ Confirmation progress:
 - [ ] Step 7: Summary + handoff
 ```
 
-### Step 1: Inventory `docs/requirements/`
+### Step 1: Inventory `docs/requirements/` (and check `docs/architecture/`)
 
-Walk the folder. For each file, compute:
+**First, if `docs/architecture/` exists, read it.** The architectural design is the context against which requirements are confirmed. If the architecture has changed since requirements were written (newer dates in `docs/architecture/04-decisions.md`, or open questions resolved/added in `docs/architecture/05-open-questions.md`), some requirements may now drift from the architecture — surface those during Pass 1 (still-accurate) of the confirmation.
+
+If `docs/architecture/` doesn't exist, **flag it** — *"Confirmation pass running without an architectural reference. Consider running `/initial-design` after this session to capture the technical shape; many of the assumptions in this requirements set are likely architectural-shape assumptions."*
+
+Then walk `docs/requirements/`. For each file, compute:
 
 - **Functional requirement files** (`03-functional/*.md`): count requirements (`grep -c '^### FR-' <file>`), break down by status.
 - **NFR files** (`04-non-functional/*.md`): count requirements (`grep -c '^### NFR-' <file>`), break down by status. Note any "Applies? No" files.

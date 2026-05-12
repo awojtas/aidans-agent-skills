@@ -57,6 +57,7 @@ The orchestrator and each spawned sub-agent should consult these as needed:
 4. **The issue has a clear Definition of Done and Acceptance Criteria** — these were authored by `/plan-from-requirements` typically. If the issue is sparse, recommend `/confirm-requirements` on the linked requirement first.
 5. **`main` is the default branch** and is in a clean state. If there's local uncommitted work, stash or commit before invoking.
 6. **The user has time.** This skill can run for hours. Set the expectation.
+7. **`docs/architecture/` is present.** Implementation work without a recorded architecture risks drift from the agreed technical shape. If `docs/architecture/` is missing, surface this to the user before starting — *"No architecture folder found. Implementation can proceed but personas will be implementing against unstated architectural assumptions. Run `/initial-design` first?"* If the user says proceed, the personas treat the existing code as the de facto architecture.
 
 ## Workflow
 
@@ -142,10 +143,11 @@ Work Checker runs (checks for hedge words remaining in AC, test data identified,
 
 ### Phase 2 — CA: Cloud architecture review
 
-Spawn CA with phase context: *"Determine whether issue #N needs any IaC / pipeline / DevOps changes. Make the ones you can; surface the ones you can't."*
+Spawn CA with phase context: *"Determine whether issue #N needs any IaC / pipeline / DevOps changes. Read `docs/architecture/` first — your job is to keep this implementation consistent with the recorded architecture. If the implementation would deviate (e.g. introduce a new managed service not in `03-external-integrations.md`), flag the deviation as a candidate ADR before making changes. Make the changes you can; surface the ones you can't."*
 
 CA does:
 - Reads the issue + the requirement(s).
+- **Reads `docs/architecture/` if present** — especially `01-stack-and-hosting.md`, `03-external-integrations.md`, and `04-decisions.md`. The CA's job in this phase is to keep implementation consistent with the architecture *or* surface the need for a new ADR if the task requires deviating.
 - Walks the project's IaC files.
 - Applies the heuristic in `role-cloud-architect.md`.
 - For changes within reach: edits IaC + commits on the branch (`chore(infra): ...`).
@@ -158,10 +160,11 @@ Work Checker runs (checks that "no changes needed" wasn't claimed without readin
 
 ### Phase 3 — UX: Design specification
 
-Spawn UX with phase context: *"Establish the design specification for issue #N. Detect the project's design system; use it consistently if it exists. If none exists, define initial design principles. Document the spec on the GitHub issue so the PE can build to it. For backend-only tasks, the spec covers response shape, error messages, and observability semantics — still UX, just a different surface."*
+Spawn UX with phase context: *"Establish the design specification for issue #N. Read `docs/architecture/` (especially `00-system-overview.md` and `01-stack-and-hosting.md`) so the spec aligns with the technical shape — the UX of a serverless web app differs from a native mobile app or a CLI tool. Detect the project's design system; use it consistently if it exists. If none exists, define initial design principles. Document the spec on the GitHub issue so the PE can build to it. For backend-only tasks, the spec covers response shape, error messages, and observability semantics — still UX, just a different surface."*
 
 UX does:
 - Reads the issue + the requirement(s) + any existing `docs/design/` content.
+- **Reads `docs/architecture/` if present** — the system type from `00-system-overview.md` shapes what UX surfaces exist (web pages, CLI output, API responses, mobile screens, etc.).
 - Detects design-system artefacts (Storybook, design tokens, Figma reference, in-repo component library, design-system plugin like the Glass Aurora plugin).
 - For UI tasks: produces a full design spec covering every state (default / hover / focus / active / disabled / loading / empty / error / success), responsive behaviour, accessibility plan, motion, performance considerations.
 - For backend-only tasks: writes a narrower spec for the response shape, error messages, log structure, and any client-facing semantics.
@@ -172,9 +175,10 @@ Work Checker runs (checks: every state covered including error / loading / empty
 
 ### Phase 4 — PE: Implementation
 
-Spawn PE with phase context: *"Implement issue #N. Match project conventions. Build to the UX spec from Phase 3 (link in the issue comments). Apply SOLID where it earns its keep. Two Hats — refactors get their own commits. Don't write the tests (TAE does that next). Posts when done."*
+Spawn PE with phase context: *"Implement issue #N. Read `docs/architecture/` first — the implementation must match the recorded architectural choices (stack, hosting, data stores, integrations). If a task makes you want to deviate, stop and surface that to the user as a candidate new ADR rather than silently going off-architecture. Match project conventions. Build to the UX spec from Phase 3 (link in the issue comments). Apply SOLID where it earns its keep. Two Hats — refactors get their own commits. Don't write the tests (TAE does that next). Posts when done."*
 
 PE does:
+- **Reads `docs/architecture/` if present** — the architectural choices recorded there constrain implementation. If the task would deviate, stop and flag before continuing.
 - Reads the codebase to understand conventions.
 - Reads the Phase 3 UX spec from the issue comments.
 - Plans the change.

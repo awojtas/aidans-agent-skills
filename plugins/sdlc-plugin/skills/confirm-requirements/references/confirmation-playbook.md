@@ -12,9 +12,12 @@ Read the **Statement** verbatim back to the user. Ask:
 
 - Does this still describe what the system should do?
 - Has anything changed in the world (user needs, business goals, regulatory environment) that would change the statement?
+- **Has the architecture changed?** If `docs/architecture/` exists, cross-check whether the requirement still fits the recorded architectural shape (hosting, components, integrations, stack). A requirement that assumed a serverless API may need an update if the project pivoted to a real-time hub, and vice versa.
 - If the requirement were deleted today, what would break?
 
 If the user pauses or says "actually, we should..." — capture the edit and re-read the new version.
+
+If the architecture has drifted away from what the requirement assumed, this is a cascade signal — surface it. The requirement may need an Update, or a previously-accepted architectural decision may have invalidated a downstream requirement, and that needs a `/rework` rather than just a confirmation tweak.
 
 ### Pass 2 — Fit criterion is measurable?
 

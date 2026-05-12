@@ -122,16 +122,17 @@ Say "work on issue #123" or drop in a GitHub issue link.
 
 ## SDLC bundle — `/sdlc-plugin`
 
-The next eight skills are bundled together under the **`sdlc-plugin`** marketplace entry. Install once, get the full workflow: bootstrap a fresh repo → level it up to release-ready → elicit requirements → confirm them → plan the implementation as GitHub issues → implement one issue end-to-end with audited handoffs → check your work whenever you want a focused critical audit → rework when a discovery during implementation changes direction. They're designed to be used in sequence but each is useful on its own.
+The next nine skills are bundled together under the **`sdlc-plugin`** marketplace entry. Install once, get the full workflow: bootstrap a fresh repo → level it up to release-ready → sketch the initial architecture → elicit requirements → confirm them → plan the implementation as GitHub issues → implement one issue end-to-end with audited handoffs → check your work whenever you want a focused critical audit → rework when a discovery during implementation changes direction. They're designed to be used in sequence but each is useful on its own.
 
 | Order | Skill                                    | What it produces                                           |
 |-------|------------------------------------------|------------------------------------------------------------|
 | 1     | [`/repo-bootstrap`](#repo-bootstrap-repo-bootstrap)             | A new private GitHub repo, cloned to `~/src/<name>`, with starter files. |
 | 2     | [`/repo-level-up`](#repo-level-up-repo-level-up)               | Release branches, promotion workflows, secret scanning, branch protections. |
-| 3     | [`/create-requirements`](#create-requirements-create-requirements)        | `docs/requirements/` — interactively elicited functional + non-functional requirements. |
-| 4     | [`/confirm-requirements`](#confirm-requirements-confirm-requirements)     | Same folder, requirements validated and advanced through `Draft → Reviewed → Approved`. |
-| 5     | [`/plan-from-requirements`](#plan-from-requirements-plan-from-requirements)   | GitHub issues + milestones + labels — small-batch tasks, human-required work front-loaded. |
-| 6     | [`/implement-task`](#implement-task-implement-task)                 | One GitHub issue taken from picked-up to PR-ready, via a seven-persona orchestration (incl. UX/UI Designer) with audit-trail comments. |
+| 3     | [`/initial-design`](#initial-design-initial-design)             | `docs/architecture/` — first-stab architectural sketch (system type, components, hosting, stack, data, integrations, lightweight ADRs, open questions). |
+| 4     | [`/create-requirements`](#create-requirements-create-requirements)        | `docs/requirements/` — interactively elicited functional + non-functional requirements (reads `docs/architecture/` first). |
+| 5     | [`/confirm-requirements`](#confirm-requirements-confirm-requirements)     | Same folder, requirements validated and advanced through `Draft → Reviewed → Approved`. |
+| 6     | [`/plan-from-requirements`](#plan-from-requirements-plan-from-requirements)   | GitHub issues + milestones + labels — small-batch tasks, human-required work front-loaded. |
+| 7     | [`/implement-task`](#implement-task-implement-task)                 | One GitHub issue taken from picked-up to PR-ready, via a seven-persona orchestration (incl. UX/UI Designer) with audit-trail comments. |
 | —     | [`/check-work`](#check-work-check-work)                         | A generic "please just check your work carefully" second-pass skill. Works on anything — code, plans, writing, analysis. Saves typing the phrase. |
 | —     | [`/rework`](#rework-rework)                                 | Assertively course-corrects both the requirements docs *and* the open GitHub issues when an implementation-time discovery invalidates the plan. |
 
@@ -169,6 +170,31 @@ What it does:
 - Opens a **"Checklist for Human Admin"** GitHub issue listing every manual step that's left (secrets to add, Vercel project to wire up, GitHub Security toggles to flip, version labels to create, etc.)
 
 Run it after `/repo-bootstrap` when you're ready to lock down branches and start shipping. Say "level up this repo", "make this release-ready", "add UAT and prod branches", or "harden this repo".
+
+---
+
+### Initial Design (`/initial-design`)
+
+The bridge between *"the repo exists"* and *"we know what we're building in detail"*. Captures a **first stab** at the architecture so the requirements skill isn't elicited in a vacuum (a "messaging app" looks very different over serial cable vs cloud — the architecture decides which).
+
+What it does:
+
+- Reads `README.md` and any existing context.
+- Walks **7 topics** in order — system type, hosting/runtime, major components, stack, data, external integrations, architecture pattern fit. 3-5 questions per topic; 30-90 minutes total.
+- Writes `docs/architecture/` as a small set of focused markdown files:
+  - `00-system-overview.md` — system context + container view (with Mermaid diagram)
+  - `01-stack-and-hosting.md` — languages, frameworks, hosting platform, runtime model
+  - `02-data-and-storage.md` — stores, sensitivity, retention, single/multi-region
+  - `03-external-integrations.md` — third-party APIs and partners with sub-processor list
+  - `04-decisions.md` — lightweight **ADRs** (Michael Nygard's format, 1-2 paragraphs each) covering every architectural choice that constrains future work, with a *Re-decide when* trigger where applicable
+  - `05-open-questions.md` — what was deliberately punted, with revisit triggers
+- **Pushes back on premature complexity** — proposes modular monolith before microservices, managed PaaS before Kubernetes, single-region before multi-region. Captures the alternatives as open questions for later.
+- Treats this as a **first stab** — not exhaustive, not finished. The expectation is the folder evolves as requirements firm up. Each evolution is recorded (ADRs are Superseded, not deleted).
+- **Re-design mode** for when `docs/architecture/` already exists: walks only the topics that changed; supersedes old ADRs rather than deleting them.
+
+Grounded in [Simon Brown's C4 model](https://c4model.com/), [Michael Nygard's ADR format](https://github.com/joelparkerhenderson/architecture-decision-record), Fowler's [`MonolithFirst`](https://martinfowler.com/bliki/MonolithFirst.html), and [The Twelve-Factor App](https://12factor.net/).
+
+Use it right after `/repo-bootstrap` (and before `/create-requirements`). Say "initial design", "design the architecture", "what's the technical shape", or "sketch the architecture".
 
 ---
 

@@ -122,7 +122,7 @@ Say "work on issue #123" or drop in a GitHub issue link.
 
 ## SDLC bundle — `/sdlc-plugin`
 
-The next seven skills are bundled together under the **`sdlc-plugin`** marketplace entry. Install once, get the full workflow: bootstrap a fresh repo → level it up to release-ready → elicit requirements → confirm them → plan the implementation as GitHub issues → implement one issue end-to-end with audited handoffs → rework when a discovery during implementation changes direction. They're designed to be used in sequence but each is useful on its own.
+The next eight skills are bundled together under the **`sdlc-plugin`** marketplace entry. Install once, get the full workflow: bootstrap a fresh repo → level it up to release-ready → elicit requirements → confirm them → plan the implementation as GitHub issues → implement one issue end-to-end with audited handoffs → check your work whenever you want a focused critical audit → rework when a discovery during implementation changes direction. They're designed to be used in sequence but each is useful on its own.
 
 | Order | Skill                                    | What it produces                                           |
 |-------|------------------------------------------|------------------------------------------------------------|
@@ -132,6 +132,7 @@ The next seven skills are bundled together under the **`sdlc-plugin`** marketpla
 | 4     | [`/confirm-requirements`](#confirm-requirements-confirm-requirements)     | Same folder, requirements validated and advanced through `Draft → Reviewed → Approved`. |
 | 5     | [`/plan-from-requirements`](#plan-from-requirements-plan-from-requirements)   | GitHub issues + milestones + labels — small-batch tasks, human-required work front-loaded. |
 | 6     | [`/implement-task`](#implement-task-implement-task)                 | One GitHub issue taken from picked-up to PR-ready, via a six-persona orchestration with audit-trail comments. |
+| —     | [`/check-work`](#check-work-check-work)                         | A standalone "check your work carefully" audit pass over a slice of recent work — uncommitted changes, an unpushed branch, a commit range, a PR, or a path. Empirically catches defects ~80% of the time. |
 | —     | [`/rework`](#rework-rework)                                 | Assertively course-corrects both the requirements docs *and* the open GitHub issues when an implementation-time discovery invalidates the plan. |
 
 ---
@@ -262,6 +263,25 @@ What it does:
 Grounded in Fowler (continuous integration, refactoring, Two Hats, test pyramid), Robert C. Martin (SOLID), Google eng-practices (small CLs), Conventional Commits, and Scrum.org Definition of Done.
 
 Use it when quality matters more than speed. Say "implement task #X", "do issue #X properly", "fully implement issue #X", "take this through to PR", "comprehensive implementation".
+
+---
+
+### Check Work (`/check-work`)
+
+A standalone "please just check your work carefully on this" audit pass. Same logic as the Work Checker persona that runs after every phase inside `/implement-task` — but invocable on its own slice of work, without the rest of the orchestration.
+
+What it does:
+
+- **Resolves a scope** to audit — by default the uncommitted plus unpushed changes on the current branch. You can also point it at a PR number, a commit range, a specific path, or a branch
+- **Applies the universal Work-Checker checklist**: TODO/FIXME left behind, swallowed exceptions, magic numbers, commented-out code, debug prints, hardcoded values, secrets / `.env` / large binaries committed, atomic-commit hygiene, `--no-verify` commits, commit-message honesty, silent config relaxations (`eslint-disable`, `# type: ignore`, loosened CI rules)
+- **Picks a role-specific layer** based on what's in the diff — implementation code triggers Principal-Engineer checks; test files trigger Test-Automation-Engineer checks; IaC triggers Cloud-Architect checks; UI/UX changes trigger UX-Designer checks; PR/issue body edits trigger Project-Manager checks
+- **Returns a structured report** — `Clean` (with what was checked) or `Defects` (with a numbered list, each item file:line + one-sentence specific). Each defect is something a reader can act on without a follow-up question
+- **Stops at two passes.** If defects remain after the second audit, says so and recommends stepping back rather than iterating further — three passes is a signal of stuckness, not high standards
+- **Auditor by default; fixer on explicit request.** It reports defects; it doesn't silently fix them. If you ask it to fix what it found, it switches modes explicitly
+
+Empirically a "check your work carefully" pass surfaces defects the original work missed about 80% of the time (backed by Madaan et al.'s Self-Refine research). Finding things is the value.
+
+Use it before pushing, before requesting review on a PR, after finishing a chunk of work, or any time you want a focused critical sweep. Say "check my work", "audit this", "did I miss anything", "review this before I push", "self-review this PR", "look over the diff".
 
 ---
 

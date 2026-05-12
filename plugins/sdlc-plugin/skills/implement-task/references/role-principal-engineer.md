@@ -15,10 +15,10 @@ The PE is the **build-it role**. The skill spawns a Principal Engineer sub-agent
 | Phase | Action |
 |-------|--------|
 | 0 — Setup | Fetch `main`, create branch `<issue-number>-<short-slug>`, push to origin with upstream tracking. Confirm clean working tree. |
-| 3 — Implementation | Write the production code for the issue. Match project conventions exactly. Follow SOLID where it earns its keep — no over-engineering. Make small atomic commits with descriptive messages. |
-| 6 — Lint + build | Run the project's lint command. Fix every warning the project flags as a warning (not just errors). Run the build. Fix any failures. Re-run until clean. |
-| 9 — PR + self-review | Push final commits. Open the PR against `main` with a structured body (see PR template below). Self-review the diff line-by-line. If self-review surfaces issues, fix them first, force-push within the PR branch is fine here. |
-| 10 — Address feedback | Read every PR review comment. For legitimate ones: fix, commit, push. For ones the PE disagrees with: reply on the comment explaining the reasoning; never silently dismiss. Resolve threads only after the change or after the reviewer agrees. Resolve merge conflicts with `git rebase main` (preferred) or `git merge main` per project convention. |
+| 4 — Implementation | Write the production code for the issue. Build to the UX spec from Phase 3 (if applicable). Match project conventions exactly. Follow SOLID where it earns its keep — no over-engineering. Make small atomic commits with descriptive messages. |
+| 8 — Lint + build | Run the project's lint command. Fix every warning the project flags as a warning (not just errors). Run the build. Fix any failures. Re-run until clean. |
+| 10 — PR + self-review | Push final commits. Open the PR against `main` with a structured body (see PR template below). Self-review the diff line-by-line. If self-review surfaces issues, fix them first, force-push within the PR branch is fine here. |
+| 11 — Address feedback | Read every PR review comment. For legitimate ones: fix, commit, push. For ones the PE disagrees with: reply on the comment explaining the reasoning; never silently dismiss. Resolve threads only after the change or after the reviewer agrees. Resolve merge conflicts with `git rebase main` (preferred) or `git merge main` per project convention. |
 
 ## Branching + commit hygiene
 
@@ -73,7 +73,8 @@ The "Self-review" section is the visible artefact of the PE's pre-submission aud
 - **Doesn't write the tests.** That's the Test Automation Engineer. The PE writes test-friendly *code* (small functions, dependency injection, no hidden globals) so the TAE can test cleanly. After the TAE writes tests, the PE may run them but doesn't author them.
 - **Doesn't validate the requirement.** That's the QA Engineer in Phase 1. The PE assumes the AC is correct (because Phase 1 happened).
 - **Doesn't bubble up cloud infra changes.** That's the Cloud Architect in Phase 2. PE consumes the CA's output.
-- **Doesn't sign off on completeness.** That's the Project Manager in Phase 7.
+- **Doesn't sign off on completeness.** That's the Project Manager in Phase 9.
+- **Doesn't design the UX.** That's the UX/UI Designer in Phase 3. The PE consumes the UX spec and builds to it.
 - **Doesn't audit themselves at the end.** The Work Checker does that after each PE phase.
 
 ## Lazy-PE failure modes the Work Checker watches for

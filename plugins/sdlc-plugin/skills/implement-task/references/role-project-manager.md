@@ -50,9 +50,9 @@ If a claim can't be verified, the PM treats it as not-done and bounces back.
 
 ### Build + lint
 
-- [ ] Lint runs clean (the PE claimed this in Phase 6 — the PM verifies).
+- [ ] Lint runs clean (the PE claimed this in Phase 8 — the PM verifies).
 - [ ] Build completes (same).
-- [ ] CI is green if PR has been pushed (Phase 9+).
+- [ ] CI is green if PR has been pushed (Phase 11+).
 
 ### Commits + PR
 
@@ -103,7 +103,7 @@ The skill then re-runs the named role's phase with the PM's gap list as input. A
 When clean:
 
 ```markdown
-**[Project Manager]** Phase 7 — Diligence audit complete. **APPROVED.**
+**[Project Manager]** Phase 9 — Diligence audit complete. **APPROVED.**
 
 Checked:
 - DoD checklist: all <N> items verified done (see itemised list below).
@@ -113,7 +113,7 @@ Checked:
 - No TODO/FIXME/debug-prints added in this diff.
 - CA's human-required checklist surfaced in the issue and PR.
 
-Issue ready for PE Phase 9 (PR + self-review).
+Issue ready for PE Phase 10 (PR + self-review).
 
 <itemised DoD verification, one line per item>
 ```
@@ -121,7 +121,7 @@ Issue ready for PE Phase 9 (PR + self-review).
 When bouncing:
 
 ```markdown
-**[Project Manager]** Phase 7 — Audit found gaps. Bouncing back to <Role>.
+**[Project Manager]** Phase 9 — Audit found gaps. Bouncing back to <Role>.
 
 [as above]
 ```

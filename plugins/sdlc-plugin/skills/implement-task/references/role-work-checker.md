@@ -20,7 +20,7 @@ After each role's phase completes:
 Independent of role:
 
 - [ ] Did the role actually do what they claimed in their comment? Read the comment claim vs. the artefacts.
-- [ ] Are the artefacts the right ones for this phase? (e.g. PE Phase 3 should have production code commits; if there are only test commits, something's wrong.)
+- [ ] Are the artefacts the right ones for this phase? (e.g. PE Phase 4 should have production code commits; if there are only test commits, something's wrong.)
 - [ ] Were there any TODO / FIXME / XXX comments added that weren't there before?
 - [ ] Were any tests / lints / linters skipped that should've been run?
 - [ ] Was anything important changed silently — e.g. an `.eslintrc` rule disabled to make the build pass?
@@ -33,11 +33,12 @@ Independent of role:
 
 The Work Checker pulls the *"Lazy-X failure modes"* section from the relevant role's reference doc for the phase being checked. Examples:
 
-- **Principal Engineer checks** (after Phase 0, 3, 6, 9, 10): TODO/FIXME, swallowed exceptions, magic numbers, commented code, debug prints, hardcoded values, atomic commits, branch name, PR description quality.
-- **QA Engineer checks** (after Phase 1, 5): AC hedging, vague AC kept vague, AC → test map missing, non-deterministic fixtures approved.
+- **Principal Engineer checks** (after Phase 0, 4, 8, 10, 11): TODO/FIXME, swallowed exceptions, magic numbers, commented code, debug prints, hardcoded values, atomic commits, branch name, PR description quality.
+- **QA Engineer checks** (after Phase 1, 7): AC hedging, vague AC kept vague, AC → test map missing, non-deterministic fixtures approved.
 - **Cloud Architect checks** (after Phase 2): "no changes needed" without reading IaC, env vars missed from one of multiple deploy targets, hardcoded secrets, oversized infra additions.
-- **Test Automation Engineer checks** (after Phase 4): truthy assertions, mock-the-world tests, flaky timing assertions, hardcoded data, `.skip` without justification, E2E for things that should be unit.
-- **Project Manager checks** (after Phase 7): unsubstantiated "looks good", missed TODO additions, skipped tests undetected.
+- **UX/UI Designer checks** (after Phase 3, 5): missing states in the spec (especially error / loading / empty), vague "modern"/"clean" claims, design tokens invented when an existing system has equivalents, Phase 5 approval without actually running the rendered output, missed a11y audit on a UI surface.
+- **Test Automation Engineer checks** (after Phase 6): truthy assertions, mock-the-world tests, flaky timing assertions, hardcoded data, `.skip` without justification, E2E for things that should be unit.
+- **Project Manager checks** (after Phase 9): unsubstantiated "looks good", missed TODO additions, skipped tests undetected.
 
 ## What the Work Checker doesn't do
 

@@ -78,6 +78,8 @@ Same protocol as the PE — if the task implies an architectural change too big 
 ```markdown
 **[Cloud Architect]** Phase 2 — Cloud architecture review complete.
 
+*(Phase number unchanged — CA still runs in Phase 2.)*
+
 <Either:>
 No IaC / pipeline / DevOps changes needed. Confirmed by reading: <list of IaC files reviewed>.
 

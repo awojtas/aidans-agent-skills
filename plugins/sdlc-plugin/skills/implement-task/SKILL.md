@@ -60,24 +60,26 @@ The orchestrator and each spawned sub-agent should consult these as needed:
 
 ## Workflow
 
-The full 11-phase sequence:
+The full 13-phase sequence:
 
 ```text
 implement-task progress:
 - [ ] Phase 0  — PE: Branch setup
 - [ ] Phase 1  — QA: Ticket validation
 - [ ] Phase 2  — CA: Cloud architecture review
-- [ ] Phase 3  — PE: Implementation
-- [ ] Phase 4  — TAE: Tests
-- [ ] Phase 5  — QA: Test validation
-- [ ] Phase 6  — PE: Lint + build
-- [ ] Phase 7  — PM: Diligence audit (can bounce back to any earlier phase)
-- [ ] Phase 8  — PE: PR + self-review
-- [ ] Phase 9  — PE: Review feedback addressed
-- [ ] Phase 10 — Summary + handoff to human
+- [ ] Phase 3  — UX: Design specification
+- [ ] Phase 4  — PE: Implementation
+- [ ] Phase 5  — UX: Design review
+- [ ] Phase 6  — TAE: Tests
+- [ ] Phase 7  — QA: Test validation
+- [ ] Phase 8  — PE: Lint + build
+- [ ] Phase 9  — PM: Diligence audit (can bounce back to any earlier phase)
+- [ ] Phase 10 — PE: PR + self-review
+- [ ] Phase 11 — PE: Review feedback addressed
+- [ ] Phase 12 — Summary + handoff to human
 ```
 
-**After every phase except 0 and 10**, the Work Checker runs. If WC finds defects, the phase re-runs with the defect list as input. (See "Work Checker pattern" below.)
+**After every phase except 0 and 12**, the Work Checker runs. If WC finds defects, the phase re-runs with the defect list as input. (See "Work Checker pattern" below.)
 
 ### How the orchestrator dispatches a persona
 
@@ -154,12 +156,27 @@ Most tasks: *"No IaC / pipeline / DevOps changes needed"* — that's the most co
 
 Work Checker runs (checks that "no changes needed" wasn't claimed without reading IaC, env vars not added to one place only, no oversized infra additions).
 
-### Phase 3 — PE: Implementation
+### Phase 3 — UX: Design specification
 
-Spawn PE with phase context: *"Implement issue #N. Match project conventions. Apply SOLID where it earns its keep. Two Hats — refactors get their own commits. Don't write the tests (TAE does that next). Posts when done."*
+Spawn UX with phase context: *"Establish the design specification for issue #N. Detect the project's design system; use it consistently if it exists. If none exists, define initial design principles. Document the spec on the GitHub issue so the PE can build to it. For backend-only tasks, the spec covers response shape, error messages, and observability semantics — still UX, just a different surface."*
+
+UX does:
+- Reads the issue + the requirement(s) + any existing `docs/design/` content.
+- Detects design-system artefacts (Storybook, design tokens, Figma reference, in-repo component library, design-system plugin like the Glass Aurora plugin).
+- For UI tasks: produces a full design spec covering every state (default / hover / focus / active / disabled / loading / empty / error / success), responsive behaviour, accessibility plan, motion, performance considerations.
+- For backend-only tasks: writes a narrower spec for the response shape, error messages, log structure, and any client-facing semantics.
+- If no design system exists: includes a "Design principles for this project (initial)" block in the comment (typographic scale, palette, spacing, radius, shadows) — the seed for the eventual system.
+- Posts `[UX/UI Designer]` comment per the Phase 3 template in `references/role-ux-designer.md`.
+
+Work Checker runs (checks: every state covered including error / loading / empty, copy specified, responsive plan, a11y plan, no vague "modern" / "clean" claims without specifics, design tokens reused from existing system if one exists).
+
+### Phase 4 — PE: Implementation
+
+Spawn PE with phase context: *"Implement issue #N. Match project conventions. Build to the UX spec from Phase 3 (link in the issue comments). Apply SOLID where it earns its keep. Two Hats — refactors get their own commits. Don't write the tests (TAE does that next). Posts when done."*
 
 PE does:
 - Reads the codebase to understand conventions.
+- Reads the Phase 3 UX spec from the issue comments.
 - Plans the change.
 - Implements in small, atomic commits with Conventional Commits messages.
 - If a preparatory refactor would make the change cleaner, does it as its own commit first.
@@ -170,14 +187,29 @@ Work Checker runs (applies the PE checklist in `role-work-checker.md`: TODO/FIXM
 
 This phase often takes the longest in absolute terms. If the implementation is bigger than expected, the orchestrator may suggest pausing and resuming later — but doesn't auto-pause without the user.
 
-### Phase 4 — TAE: Tests
+### Phase 5 — UX: Design review
 
-Spawn TAE with phase context: *"PE has implemented. Read the diff. Write tests at the right level per the pyramid (`references/test-strategy.md`). Use the project's existing test patterns. Deterministic data only."*
+Spawn UX with phase context: *"PE has implemented. Re-read your Phase 3 spec. Inspect the rendered output. Use Playwright where the surface is user-visible — verify states, responsive behaviour, accessibility. If anything drifts from the spec, bounce back to PE with the specific gap."*
+
+UX does:
+- Re-reads the Phase 3 design spec they wrote earlier.
+- For UI tasks: starts the dev server (or uses Playwright against a built version), walks each state from the spec, captures screenshots, runs `@axe-core/playwright` for accessibility.
+- For backend-only tasks: reviews the response shape and error messages against the spec, confirms the implementation matches.
+- Posts `[UX/UI Designer]` comment per the Phase 5 template in `references/role-ux-designer.md` — either **APPROVED** with verification details, or **Drift from spec found** with specific items.
+
+Drift bounces back to PE Phase 4 (same bounce-back limit applies — 3 strikes then escalate).
+
+Work Checker runs (checks: every state actually verified, Playwright was actually run if applicable, axe-core results, no "looks fine" without specifics, design tokens used not invented).
+
+### Phase 6 — TAE: Tests
+
+Spawn TAE with phase context: *"PE has implemented; UX has approved the design. Read the diff. Write tests at the right level per the pyramid (`references/test-strategy.md`). Use the project's existing test patterns. Deterministic data only. For user-visible flows, consider one Playwright test on the happy path — UX has already validated rendering, so the test asserts behaviour."*
 
 TAE does:
 - Reads the diff.
 - Identifies which level (unit/integration/E2E) each piece needs.
 - Writes the tests with seeded factories / frozen clocks / mocked I/O.
+- For E2E: writes Playwright tests on critical user-visible paths (informed by UX's Phase 5 review).
 - Runs the tests locally; they must pass.
 - Commits with `test: ...` Conventional Commits.
 - Posts `[Test Automation Engineer]` comment.
@@ -186,7 +218,7 @@ If the TAE finds the code is hard to test (untestable seams), they post a flag a
 
 Work Checker runs (truthy assertions, mock-the-world tests, flaky timing, hardcoded data, `.skip` without justification, E2E for things that should be unit).
 
-### Phase 5 — QA: Test validation
+### Phase 7 — QA: Test validation
 
 Spawn QA with phase context: *"TAE has written tests. Validate them. Build the AC → Test map. Confirm every AC clause has a test. Run the full test suite. Fix any flake by tightening determinism."*
 
@@ -201,7 +233,7 @@ QA does:
 
 Work Checker runs (AC → Test map complete, no uncovered AC clauses, no flake silently ignored).
 
-### Phase 6 — PE: Lint + build
+### Phase 8 — PE: Lint + build
 
 Spawn PE with phase context: *"Tests pass. Run lint and build. Fix every warning the project flags. Re-run until clean."*
 
@@ -215,7 +247,7 @@ PE does:
 
 Work Checker runs (no `// eslint-disable` added to silence, no `any` / `# type: ignore` added without justification, no warning-silencing config changes).
 
-### Phase 7 — PM: Diligence audit (the bounce-back checkpoint)
+### Phase 9 — PM: Diligence audit (the bounce-back checkpoint)
 
 Spawn PM with phase context: *"Audit the work for issue #N. Read the issue's DoD + AC. Read every prior phase's comment. Inspect the actual artefacts. Verify each claim. If anything's missing, bounce back to the responsible role."*
 
@@ -230,12 +262,12 @@ PM does:
 
 **Two outcomes:**
 
-- **Clean.** PM posts `APPROVED`. Skill proceeds to Phase 8.
+- **Clean.** PM posts `APPROVED`. Skill proceeds to Phase 10.
 - **Defects.** PM posts the bounce-back comment naming the responsible role and the specific gaps. The orchestrator returns control to that role's phase. **Bounce-back limit: 3 per role per session.** If a role gets bounced 3 times, the skill stops and escalates to the user.
 
 Work Checker runs after PM's audit (checks for "looks good" without specifics, missed TODO additions).
 
-### Phase 8 — PE: PR + self-review
+### Phase 10 — PE: PR + self-review
 
 Spawn PE with phase context: *"PM approved. Push final commits. Raise the PR following the template in `role-principal-engineer.md`. Self-review the diff line-by-line per `code-review-checklist.md`. Fix anything the self-review surfaces."*
 
@@ -250,13 +282,13 @@ PE does:
 
 Work Checker runs (PR description complete, Self-review section present, Closes #N link, CI is green).
 
-### Phase 9 — PE: Review feedback
+### Phase 11 — PE: Review feedback
 
 This phase is **conditional**. It only runs if a human reviewer has commented on the PR.
 
-If no human review yet, skill moves to Phase 10. The user can re-invoke `/implement-task <issue>` later after human review lands to run Phase 9 (the orchestrator detects this state).
+If no human review yet, skill moves to Phase 12. The user can re-invoke `/implement-task <issue>` later after human review lands to run Phase 11 (the orchestrator detects this state).
 
-When invoked for Phase 9:
+When invoked for Phase 11:
 
 Spawn PE with phase context: *"Human review left comments. Address each one. For legitimate comments — fix, commit, push. For ones you disagree with — reply explaining the reasoning. Resolve threads only after the change or after the reviewer agrees. Resolve any merge conflicts."*
 
@@ -271,7 +303,7 @@ PE does:
 
 Work Checker runs (every legitimate comment addressed, no comments silently dismissed, merge conflicts cleanly resolved).
 
-### Phase 10 — Summary + handoff
+### Phase 12 — Summary + handoff
 
 Final summary post by the orchestrator (not a persona) to the GitHub issue, plus a final terminal summary to the user:
 
@@ -294,11 +326,11 @@ The terminal summary:
 - Time elapsed.
 - Bounce-back count (visible signal of quality friction).
 - Number of WC findings caught and fixed (visible signal of self-audit value).
-- Pointer: *"Next: human reviewer assignment. After review, re-invoke `/implement-task <issue-number>` for Phase 9 to address feedback."*
+- Pointer: *"Next: human reviewer assignment. After review, re-invoke `/implement-task <issue-number>` for Phase 11 to address feedback."*
 
 ## Work Checker pattern (the audit gate after every phase)
 
-After **every** persona phase except Phase 0 and Phase 10, the orchestrator spawns the Work Checker:
+After **every** persona phase except Phase 0 and Phase 12, the orchestrator spawns the Work Checker:
 
 ```
 Agent({
@@ -341,11 +373,11 @@ Across the long-running session:
   "issue_number": 42,
   "owner_repo": "awojtas/example",
   "branch": "42-add-rate-limit-to-signin",
-  "pr_number": null,  // until Phase 8
-  "current_phase": 3,
+  "pr_number": null,  // until Phase 10
+  "current_phase": 4,
   "bounce_back_counts": {
-    "PE": { "Phase 3": 1 },
-    "TAE": { "Phase 4": 0 }
+    "PE": { "Phase 4": 1 },
+    "TAE": { "Phase 6": 0 }
   },
   "wc_findings_total": 4
 }
@@ -367,10 +399,13 @@ Stored in memory across the session; printed in the final summary.
 - **Issue doesn't exist.** `gh issue view <N>` fails — stop with a clear error.
 - **Issue is closed.** Ask the user if they want to reopen it before starting.
 - **Branch already exists** (re-running after a prior partial session). Detect: `git ls-remote --heads origin <branch>`. If exists, ask the user: resume on this branch, or delete and restart?
-- **PR already exists** for this branch. Resume from Phase 9 (review feedback) or, if no review yet, Phase 8 (re-self-review and post status).
+- **PR already exists** for this branch. Resume from Phase 11 (review feedback) or, if no review yet, Phase 10 (re-self-review and post status).
 - **Bounce-back limit hit.** Stop. Post a `[Orchestrator]` comment summarising the situation. Don't continue.
 - **Issue has no AC.** Phase 1 (QA) detects this. If AC can't be inferred from the requirement, the orchestrator stops and recommends `/confirm-requirements` first.
-- **Project has no test setup at all** (no test runner, no test directories). TAE detects this and surfaces it — implementation can proceed but the skill warns the PE before Phase 6 (lint + build) that there's nothing to lint/build the test target against. PM in Phase 7 will treat "no tests added" as a defect unless the project genuinely has no testing infrastructure (and even then it's a flag for the user).
+- **Project has no test setup at all** (no test runner, no test directories). TAE detects this and surfaces it — implementation can proceed but the skill warns the PE before Phase 8 (lint + build) that there's nothing to lint/build the test target against. PM in Phase 9 will treat "no tests added" as a defect unless the project genuinely has no testing infrastructure (and even then it's a flag for the user).
+- **Backend-only task with no user-visible surface.** The UX Designer in Phase 3 produces a short spec covering response shape / error messages / observability semantics, and Phase 5 is a brief review of those. Both still happen — the audit trail captures the consideration.
+- **No design system in the repo.** The UX Designer in Phase 3 defines initial design principles (typographic scale, palette, spacing, radius, shadows) and posts them on the issue. These seed the project's eventual design system.
+- **Playwright not set up in the repo.** UX Designer and TAE detect this. They proceed with the verification they can do (visual inspection, axe-core stand-alone, manual run) and flag Playwright setup as a follow-up issue.
 - **CI is red on main when we start.** Stop. Don't add work to a broken main. Tell the user to fix main first.
 - **User aborts mid-session.** The branch + any commits remain. The orchestrator's last GitHub comment indicates which phase was in flight. Re-invoking resumes from there.
 - **Long-running session timeout.** Claude Code's context compresses automatically; the skill is resumable from the GitHub comment trail. Each persona's comment is the durable state.

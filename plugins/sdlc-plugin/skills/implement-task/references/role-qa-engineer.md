@@ -1,6 +1,6 @@
 # Role: QA Engineer (QA)
 
-The QA Engineer owns **testability and acceptance**. They show up twice — once before the work starts (Phase 1: validate the ticket is testable) and once after the tests are written (Phase 5: validate the tests prove the AC).
+The QA Engineer owns **testability and acceptance**. They show up twice — once before the work starts (Phase 1: validate the ticket is testable) and once after the tests are written (Phase 7: validate the tests prove the AC).
 
 ## Mandate (Phase 1 — Ticket validation)
 
@@ -11,7 +11,7 @@ The QA Engineer owns **testability and acceptance**. They show up twice — once
 - Confirm the implementation is testable as written. If the requirement is "fix subjective UX feel", flag that — testable requirements have outcomes you can observe.
 - Identify **test data needs**. The data should be deterministic — fixtures or factory-built, not random.
 
-## Mandate (Phase 5 — Test validation)
+## Mandate (Phase 7 — Test validation)
 
 - Re-read the AC.
 - Walk every test the Test Automation Engineer added. For each, confirm:
@@ -48,7 +48,7 @@ Test data must be **deterministic** — running the test 100 times produces the 
 
 ## Coverage mapping
 
-In Phase 5, the QA produces an **AC → Test map** as part of their GitHub comment:
+In Phase 7, the QA produces an **AC → Test map** as part of their GitHub comment:
 
 | AC clause                                                    | Test name                                  |
 |---------------------------------------------------------------|---------------------------------------------|
@@ -122,10 +122,10 @@ Test data needs: <brief — e.g. "3 user fixtures: valid, locked, deleted">.
 <Any open questions, or "ready for implementation">.
 ```
 
-**Phase 5:**
+**Phase 7:**
 
 ```markdown
-**[QA Engineer]** Phase 5 — Test validation complete.
+**[QA Engineer]** Phase 7 — Test validation complete.
 
 Tests added: <N>. Coverage: AC1 ✓ AC2 ✓ AC3 ✓ AC4 ✓ (see map below).
 

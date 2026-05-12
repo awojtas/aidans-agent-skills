@@ -57,15 +57,19 @@ Plan-from-requirements progress:
 - [ ] Step 10: Print summary with GitHub links
 ```
 
-### Step 1: Read all requirements docs
+### Step 1: Read all requirements docs (and the architecture, if present)
 
-Walk `docs/requirements/`. Build an in-memory model from:
+**First, if `docs/architecture/` exists, read it.** The recorded architectural decisions (`04-decisions.md`) and integrations list (`03-external-integrations.md`) drive which Phase 1 [HUMAN] tasks the plan needs — account creation for each integration, secrets for the chosen stack, hosting setup per the ADRs. Open questions in `docs/architecture/05-open-questions.md` may also become [HUMAN] decision tasks in Phase 1 if they block downstream work.
+
+If `docs/architecture/` is missing, **mention it to the user** before planning — *"No architecture folder. The plan will inherit assumptions about stack and hosting from `docs/requirements/06-constraints.md` and the existing code. Consider running `/initial-design` first to make those choices explicit."* If the user proceeds, the plan defaults to whatever the code + constraints imply.
+
+Then walk `docs/requirements/`. Build an in-memory model from:
 
 - Every functional requirement in `03-functional/*.md` (parse `### FR-…` blocks: ID, Statement, Priority, Status, AC, Source, Traces to).
 - Every NFR in `04-non-functional/*.md` that isn't marked "Applies? No".
 - `10-prioritisation.md` — MoSCoW priority per requirement, force-ranked Musts.
-- `06-constraints.md` — technology mandates that drive Phase 1 setup tasks.
-- `05-data-and-integrations.md` — integration list drives human-required account-creation tasks.
+- `06-constraints.md` — technology mandates that drive Phase 1 setup tasks (cross-check with `docs/architecture/01-stack-and-hosting.md` if present — they should agree).
+- `05-data-and-integrations.md` — integration list drives human-required account-creation tasks (cross-check with `docs/architecture/03-external-integrations.md` if present — they should agree).
 - `07-assumptions.md` — `Unvalidated` assumptions that block requirements (likely → human task to validate).
 - `08-open-questions.md` — unresolved questions block any requirement that depends on them (→ human task to decide).
 - `09-risks.md` — open risks may suggest mitigation tasks worth scheduling.

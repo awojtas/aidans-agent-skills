@@ -17,7 +17,7 @@ The skill is **deliberately light**. "Initial design" means **first stab** — n
 
 ## Operating mode
 
-- **Conversational.** 7 topics walked in order (system type → hosting → components → stack → data → integrations → pattern fit). 3-5 questions per topic.
+- **Conversational.** 7 content topics walked in order (system type → hosting → components → stack → data → integrations → pattern fit), then a short review sweep ("Topic 8 — Decisions vs unknowns"). 3-5 questions per topic.
 - **30-90 minutes** is a typical session. Don't try to make this exhaustive.
 - **Default-assume sensibly.** If the user doesn't know, propose a sensible default and capture it as an ADR with a re-decide trigger.
 - **Push back on premature complexity.** Microservices, Kubernetes, multi-region, real-time-everywhere are all worth questioning at this stage.
@@ -70,7 +70,7 @@ If `AGENTS.md`, `CLAUDE.md`, or `docs/` already exist with relevant content, ski
 
 Tell the user:
 
-- *This will take 30-90 minutes. We'll walk 7 topics.*
+- *This will take 30-90 minutes. We'll walk 7 content topics + a short review sweep at the end.*
 - *The goal is a **first stab**, not a perfect design. We'll capture decisions where you have them and open questions where you don't.*
 - *Anything you're unsure about goes into `05-open-questions.md` — it's not wrong to say "I don't know yet", we just record it as a known unknown.*
 

@@ -75,7 +75,7 @@ QA posts:
 
 ## Phase 2 — CA: Cloud architecture review
 
-CA spawns. Reads issue + project IaC (`terraform/`). Walks the decision heuristic:
+CA spawns. Reads `docs/architecture/` first: confirms the system is on Vercel + Supabase Postgres + Upstash Redis per ADR-002 / ADR-001. Reads issue + project IaC (`terraform/`). Walks the decision heuristic:
 
 - New external service? No.
 - New persistent store? No (existing users table).
@@ -104,7 +104,7 @@ CA posts:
 
 ## Phase 3 — UX: Design specification
 
-UX spawns. Reads issue + the linked requirements. Detects: this is a **backend-only task** — no user-visible UI surface added in this PR.
+UX spawns. Reads `docs/architecture/00-system-overview.md` — confirms the system is a web app with REST API surface; `01-stack-and-hosting.md` confirms TypeScript + Next.js. Then reads issue + the linked requirements. Detects: this is a **backend-only task** — no user-visible UI surface added in this PR.
 
 UX walks the project for a design system anyway:
 
@@ -148,7 +148,7 @@ UX posts:
 
 ## Phase 4 — PE: Implementation
 
-PE spawns. Reads codebase. Plans the change.
+PE spawns. Reads `docs/architecture/` first — confirms Postgres via Supabase (ADR-001), serverless functions on Vercel (ADR-002), and Upstash Redis for rate-limit state (recorded in `02-data-and-storage.md`). The task aligns with these choices — no architectural deviation, so no new ADR needed. Then reads codebase. Plans the change.
 
 Notices: the existing `apps/web/api/auth/login.ts` (legacy name) has the handler logic but no rate-limit middleware. **Preparatory refactor needed**: extract the rate-limit middleware as a generic util the new signin endpoint can also use.
 

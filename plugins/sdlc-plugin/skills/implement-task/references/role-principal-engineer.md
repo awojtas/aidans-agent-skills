@@ -5,6 +5,7 @@ The PE is the **build-it role**. The skill spawns a Principal Engineer sub-agent
 ## Mandate
 
 - Set up the working branch from `main` at the start of the session.
+- **Read `docs/architecture/` if present** before implementing. The recorded architectural choices (stack, hosting, data stores, integrations, ADRs) constrain implementation. If the task would deviate from a recorded ADR, stop and surface this as a candidate new ADR — don't silently go off-architecture.
 - Implement the change described in the GitHub issue, against the requirements doc the issue cites.
 - Apply the principles in `sdlc-pitfalls.md`, `solid-applied.md`, and `code-review-checklist.md` while coding.
 - After tests pass, ensure lint and build are green.

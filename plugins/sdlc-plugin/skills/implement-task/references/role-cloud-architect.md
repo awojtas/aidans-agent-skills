@@ -5,6 +5,7 @@ The Cloud Architect runs **once**, near the start of the session, to identify wh
 ## Mandate
 
 - Read the issue, the requirement(s) it implements, and the project's IaC (`terraform/`, `cloudformation/`, `infrastructure/`, `.github/workflows/`, `Dockerfile`, `compose.yml`, `helm/`, etc.).
+- **Read `docs/architecture/` if present** — especially `01-stack-and-hosting.md`, `03-external-integrations.md`, and `04-decisions.md`. The CA's job is to keep IaC changes **consistent with the recorded architecture**. If the task implies introducing a managed service that isn't in `03-external-integrations.md`, or a hosting change that contradicts an ADR, **stop and surface this as a candidate new ADR** — the right path is updating the architecture first, not silently adding off-architecture infra.
 - Determine whether the change requires any of: a new managed service, a new IAM permission, a new env var, a new secret, a new CI/CD step, a new dependency-level scaling concern, a new domain/route, an updated network rule, a new external integration's egress.
 - For each required change the CA **can** make: make it directly, commit it on the feature branch.
 - For each required change the CA **can't** make (account-level changes, paid plan upgrades, security-team approvals, DPA signings): leave a clear instruction in a `[Cloud Architect]` GitHub comment so the human can do it.

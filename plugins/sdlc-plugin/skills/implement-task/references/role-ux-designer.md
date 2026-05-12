@@ -10,15 +10,16 @@ For backend-only or infrastructure tasks where there's no user-visible surface, 
 ## Mandate (Phase 3 — Design specification)
 
 1. **Read the issue and the requirement(s) it implements.** Identify what user-facing surfaces (pages, components, copy, error messages, response shapes, CLI output) are touched.
-2. **Detect the design system** in the repo. Look for:
+2. **Read `docs/architecture/` if present** — especially `00-system-overview.md` (system type tells you what surfaces exist: web pages, CLI output, API responses, mobile screens) and `01-stack-and-hosting.md` (the design has to be implementable on the chosen stack). UX of a serverless web app differs from a native mobile app or a CLI tool — the architecture tells you which you're designing for.
+3. **Detect the design system** in the repo. Look for:
    - A dedicated design-system package (e.g. the [`/design-system-aurora`](https://github.com/awojtas/aidans-agent-skills) plugin's Glass Aurora system, or an in-repo Storybook).
    - Design tokens — typically `tokens.json`, `design-tokens.json`, `tailwind.config.{js,ts}`, CSS custom properties.
    - A component library — `apps/web/components/ui/`, `packages/ui/`, etc.
    - A Figma reference linked from the README or `docs/design/`.
    - An ADR or `docs/design/` folder describing the design language.
-3. **If a design system exists:** use it. Don't invent new tokens, components, or colours that contradict it. The Phase 3 spec is "here's how this feature uses our existing primitives".
-4. **If no design system exists:** create a consistent design language for this feature, **and** post a small one-time block in the Phase 3 comment under a "Design principles for this project (initial)" heading. This becomes the seed for the project's eventual design system. Apply the principles below in *"When no design system exists"*.
-5. **Write the design spec** as part of the Phase 3 GitHub comment. Use the template below. Include:
+4. **If a design system exists:** use it. Don't invent new tokens, components, or colours that contradict it. The Phase 3 spec is "here's how this feature uses our existing primitives".
+5. **If no design system exists:** create a consistent design language for this feature, **and** post a small one-time block in the Phase 3 comment under a "Design principles for this project (initial)" heading. This becomes the seed for the project's eventual design system. Apply the principles below in *"When no design system exists"*.
+6. **Write the design spec** as part of the Phase 3 GitHub comment. Use the template below. Include:
    - Component breakdown (what new components are needed, what existing ones are reused).
    - Layout and hierarchy (where things sit on the page; what's primary vs. secondary).
    - States to design for: **default, hover, focus, active, disabled, loading, empty, error, success**.
@@ -26,7 +27,7 @@ For backend-only or infrastructure tasks where there's no user-visible surface, 
    - Responsive behaviour (mobile / tablet / desktop breakpoints).
    - Accessibility considerations (keyboard navigation, screen-reader semantics, contrast).
    - Motion / animation (if any) — duration, easing, when to use, when to skip (`prefers-reduced-motion`).
-6. **For backend-only tasks**, the spec is narrower: response shape (what JSON/structure does the client get? what error codes? what messages?), CLI output formatting, log structure, observability semantics. UX still applies — just to a different surface.
+7. **For backend-only tasks**, the spec is narrower: response shape (what JSON/structure does the client get? what error codes? what messages?), CLI output formatting, log structure, observability semantics. UX still applies — just to a different surface.
 
 ## Mandate (Phase 5 — Design review)
 

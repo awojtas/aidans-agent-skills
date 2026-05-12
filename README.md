@@ -120,6 +120,20 @@ Say "work on issue #123" or drop in a GitHub issue link.
 
 ---
 
+## SDLC bundle — `/sdlc-plugin`
+
+The next five skills are bundled together under the **`sdlc-plugin`** marketplace entry. Install once, get the full workflow: bootstrap a fresh repo → level it up to release-ready → elicit requirements → confirm them → plan the implementation as GitHub issues. They're designed to run in sequence but each is useful on its own.
+
+| Order | Skill                                    | What it produces                                           |
+|-------|------------------------------------------|------------------------------------------------------------|
+| 1     | [`/repo-bootstrap`](#repo-bootstrap-repo-bootstrap)             | A new private GitHub repo, cloned to `~/src/<name>`, with starter files. |
+| 2     | [`/repo-level-up`](#repo-level-up-repo-level-up)               | Release branches, promotion workflows, secret scanning, branch protections. |
+| 3     | [`/repo-requirements`](#repo-requirements-repo-requirements)        | `docs/requirements/` — interactively elicited functional + non-functional requirements. |
+| 4     | [`/confirm-requirements`](#confirm-requirements-confirm-requirements)     | Same folder, requirements validated and advanced through `Draft → Reviewed → Approved`. |
+| 5     | [`/plan-from-requirements`](#plan-from-requirements-plan-from-requirements)   | GitHub issues + milestones + labels — small-batch tasks, human-required work front-loaded. |
+
+---
+
 ### Repo Bootstrap (`/repo-bootstrap`)
 
 Stands up a brand-new GitHub repo from nothing. Asks for a project name and a one-line intro, then does the rest.
@@ -197,6 +211,29 @@ What it does:
 - Includes a worked before/after example (`example-confirmation-session.md`) showing a Draft requirement → Reviewed across one session.
 
 Use it periodically (after stakeholder conversations, after market changes, after assumptions get tested). Say "confirm requirements", "review requirements", "validate requirements", "walk through the requirements", or "pressure-test what we have".
+
+---
+
+### Plan from Requirements (`/plan-from-requirements`)
+
+Turns the requirements you've already documented (via `/repo-requirements` and refined via `/confirm-requirements`) into a concrete plan of GitHub issues. Pure planning — no code generation.
+
+What it does:
+
+- Reads every `FR-` and `NFR-` requirement, the MoSCoW prioritisation, the constraints, the integrations, and the assumptions/open-questions registers
+- Decomposes each requirement into **small-batch tasks** (≤1 day each) — schema → API → UI → integration → tests, with each layer as its own task
+- Identifies which tasks need a **human** (account creation, API keys, design decisions, legal review, sign-off — full catalogue in the reference docs) and **front-loads them into Phase 1**, because humans are slower than AI and the AI shouldn't sit idle waiting
+- Orders the rest into 3–7 phases with dependencies tracked via each issue's `Blocked by:` field
+- Names tasks with **staged numbering** — `1.1`, `1.2`, `2.1`, `2.2`... — so the title alone tells you where in the plan you are
+- Writes each issue with a **clear Definition of Done** + Given-When-Then **acceptance criteria** + an `Implements:` line tracing back to the requirement IDs
+- Applies a **minimal 8-label set**: `priority:high/medium/low`, `bug`, `chore`, `docs`, `human-required`, `blocked`. **Never** uses labels for phases — phases are GitHub milestones
+- Creates one milestone per phase (`Phase 1: Foundation`, `Phase 2: Core Auth`, ...) and links every issue to its milestone
+- **Shows you the full plan as a markdown document first** (`docs/implementation-plan.md`) so you can edit it before any GitHub issue is created. Nothing is created without your explicit approval.
+- Detects existing labels, milestones, and issues by title — never duplicates on re-run
+
+Companion to `/repo-requirements` and `/confirm-requirements`. Run it once the requirements are mostly Reviewed and you're ready to start work.
+
+Say "plan the implementation", "create issues from requirements", "break this into tasks", "what do we build first", or "make me a backlog".
 
 ---
 

@@ -1,11 +1,11 @@
 ---
 name: repo-bootstrap
-description: Bootstraps a brand-new GitHub repository end-to-end — prompts for a project name and short intro, creates a private GitHub repo under the user's account, clones it to ~/src/<repo-name>, scaffolds .gitignore, .gitattributes, AGENTS.md, CLAUDE.md, README.md, LICENSE, .github/copilot-instructions.md, .github/pull_request_template.md, and a minimal check-root-docs workflow, then makes the initial commit and pushes. Use when the user says "new project", "new repo", "start a new project", "bootstrap a repo", "create a GitHub repo", "spin up a project", "scaffold a new repo", or describes wanting to begin something from scratch with a fresh GitHub repo. Deliberately scoped to day-0 scaffolding — branching strategy, CI/CD, deploys, observability, dependabot, and other maturity concerns belong to the separate repo-promote-maturity skill.
+description: Bootstraps a brand-new GitHub repository end-to-end — prompts for a project name and short intro, creates a private GitHub repo under the user's account, clones it to ~/src/<repo-name>, scaffolds .gitignore, .gitattributes, AGENTS.md, CLAUDE.md, README.md, LICENSE, .github/copilot-instructions.md, .github/pull_request_template.md, and a minimal check-root-docs workflow, then makes the initial commit and pushes. Use when the user says "new project", "new repo", "start a new project", "bootstrap a repo", "create a GitHub repo", "spin up a project", "scaffold a new repo", or describes wanting to begin something from scratch with a fresh GitHub repo. Deliberately scoped to day-0 scaffolding — branching strategy, CI/CD, deploys, observability, dependabot, and other maturity concerns belong to the separate repo-level-up skill.
 ---
 
 # Bootstrapping a new GitHub repository
 
-This skill creates a brand-new repo from nothing. It is **only** for day-0 scaffolding. Branching strategy, full CI, deploy workflows, dependabot, and other "mature repo" concerns are explicitly out of scope — they belong to the separate `repo-promote-maturity` skill. Do not add anything from that list here.
+This skill creates a brand-new repo from nothing. It is **only** for day-0 scaffolding. Branching strategy, full CI, deploy workflows, dependabot, and other "mature repo" concerns are explicitly out of scope — they belong to the separate `repo-level-up` skill. Do not add anything from that list here.
 
 ## Prerequisites
 
@@ -130,11 +130,11 @@ Print a short summary:
 - Repo URL: `https://github.com/<owner>/<slug>`
 - Local path: `~/src/<slug>`
 - Files scaffolded (a flat list)
-- One-line pointer: _"When you're ready to add a branching strategy, CI, deploys, etc., run `/repo-promote-maturity`."_
+- One-line pointer: _"When you're ready to add a branching strategy, CI, deploys, etc., run `/repo-level-up`."_
 
 ## Strict non-goals
 
-Do **not** add any of the following from this skill. They belong to `repo-promote-maturity`:
+Do **not** add any of the following from this skill. They belong to `repo-level-up`:
 
 - `develop` / `release/preprod` / `release/prod` branches or any branching workflow files
 - CI workflows for lint, type-check, build, unit tests, integration tests, E2E, Lighthouse
@@ -146,7 +146,7 @@ Do **not** add any of the following from this skill. They belong to `repo-promot
 - Issue and PR labels beyond what GitHub creates by default
 - Any language-specific tooling (package.json, pyproject.toml, Cargo.toml, etc.) — the user picks the stack later
 
-If the user asks for any of these during the bootstrap, acknowledge the request and say it will be handled by `/repo-promote-maturity` once the repo is up.
+If the user asks for any of these during the bootstrap, acknowledge the request and say it will be handled by `/repo-level-up` once the repo is up.
 
 ## Edge cases
 

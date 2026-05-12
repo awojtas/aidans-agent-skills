@@ -1,0 +1,11 @@
+{
+	"name": "sdlc-plugin",
+	"description": "Software Development Lifecycle skills, bundled. Five skills designed to be used in sequence as you take a project from idea to backlog: /repo-bootstrap (new GitHub repo from scratch), /repo-level-up (add release/uat + release/prod branches, promotion workflows, secret scanning, branch-protection rulesets), /repo-requirements (interactively elicit functional + non-functional requirements into docs/requirements/), /confirm-requirements (validate and advance the status of existing requirements), /plan-from-requirements (turn the requirements into a staged plan of small-batch GitHub issues with milestones, labels, and human-required tasks front-loaded).",
+	"version": "1.0.0",
+	"author": {
+		"name": "Aidan Wojtas",
+		"url": "https://github.com/awojtas/aidans-agent-skills"
+	},
+	"repository": "https://github.com/awojtas/aidans-agent-skills",
+	"skills": "./skills/"
+}

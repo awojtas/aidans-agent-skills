@@ -30,7 +30,7 @@ Same operating principles as `/repo-requirements`:
 | `references/incose-checklist.md`                | Per-requirement and set-level quality checks. Smell list.             |
 | `references/example-confirmation-session.md`    | Worked before/after example of confirming FR-FILEVIEW-004.            |
 
-If the `repo-requirements` plugin is also installed, its `example-worked-requirement.md` shows the full multi-file requirement set this example builds on — use as additional context.
+The sibling `repo-requirements` skill (same plugin) carries `example-worked-requirement.md` showing the full multi-file requirement set this confirmation example builds on — use as additional context: `../repo-requirements/references/example-worked-requirement.md`.
 
 ## Prerequisites
 

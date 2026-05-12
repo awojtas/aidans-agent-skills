@@ -10,11 +10,6 @@
       "description": "Iteratively fixes build errors and lint warnings until the project compiles cleanly. Supports .NET, Node.js, Rust, Go, Java, Make, and more."
     },
     {
-      "name": "confirm-requirements-plugin",
-      "source": "./plugins/confirm-requirements-plugin",
-      "description": "Interactively walks through requirements already documented in docs/requirements/ to validate and refine them. Inventories the folder, prompts All/Specific, then runs a five-pass model per requirement (still-accurate / measurable / assumptions / open-questions / INCOSE quality), advances status with explicit user confirmation, and writes a session log. Companion to /repo-requirements."
-    },
-    {
       "name": "design-system-aurora-plugin",
       "source": "./plugins/design-system-aurora-plugin",
       "description": "Glass Aurora design system — ethereal glassmorphism, aurora gradients, neon glows, and a purple-cyan color scheme for consistent UI components."
@@ -40,19 +35,9 @@
       "description": "Implements a GitHub issue end-to-end — reads the issue, explores the project, writes code, adds tests, and verifies everything passes."
     },
     {
-      "name": "repo-bootstrap-plugin",
-      "source": "./plugins/repo-bootstrap-plugin",
-      "description": "Bootstraps a brand-new GitHub repository end-to-end: creates a private repo, clones to ~/src, scaffolds AGENTS.md/CLAUDE.md/README/.gitignore/LICENSE/PR template/check-root-docs workflow, and pushes the initial commit."
-    },
-    {
-      "name": "repo-level-up-plugin",
-      "source": "./plugins/repo-level-up-plugin",
-      "description": "Takes a freshly bootstrapped repo to release-ready: release/uat + release/prod branches, promote-to-uat / promote-to-production workflows with Vercel gating, GitGuardian secret scan, Claude On-Demand, vibe-guard SARIF, Copilot setup stub, Dependabot, version-aware PR template, branch protection rulesets, and a 'Checklist for Human Admin' issue."
-    },
-    {
-      "name": "repo-requirements-plugin",
-      "source": "./plugins/repo-requirements-plugin",
-      "description": "Interactively elicits and documents software requirements (functional + non-functional) into docs/requirements/ as focused markdown files. Grounded in Volere, ISO 29148, ISO 25010, INCOSE, BABOK, RFC 2119. Captures every assumption and every non-goal explicitly to prevent the inaccurate-requirements failure mode that causes project blow-outs."
+      "name": "sdlc-plugin",
+      "source": "./plugins/sdlc-plugin",
+      "description": "Software Development Lifecycle skills, bundled. Five skills designed to be used in sequence as you take a project from idea to backlog: /repo-bootstrap (new GitHub repo from scratch), /repo-level-up (release/uat + release/prod branches, promotion workflows, secret scanning, branch-protection rulesets), /repo-requirements (interactively elicit functional + non-functional requirements into docs/requirements/), /confirm-requirements (validate and advance the status of existing requirements), /plan-from-requirements (turn the requirements into a staged plan of small-batch GitHub issues)."
     },
     {
       "name": "sentry-recent-issues-plugin",

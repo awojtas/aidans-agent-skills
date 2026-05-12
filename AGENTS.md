@@ -104,3 +104,16 @@ Add a section for the new skill following the existing pattern: heading, descrip
 - **Plugin directory names** are `<skill-name>-plugin`.
 - **The `description` field in SKILL.md frontmatter is critical** — it controls when Claude Code auto-triggers the skill. Include specific trigger phrases users might say.
 - **SKILL.md is a prompt, not documentation.** Write it as instructions for an agent, not as a human-readable guide.
+
+## Versioning
+
+**Whenever you change a plugin, bump its `version` in `plugin.json`.** This applies to adding, modifying, or removing skills; editing SKILL.md content; adding/changing reference docs; or any other change inside a plugin's directory.
+
+**Why this matters:** the Claude Code marketplace update check compares only the `version` field in `plugin.json` — it does not diff the contents. If you change a skill but leave the version untouched, users who run `/plugin marketplace update` will be told they're already up to date and will never pull your changes.
+
+Use semver:
+- **Patch** (`1.0.0` → `1.0.1`) — typo fixes, small wording tweaks, internal clarifications that don't change behavior.
+- **Minor** (`1.0.0` → `1.1.0`) — new skill added, new reference doc, expanded triggers, or a meaningful behavior change that remains backward-compatible.
+- **Major** (`1.0.0` → `2.0.0`) — removing a skill, renaming a skill, or any change that breaks how users invoke the plugin.
+
+Bump the version in the same change as the edit — don't defer it.

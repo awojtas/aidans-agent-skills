@@ -53,7 +53,7 @@ Add a structured comment to the issue (these become checklist items the human pi
 - [ ] **<Next change>** — ...
 ```
 
-If the issue has a `[HUMAN]` checklist item from `/plan-from-requirements` already, the CA may add to it rather than duplicate. Either way, **the human must see this list before merging the PR**.
+If the issue has a `[HUMAN]` checklist item from `/tasks-from-requirements` already, the CA may add to it rather than duplicate. Either way, **the human must see this list before merging the PR**.
 
 ## What the CA doesn't do
 

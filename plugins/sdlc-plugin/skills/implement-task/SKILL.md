@@ -54,7 +54,7 @@ The orchestrator and each spawned sub-agent should consult these as needed:
 1. **Working directory is inside a git repo** with a GitHub remote.
 2. **`gh` CLI authenticated** with write access to the repo (issues + PRs + comments). `gh auth status` shows `repo` scope.
 3. **The issue exists.** The user passes the issue number (e.g. `/implement-task 42`). If they didn't, ask which issue.
-4. **The issue has a clear Definition of Done and Acceptance Criteria** — these were authored by `/plan-from-requirements` typically. If the issue is sparse, recommend `/confirm-requirements` on the linked requirement first.
+4. **The issue has a clear Definition of Done and Acceptance Criteria** — these were authored by `/tasks-from-requirements` typically. If the issue is sparse, recommend `/confirm-requirements` on the linked requirement first.
 5. **`main` is the default branch** and is in a clean state. If there's local uncommitted work, stash or commit before invoking.
 6. **The user has time.** This skill can run for hours. Set the expectation.
 7. **`docs/architecture/` is present.** Implementation work without a recorded architecture risks drift from the agreed technical shape. If `docs/architecture/` is missing, surface this to the user before starting — *"No architecture folder found. Implementation can proceed but personas will be implementing against unstated architectural assumptions. Run `/initial-design` first?"* If the user says proceed, the personas treat the existing code as the de facto architecture.

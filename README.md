@@ -122,7 +122,7 @@ Say "work on issue #123" or drop in a GitHub issue link.
 
 ## SDLC bundle — `/sdlc-plugin`
 
-The next six skills are bundled together under the **`sdlc-plugin`** marketplace entry. Install once, get the full workflow: bootstrap a fresh repo → level it up to release-ready → elicit requirements → confirm them → plan the implementation as GitHub issues → rework when a discovery during implementation changes direction. They're designed to be used in sequence but each is useful on its own.
+The next seven skills are bundled together under the **`sdlc-plugin`** marketplace entry. Install once, get the full workflow: bootstrap a fresh repo → level it up to release-ready → elicit requirements → confirm them → plan the implementation as GitHub issues → implement one issue end-to-end with audited handoffs → rework when a discovery during implementation changes direction. They're designed to be used in sequence but each is useful on its own.
 
 | Order | Skill                                    | What it produces                                           |
 |-------|------------------------------------------|------------------------------------------------------------|
@@ -131,6 +131,7 @@ The next six skills are bundled together under the **`sdlc-plugin`** marketplace
 | 3     | [`/create-requirements`](#create-requirements-create-requirements)        | `docs/requirements/` — interactively elicited functional + non-functional requirements. |
 | 4     | [`/confirm-requirements`](#confirm-requirements-confirm-requirements)     | Same folder, requirements validated and advanced through `Draft → Reviewed → Approved`. |
 | 5     | [`/plan-from-requirements`](#plan-from-requirements-plan-from-requirements)   | GitHub issues + milestones + labels — small-batch tasks, human-required work front-loaded. |
+| 6     | [`/implement-task`](#implement-task-implement-task)                 | One GitHub issue taken from picked-up to PR-ready, via a six-persona orchestration with audit-trail comments. |
 | —     | [`/rework`](#rework-rework)                                 | Assertively course-corrects both the requirements docs *and* the open GitHub issues when an implementation-time discovery invalidates the plan. |
 
 ---
@@ -235,6 +236,32 @@ What it does:
 Companion to `/create-requirements` and `/confirm-requirements`. Run it once the requirements are mostly Reviewed and you're ready to start work.
 
 Say "plan the implementation", "create issues from requirements", "break this into tasks", "what do we build first", or "make me a backlog".
+
+---
+
+### Implement Task (`/implement-task`)
+
+The heavyweight implementation skill. Takes a single GitHub issue from picked-up through to PR-ready via a six-persona orchestration. Designed for long-running runs (hours) on important tasks. The lighter `/issue-worker` is the right tool for small tasks; `/implement-task` is for tasks worth the audit gates.
+
+What it does:
+
+- **Spawns six personas as focused sub-agents**, each with their own mandate and audit-trail comment on the GitHub issue:
+  - **Principal Engineer** — branch setup, implementation, lint+build, PR + self-review, review-feedback handling
+  - **QA Engineer** — validates the AC is testable, validates the tests prove the AC, builds the AC → Test map
+  - **Cloud Architect** — identifies IaC / pipeline / DevOps changes, applies what they can, surfaces human-required ones
+  - **Test Automation Engineer** — writes unit + integration + E2E tests at the right level of the test pyramid
+  - **Project Manager** — diligence audit; bounces work back to any prior role if the audit finds gaps. Diligent — defaults to "prove it"
+  - **Work Checker** — runs after **every** other persona. Asks *"please just check your work carefully on this"*. Empirically catches defects ~80% of the time (backed by Madaan et al.'s Self-Refine research)
+- **11 phases** in sequence: branch setup → ticket validation → cloud arch → implementation → tests → test validation → lint+build → PM diligence audit → PR + self-review → review feedback → summary
+- **Every persona posts a `[Role Name]` comment** on the GitHub issue, creating a durable audit trail
+- **Two Hats discipline** — refactors get their own commits, separate from feature commits
+- **Conventional Commits** for commit messages; small atomic PRs per Google's eng practices; PR body includes a **Self-review** section showing what the PE caught themselves
+- **Bounce-back limit:** if a role gets bounced 3 times by the WC or the PM, the skill escalates to the user — something deeper is wrong
+- **Pauses naturally between Phase 8 and Phase 9** so the human reviewer can comment; re-invoke to address review feedback
+
+Grounded in Fowler (continuous integration, refactoring, Two Hats, test pyramid), Robert C. Martin (SOLID), Google eng-practices (small CLs), Conventional Commits, and Scrum.org Definition of Done.
+
+Use it when quality matters more than speed. Say "implement task #X", "do issue #X properly", "fully implement issue #X", "take this through to PR", "comprehensive implementation".
 
 ---
 

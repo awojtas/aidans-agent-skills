@@ -132,7 +132,7 @@ The next eight skills are bundled together under the **`sdlc-plugin`** marketpla
 | 4     | [`/confirm-requirements`](#confirm-requirements-confirm-requirements)     | Same folder, requirements validated and advanced through `Draft → Reviewed → Approved`. |
 | 5     | [`/plan-from-requirements`](#plan-from-requirements-plan-from-requirements)   | GitHub issues + milestones + labels — small-batch tasks, human-required work front-loaded. |
 | 6     | [`/implement-task`](#implement-task-implement-task)                 | One GitHub issue taken from picked-up to PR-ready, via a seven-persona orchestration (incl. UX/UI Designer) with audit-trail comments. |
-| —     | [`/check-work`](#check-work-check-work)                         | A standalone "check your work carefully" audit pass over a slice of recent work — uncommitted changes, an unpushed branch, a commit range, a PR, or a path. Empirically catches defects ~80% of the time. |
+| —     | [`/check-work`](#check-work-check-work)                         | A generic "please just check your work carefully" second-pass skill. Works on anything — code, plans, writing, analysis. Saves typing the phrase. |
 | —     | [`/rework`](#rework-rework)                                 | Assertively course-corrects both the requirements docs *and* the open GitHub issues when an implementation-time discovery invalidates the plan. |
 
 ---
@@ -269,20 +269,18 @@ Use it when quality matters more than speed. Say "implement task #X", "do issue 
 
 ### Check Work (`/check-work`)
 
-A standalone "please just check your work carefully on this" audit pass. Same logic as the Work Checker persona that runs after every phase inside `/implement-task` — but invocable on its own slice of work, without the rest of the orchestration.
+A generic "please just check your work carefully on this" second-pass skill. The whole point is to save you typing that phrase out every time. Works on anything — code, plans, writing, analysis, designs, calculations, summaries.
 
 What it does:
 
-- **Resolves a scope** to audit — by default the uncommitted plus unpushed changes on the current branch. You can also point it at a PR number, a commit range, a specific path, or a branch
-- **Applies the universal Work-Checker checklist**: TODO/FIXME left behind, swallowed exceptions, magic numbers, commented-out code, debug prints, hardcoded values, secrets / `.env` / large binaries committed, atomic-commit hygiene, `--no-verify` commits, commit-message honesty, silent config relaxations (`eslint-disable`, `# type: ignore`, loosened CI rules)
-- **Picks a role-specific layer** based on what's in the diff — implementation code triggers Principal-Engineer checks; test files trigger Test-Automation-Engineer checks; IaC triggers Cloud-Architect checks; UI/UX changes trigger UX-Designer checks; PR/issue body edits trigger Project-Manager checks
-- **Returns a structured report** — `Clean` (with what was checked) or `Defects` (with a numbered list, each item file:line + one-sentence specific). Each defect is something a reader can act on without a follow-up question
-- **Stops at two passes.** If defects remain after the second audit, says so and recommends stepping back rather than iterating further — three passes is a signal of stuckness, not high standards
-- **Auditor by default; fixer on explicit request.** It reports defects; it doesn't silently fix them. If you ask it to fix what it found, it switches modes explicitly
+- Re-examines whatever was just produced with the *"would I ship this as-is?"* lens
+- Reports findings specifically — what's wrong, where — so they're actionable, not vague
+- Doesn't redo the work; doesn't pedant on stylistic taste; doesn't request features
+- Stops after two passes — if issues remain on a second audit, the underlying work needs rethinking, not a third audit
 
-Empirically a "check your work carefully" pass surfaces defects the original work missed about 80% of the time (backed by Madaan et al.'s Self-Refine research). Finding things is the value.
+Empirically a focused second-pass critique surfaces something worth changing about 80% of the time (Madaan et al., *Self-Refine*).
 
-Use it before pushing, before requesting review on a PR, after finishing a chunk of work, or any time you want a focused critical sweep. Say "check my work", "audit this", "did I miss anything", "review this before I push", "self-review this PR", "look over the diff".
+Say "check your work", "double-check this", "look this over", "did I miss anything", "review what you just did", "go over this again", "self-review".
 
 ---
 

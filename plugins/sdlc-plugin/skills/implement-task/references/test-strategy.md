@@ -79,7 +79,7 @@ E2E test requirements:
 
 ## What a green build means
 
-The TAE's claim of "tests pass" must be verifiable. The PE in Phase 6 re-runs:
+The TAE's claim of "tests pass" must be verifiable. The PE in Phase 8 re-runs:
 
 - Static analysis (lint, type-check, format-check).
 - Unit tests.

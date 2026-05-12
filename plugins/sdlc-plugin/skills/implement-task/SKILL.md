@@ -387,7 +387,7 @@ Stored in memory across the session; printed in the final summary.
 
 ## Strict non-goals
 
-- **No skipping phases.** The 11-phase sequence is intentional. If the user wants a lighter pass, use `/issue-worker`.
+- **No skipping phases.** The 13-phase sequence is intentional. If the user wants a lighter pass, use `/issue-worker`.
 - **No silent merging.** This skill never merges the PR. That's a human decision.
 - **No auto-fixing across roles.** The Work Checker reports; it doesn't fix. The role fixes.
 - **No infinite bounce-back.** 3 strikes per role per session, then escalate to the user.

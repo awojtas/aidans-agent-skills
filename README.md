@@ -131,9 +131,27 @@ What it does:
 - Scaffolds `.gitignore`, `.gitattributes`, `AGENTS.md`, `CLAUDE.md`, `README.md`, `LICENSE` (proprietary), `.github/copilot-instructions.md`, `.github/pull_request_template.md`, and a `check-root-docs` workflow that enforces only `README/AGENTS/CLAUDE.md` in the repo root
 - Makes the initial commit and pushes to `origin/main`
 
-Day-0 only — branching, CI, deploys, dependabot, observability, etc. are out of scope and belong to the companion `/repo-promote-maturity` skill (planned).
+Day-0 only — branching, CI, deploys, dependabot, observability, etc. are out of scope and belong to the companion `/repo-level-up` skill below.
 
 Say "new project", "bootstrap a repo", or "spin up a project".
+
+---
+
+### Repo Level-Up (`/repo-level-up`)
+
+Takes a freshly bootstrapped repo to release-ready maturity. The companion to `/repo-bootstrap`.
+
+What it does:
+
+- Adds `release/uat` and `release/prod` branches off `main`
+- Scaffolds promotion workflows: `main → release/uat` and `main → release/prod`, with a Vercel deployment-status gate and a `force_deploy` escape hatch on production
+- Adds GitGuardian secret scanning, Claude On-Demand (`@claude` mentions), vibe-guard SARIF, a Copilot setup stub, and Dependabot (`github-actions` ecosystem)
+- Replaces the minimal PR template with a version-label-aware one (`version:major/minor/patch/skip`)
+- Installs three branch-protection rulesets via `gh api`: `Main <Repo>`, `UAT <Repo>`, `Production <Repo>` — all requiring PRs and blocking force-push / deletion
+- Appends a "Deployment & Branching Strategy" section to `AGENTS.md`
+- Opens a **"Checklist for Human Admin"** GitHub issue listing every manual step that's left (secrets to add, Vercel project to wire up, GitHub Security toggles to flip, version labels to create, etc.)
+
+Run it after `/repo-bootstrap` when you're ready to lock down branches and start shipping. Say "level up this repo", "make this release-ready", "add UAT and prod branches", or "harden this repo".
 
 ---
 

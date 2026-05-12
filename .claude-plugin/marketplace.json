@@ -40,6 +40,11 @@
       "description": "Bootstraps a brand-new GitHub repository end-to-end: creates a private repo, clones to ~/src, scaffolds AGENTS.md/CLAUDE.md/README/.gitignore/LICENSE/PR template/check-root-docs workflow, and pushes the initial commit."
     },
     {
+      "name": "repo-level-up-plugin",
+      "source": "./plugins/repo-level-up-plugin",
+      "description": "Takes a freshly bootstrapped repo to release-ready: release/uat + release/prod branches, promote-to-uat / promote-to-production workflows with Vercel gating, GitGuardian secret scan, Claude On-Demand, vibe-guard SARIF, Copilot setup stub, Dependabot, version-aware PR template, branch protection rulesets, and a 'Checklist for Human Admin' issue."
+    },
+    {
       "name": "sentry-recent-issues-plugin",
       "source": "./plugins/sentry-recent-issues-plugin",
       "description": "Investigates recent or specific Sentry issues, determines frequency and recurrence, researches root cause in the codebase, and recommends fixes."

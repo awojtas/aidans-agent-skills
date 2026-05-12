@@ -24,13 +24,15 @@ Reads the architecture, works out what cloud platforms / SaaS products / observa
 
 4. **Provision what you can autonomously.** Create the project / org / dashboard / DB / whatever. Capture every output the human will care about later: resource IDs, regions, URLs, DSNs, project tokens, organization slugs. Record them as you go.
 
-5. **Batch the human-only bits into a single checklist.** Some things are inherently human:
+5. **Batch the human-only bits into a single checklist, and file it as a GitHub issue.** Some things are inherently human:
    - Creating an account in a new SaaS product
    - Agreeing to ToS or choosing a billing plan
    - OAuth / device-code flows
    - Copying a generated secret out of a UI that doesn't expose it via API
 
-   Group these and present them **once**, with specifics: which dashboard, which page, which field, exactly what to paste back. Don't drip prompts; the human is the slow path and shouldn't be the bottleneck multiple times.
+   Group them into a single checkbox checklist and **create a GitHub issue** in the repo via `gh issue create` — title `"Provisioning checklist — sign up for v1 platforms and bring back tokens"`, body as a Markdown task list (`- [ ]`) with one section per platform. Each item must name the exact dashboard URL, the exact page/field, and the exact env var name to bring back. Close the issue body with a fenced code block listing every env-var name the user is expected to paste back, so they have a single place to fill in. Show the issue URL to the user and have them work through it at their pace. Don't drip prompts in chat — the issue is the durable surface for the slow path.
+
+   If the repo has no GitHub remote (rare — this skill normally runs after `/repo-bootstrap`), fall back to printing the checklist in chat and tell the user it would normally be a GitHub issue.
 
 6. **Wire secrets in once the human returns.** When the human pastes secrets back:
    - GitHub Actions: `gh secret set <NAME>` (repo-level), or `gh secret set <NAME> --env <env>` for env-scoped.
@@ -41,6 +43,7 @@ Reads the architecture, works out what cloud platforms / SaaS products / observa
    - Date, what got provisioned, which platform, IDs / URLs / regions.
    - Which secrets exist now, where they live (GH Actions repo vs env, platform env stores).
    - Which human-required tasks are still outstanding, if any.
+   - A link to the provisioning-checklist GH issue created in Step 5, and whether it's still open. Close the issue (or note the remaining items inline) once provisioning is complete.
 
    This is the bridge between the architecture doc and the actual state of the cloud. Future skills (`/implement-task`, `/rework`, debugging sessions) read this to know what's real.
 

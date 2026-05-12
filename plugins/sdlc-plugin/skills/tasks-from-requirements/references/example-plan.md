@@ -1,4 +1,4 @@
-# Worked Example: Plan from the File-View Toggle Requirements
+# Worked Example: Tasks from the File-View Toggle Requirements
 
 A full plan generated from the GitHub Preview/Code/Blame toggle requirements in the `create-requirements` plugin's `example-worked-requirement.md`. Shows the staged numbering, phase decomposition, human-required front-loading, labels, and milestone structure.
 

@@ -44,7 +44,7 @@ The middle path: produce a **small-batch** plan, phase by phase, that's concrete
 ## Workflow
 
 ```text
-Plan-from-requirements progress:
+Tasks-from-requirements progress:
 - [ ] Step 1: Read all requirements docs + prioritisation
 - [ ] Step 2: Verify gh CLI access and detect existing labels/milestones/issues
 - [ ] Step 3: Decompose each in-scope requirement into tasks (in memory)

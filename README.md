@@ -122,7 +122,7 @@ Say "work on issue #123" or drop in a GitHub issue link.
 
 ## SDLC bundle — `/sdlc-plugin`
 
-The next ten skills are bundled together under the **`sdlc-plugin`** marketplace entry. Install once, get the full workflow: bootstrap a fresh repo → level it up to release-ready → sketch the initial architecture → provision the cloud platforms the architecture names → elicit requirements → confirm them → plan the implementation as GitHub issues → implement one issue end-to-end with audited handoffs → check your work whenever you want a focused critical audit → rework when a discovery during implementation changes direction. They're designed to be used in sequence but each is useful on its own.
+The next twelve skills are bundled together under the **`sdlc-plugin`** marketplace entry. Install once, get the full workflow: bootstrap a fresh repo → level it up to release-ready → sketch the initial architecture → provision the cloud platforms the architecture names → elicit requirements → confirm them → plan the implementation as GitHub issues → implement one issue end-to-end with audited handoffs → check your work whenever you want a focused critical audit → rework when a discovery during implementation changes direction. Plus two single-requirement helpers — `/requirements-add` and `/requirements-delete` — for surgically updating the requirements tree without re-running the bulk elicitation. They're designed to be used in sequence but each is useful on its own.
 
 | Order | Skill                                    | What it produces                                           |
 |-------|------------------------------------------|------------------------------------------------------------|
@@ -134,6 +134,8 @@ The next ten skills are bundled together under the **`sdlc-plugin`** marketplace
 | 6     | [`/confirm-requirements`](#confirm-requirements-confirm-requirements)     | Same folder, requirements validated and advanced through `Draft → Reviewed → Approved`. |
 | 7     | [`/tasks-from-requirements`](#tasks-from-requirements-tasks-from-requirements)   | GitHub issues + milestones + labels — small-batch tasks, human-required work front-loaded. |
 | 8     | [`/implement-task`](#implement-task-implement-task)                 | One GitHub issue taken from picked-up to PR-ready, via a seven-persona orchestration (incl. UX/UI Designer) with audit-trail comments. |
+| —     | [`/requirements-add`](#requirements-add-requirements-add)             | A single new requirement added to an existing tree, with duplicate + conflict checks and full elaboration. |
+| —     | [`/requirements-delete`](#requirements-delete-requirements-delete)       | A single requirement removed or demoted, with a full cascade-impact scan across the tree and any GitHub issues that implement it. |
 | —     | [`/check-work`](#check-work-check-work)                         | A generic "please just check your work carefully" second-pass skill. Works on anything — code, plans, writing, analysis. Saves typing the phrase. |
 | —     | [`/rework`](#rework-rework)                                 | Assertively course-corrects both the requirements docs *and* the open GitHub issues when an implementation-time discovery invalidates the plan. |
 
@@ -308,6 +310,43 @@ What it does:
 Grounded in Fowler (continuous integration, refactoring, Two Hats, test pyramid), Robert C. Martin (SOLID), Google eng-practices (small CLs), Conventional Commits, Scrum.org Definition of Done, Refactoring UI (Wathan & Schoger), Nielsen's usability heuristics, and WCAG 2.2 AA.
 
 Use it when quality matters more than speed. Say "implement task #X", "do issue #X properly", "fully implement issue #X", "take this through to PR", "comprehensive implementation".
+
+---
+
+### Requirements Add (`/requirements-add`)
+
+Adds a **single** new requirement to an established `docs/requirements/` tree. For the case where one new requirement surfaces after the initial elicitation, and you want it captured properly rather than dropped into a file by hand.
+
+What it does:
+
+- Checks for duplicates and conflicts against every existing `FR-`/`NFR-` statement and fit criterion *before* writing anything
+- Decides interactively with you whether the new requirement belongs in an existing domain/attribute file or warrants a new one
+- Runs the same elaboration disciplines as `/create-requirements` (RFC 2119 statement, observable fit criterion, rationale, traces-to, MoSCoW, INCOSE sanity check) — scoped to one requirement
+- Captures any new assumptions and open questions into the existing registers (`07-assumptions.md`, `08-open-questions.md`)
+- Assigns the next available `FR-<DOMAIN>-NNN` / `NFR-<ATTR>-NNN` ID by inferring the existing convention
+- Defaults status to `Draft` (never auto-promotes — that's `/confirm-requirements`'s job)
+- Appends a structured entry to `docs/requirements/session-log.md` as the audit trail
+
+Use it whenever a single requirement needs to be added cleanly. Say "add a requirement", "we need a new requirement for X", "document this new requirement", "capture this as a requirement", "I forgot a requirement".
+
+---
+
+### Requirements Delete (`/requirements-delete`)
+
+The counterpart to `/requirements-add`. Removes or demotes a **single** requirement from an established tree — but only after a full cascade-impact scan, so nothing downstream silently breaks.
+
+What it does:
+
+- Asks up front: full **delete**, or **demote** (lower MoSCoW band, or move from Approved/Reviewed back to Draft)
+- Scans the whole tree (and `docs/architecture/` if present) for every reference to the target — `traces-to` chains, fit criteria, body mentions, linked assumptions/open questions, ADR citations
+- For each cascade hit, judges whether removal **breaks** the dependent or just leaves a **dangling reference**, and proposes the right fix per case
+- Runs `gh issue list` to find open or recently-closed GitHub issues that implement the target requirement; proposes close/comment actions
+- **Shows the full proposed change set as a single markdown document** for explicit approval before any destructive action is taken
+- Default behaviour favours git as the history mechanism — no `docs/archive/` entries unless you give a specific posterity reason
+- Flags any open PRs implementing the target before closing the issue — you decide what happens to the PR
+- Appends a structured entry to `docs/requirements/session-log.md`
+
+For one-requirement-at-a-time cleanup. If a discovery is invalidating a chunk of the plan (multiple requirements, dependent assumptions falsified), `/rework` is the right tool instead. Say "delete this requirement", "remove FR-X", "we don't need this requirement anymore", "drop this requirement", "demote this requirement".
 
 ---
 

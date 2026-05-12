@@ -131,7 +131,7 @@ The next nine skills are bundled together under the **`sdlc-plugin`** marketplac
 | 3     | [`/initial-design`](#initial-design-initial-design)             | `docs/architecture/` — first-stab architectural sketch (system type, components, hosting, stack, data, integrations, lightweight ADRs, open questions). |
 | 4     | [`/create-requirements`](#create-requirements-create-requirements)        | `docs/requirements/` — interactively elicited functional + non-functional requirements (reads `docs/architecture/` first). |
 | 5     | [`/confirm-requirements`](#confirm-requirements-confirm-requirements)     | Same folder, requirements validated and advanced through `Draft → Reviewed → Approved`. |
-| 6     | [`/plan-from-requirements`](#plan-from-requirements-plan-from-requirements)   | GitHub issues + milestones + labels — small-batch tasks, human-required work front-loaded. |
+| 6     | [`/tasks-from-requirements`](#tasks-from-requirements-tasks-from-requirements)   | GitHub issues + milestones + labels — small-batch tasks, human-required work front-loaded. |
 | 7     | [`/implement-task`](#implement-task-implement-task)                 | One GitHub issue taken from picked-up to PR-ready, via a seven-persona orchestration (incl. UX/UI Designer) with audit-trail comments. |
 | —     | [`/check-work`](#check-work-check-work)                         | A generic "please just check your work carefully" second-pass skill. Works on anything — code, plans, writing, analysis. Saves typing the phrase. |
 | —     | [`/rework`](#rework-rework)                                 | Assertively course-corrects both the requirements docs *and* the open GitHub issues when an implementation-time discovery invalidates the plan. |
@@ -243,7 +243,7 @@ Use it periodically (after stakeholder conversations, after market changes, afte
 
 ---
 
-### Plan from Requirements (`/plan-from-requirements`)
+### Tasks from Requirements (`/tasks-from-requirements`)
 
 Turns the requirements you've already documented (via `/create-requirements` and refined via `/confirm-requirements`) into a concrete plan of GitHub issues. Pure planning — no code generation.
 

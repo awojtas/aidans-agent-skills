@@ -248,7 +248,7 @@ Print a tight summary to the user:
 - Any items that need follow-up — for example, *"Falsified assumption A-003 was caught; one downstream requirement (FR-…) was updated to match. If you find more downstream effects later, a fresh `/confirm-requirements` pass on the affected file will catch them."*
 - Pointer to next step:
   - Resume implementation if the plan is now consistent.
-  - `/plan-from-requirements` if the rework created new requirements that need staging into issues (only if Pass 4 added many new requirements — typically not needed).
+  - `/tasks-from-requirements` if the rework created new requirements that need staging into issues (only if Pass 4 added many new requirements — typically not needed).
   - `/confirm-requirements` if the rework left several requirements still Draft.
 
 Show the diff (`git status`, `git diff`). Don't auto-commit — let the user review and commit.

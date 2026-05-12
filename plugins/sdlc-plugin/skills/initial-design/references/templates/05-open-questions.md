@@ -2,7 +2,7 @@
 
 Architectural questions we deliberately punted on at this stage. Each one has a question, why it's punted, what we'd need to answer it, and a target revisit point.
 
-The point of capturing them: future work (`/create-requirements`, `/plan-from-requirements`, `/implement-task`) can be honest about what's not yet decided. Don't bury these in prose.
+The point of capturing them: future work (`/create-requirements`, `/tasks-from-requirements`, `/implement-task`) can be honest about what's not yet decided. Don't bury these in prose.
 
 ## Format
 

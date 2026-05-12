@@ -3,7 +3,7 @@ name: tasks-from-requirements
 description: Turns the requirements in docs/requirements/ into a concrete implementation plan of GitHub issues. Reads every requirement, decomposes each one into small-batch tasks (≤1 day each), names them with staged numbering (1.1, 1.2, 2.1...), identifies which tasks need a human (account creation, secrets, design decisions, legal review) and front-loads them into Phase 1 because humans are slower than AI, then creates GitHub milestones (one per phase) and issues with clear Definition of Done plus Given-When-Then acceptance criteria. Applies a minimal 8-label set (priority + type + human-required + blocked) — never uses labels for phases (those are milestones). Shows the proposed plan for user approval before any GitHub mutations happen. Use when the user says "plan the implementation", "create issues from requirements", "break this down into tasks", "what do we build first", "make a backlog", "issuify the requirements", or wants to translate a requirements doc into actionable work in GitHub.
 ---
 
-# Planning Implementation from Requirements
+# Tasks from Requirements
 
 This skill is the bridge between **what we're building** (requirements) and **what we're going to do next** (issues). It walks `docs/requirements/`, decomposes each requirement into small tasks, organises them into phases with a human-front-loaded ordering, and creates GitHub milestones + issues so the work is ready to start.
 

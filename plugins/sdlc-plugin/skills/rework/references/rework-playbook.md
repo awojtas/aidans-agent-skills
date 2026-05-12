@@ -12,7 +12,7 @@ Rework is appropriate when:
 
 Rework is **not** appropriate when:
 
-- The current plan is fine and the user just wants to add features → `/create-requirements` for new requirements, then `/plan-from-requirements` for new tasks.
+- The current plan is fine and the user just wants to add features → `/create-requirements` for new requirements, then `/tasks-from-requirements` for new tasks.
 - A single requirement is unclear → `/confirm-requirements` will pressure-test it.
 - The user wants to start over from scratch → `/create-requirements`, deliberately ignoring the existing docs.
 - A bug emerged in shipped code → fix the bug, don't rework the requirement.
@@ -97,7 +97,7 @@ After the existing-thing assessment, ask: **what's missing?**
 
 For new requirements: write them following the templates the `create-requirements` skill uses (`functional-domain.md`, `nfr-section.md`). Add them to the appropriate file in `docs/requirements/`. Don't bulk-elicit — keep this pass tight; if the gap is huge, finish the rework and follow up with a full `/create-requirements` session.
 
-For new tasks: draft them following the issue template (see the `plan-from-requirements` skill's `issue-template.md`). Stage them appropriately — if they're Phase 1 human-required work, label and milestone accordingly.
+For new tasks: draft them following the issue template (see the `tasks-from-requirements` skill's `issue-template.md`). Stage them appropriately — if they're Phase 1 human-required work, label and milestone accordingly.
 
 ## After the four passes
 

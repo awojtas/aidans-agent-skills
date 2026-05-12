@@ -97,7 +97,7 @@ Update labels and milestone afterward if the rework places the task in a new pha
 
 ## Creating new issues
 
-New issues from rework follow the same template as `/plan-from-requirements` (see the `plan-from-requirements` skill's `references/issue-template.md`). The only difference is the **`Context` section** — the new issue should cite the rework session as its origin:
+New issues from rework follow the same template as `/tasks-from-requirements` (see the `tasks-from-requirements` skill's `references/issue-template.md`). The only difference is the **`Context` section** — the new issue should cite the rework session as its origin:
 
 ```markdown
 ## Context
@@ -110,7 +110,7 @@ New issues from rework follow the same template as `/plan-from-requirements` (se
 - **Origin:** Rework session YYYY-MM-DD — see session log.
 ```
 
-The `Origin: Rework session ...` line is what distinguishes a rework-born task from a `/plan-from-requirements`-born task in the audit trail.
+The `Origin: Rework session ...` line is what distinguishes a rework-born task from a `/tasks-from-requirements`-born task in the audit trail.
 
 ```bash
 gh issue create \
@@ -166,7 +166,7 @@ gh issue edit "$n3" --body-file <(sed "s/BLOCKER_PLACEHOLDER/#$n1/g" /tmp/5.3.md
 gh issue edit "$n1" --body-file <(sed "s/BLOCKS_PLACEHOLDER/#$n2, #$n3/g" /tmp/5.1.md)
 ```
 
-Same pattern `/plan-from-requirements` uses; reused here verbatim.
+Same pattern `/tasks-from-requirements` uses; reused here verbatim.
 
 ## What never to do
 

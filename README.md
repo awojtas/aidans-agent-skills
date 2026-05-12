@@ -122,7 +122,7 @@ Say "work on issue #123" or drop in a GitHub issue link.
 
 ## SDLC bundle — `/sdlc-plugin`
 
-The next five skills are bundled together under the **`sdlc-plugin`** marketplace entry. Install once, get the full workflow: bootstrap a fresh repo → level it up to release-ready → elicit requirements → confirm them → plan the implementation as GitHub issues. They're designed to run in sequence but each is useful on its own.
+The next six skills are bundled together under the **`sdlc-plugin`** marketplace entry. Install once, get the full workflow: bootstrap a fresh repo → level it up to release-ready → elicit requirements → confirm them → plan the implementation as GitHub issues → rework when a discovery during implementation changes direction. They're designed to be used in sequence but each is useful on its own.
 
 | Order | Skill                                    | What it produces                                           |
 |-------|------------------------------------------|------------------------------------------------------------|
@@ -131,6 +131,7 @@ The next five skills are bundled together under the **`sdlc-plugin`** marketplac
 | 3     | [`/repo-requirements`](#repo-requirements-repo-requirements)        | `docs/requirements/` — interactively elicited functional + non-functional requirements. |
 | 4     | [`/confirm-requirements`](#confirm-requirements-confirm-requirements)     | Same folder, requirements validated and advanced through `Draft → Reviewed → Approved`. |
 | 5     | [`/plan-from-requirements`](#plan-from-requirements-plan-from-requirements)   | GitHub issues + milestones + labels — small-batch tasks, human-required work front-loaded. |
+| —     | [`/rework`](#rework-rework)                                 | Assertively course-corrects both the requirements docs *and* the open GitHub issues when an implementation-time discovery invalidates the plan. |
 
 ---
 
@@ -234,6 +235,26 @@ What it does:
 Companion to `/repo-requirements` and `/confirm-requirements`. Run it once the requirements are mostly Reviewed and you're ready to start work.
 
 Say "plan the implementation", "create issues from requirements", "break this into tasks", "what do we build first", or "make me a backlog".
+
+---
+
+### Rework (`/rework`)
+
+Course-corrects both the requirements (`docs/requirements/`) *and* the open GitHub issues when something discovered during early implementation invalidates the original plan. The one in the SDLC bundle that hopefully doesn't get called often — but when you need it, you really need it.
+
+What it does:
+
+- **Asks for the rework rationale first.** One or two sentences. Won't proceed without it.
+- **Walks every requirement** — classifies each as Keep / Update / Delete / Archive
+- **Walks every open issue** — classifies each as Keep / Update / Close, plus checks recently closed issues for any to Reopen
+- **Cascades through assumptions and open questions** — falsified assumption → every linked requirement re-inspected; resolved question → entry moves to Resolved with the answer
+- **Gap analysis** — identifies new requirements / new tasks the new direction needs (kept narrow; if the gap is huge, suggests a fresh `/repo-requirements` session instead)
+- **Shows the proposed change set as a single markdown document** for explicit approval before any destructive action
+- **Default behaviour is assertive cleanup.** Git preserves deleted files; closed GitHub issues are recoverable. `docs/archive/` exists only for artefacts with specific posterity value, and only with a documented rationale. No `wontfix` label sprawl on issues.
+- Appends a structured **rework entry to `docs/requirements/session-log.md`** as the durable audit trail
+- Watches for issues with linked PRs — surfaces before closing rather than dangling references
+
+Use it sparingly. When you need it, run `/rework`. Say "rework this", "we need to change direction", "pivot", "course-correct", "this isn't going to work anymore", or "scrap that and...".
 
 ---
 

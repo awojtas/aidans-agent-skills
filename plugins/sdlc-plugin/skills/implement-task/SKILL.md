@@ -1,6 +1,6 @@
 ---
 name: implement-task
-description: Implements a single GitHub issue end-to-end through a multi-persona orchestration — branch setup → ticket validation → cloud architecture review → implementation → tests → test validation → lint+build → diligence audit → PR + self-review → review-feedback handling. Each persona (Principal Engineer, QA Engineer, Cloud Architect, Test Automation Engineer, Project Manager, Work Checker) is spawned as a focused sub-agent, posts a `[Role Name]` comment on the GitHub issue with their status, and hands off to the next. The Work Checker runs after every other persona and audits their work — empirically catches defects ~80% of the time. The Project Manager runs near the end and bounces back any phase where the audit finds gaps. Designed for long-running comprehensive work (potentially hours) on important tasks where quality outweighs speed. Use when the user says "implement task #X", "do issue #X properly", "fully implement issue #X", "take this through to PR", "comprehensive implementation", or wants a thorough multi-role pass on a single ticket. Companion to the lighter `/issue-worker` skill — `/implement-task` is the heavyweight version with structured handoffs and audit gates.
+description: Implements a single GitHub issue end-to-end through a multi-persona orchestration — branch setup → ticket validation → cloud architecture review → UX design specification → implementation → UX design review → tests → test validation → lint+build → diligence audit → PR + self-review → review-feedback handling. Each persona (Principal Engineer, QA Engineer, Cloud Architect, UX/UI Designer, Test Automation Engineer, Project Manager, Work Checker) is spawned as a focused sub-agent, posts a `[Role Name]` comment on the GitHub issue with their status, and hands off to the next. The UX Designer establishes the design spec before implementation and verifies the rendered output afterwards using Playwright; the QA Engineer is also authorised to use Playwright for AC oversight. The Work Checker runs after every other persona and audits their work — empirically catches defects ~80% of the time. The Project Manager runs near the end and bounces back any phase where the audit finds gaps. Designed for long-running comprehensive work (potentially hours) on important tasks where quality outweighs speed. Use when the user says "implement task #X", "do issue #X properly", "fully implement issue #X", "take this through to PR", "comprehensive implementation", or wants a thorough multi-role pass on a single ticket. Companion to the lighter `/issue-worker` skill — `/implement-task` is the heavyweight version with structured handoffs and audit gates.
 ---
 
 # Implementing a task end-to-end with role-based orchestration
@@ -16,18 +16,19 @@ If you're not sure, default to `/issue-worker` for tasks under ~half a day of wo
 
 ## The personas
 
-Six personas. Each is a sub-agent the orchestrator spawns with a focused brief.
+Seven personas. Each is a sub-agent the orchestrator spawns with a focused brief.
 
 | Persona | Mandate | Reference doc | Posts comment as |
 |---------|---------|----------------|------------------|
 | **Principal Engineer (PE)** | Build it. Branch setup, implementation, lint+build, PR, review-feedback. | `references/role-principal-engineer.md` | `[Principal Engineer]` |
-| **QA Engineer (QA)** | Make it testable; verify it's tested. | `references/role-qa-engineer.md` | `[QA Engineer]` |
+| **QA Engineer (QA)** | Make it testable; verify it's tested. Can use Playwright for AC oversight. | `references/role-qa-engineer.md` | `[QA Engineer]` |
 | **Cloud Architect (CA)** | Identify and apply (or surface) infra/IaC/pipeline changes. | `references/role-cloud-architect.md` | `[Cloud Architect]` |
+| **UX/UI Designer (UX)** | Establish the design spec before implementation; verify the rendered output after. Uses the project's design system if one exists, or defines principles if not. Uses Playwright to verify. | `references/role-ux-designer.md` | `[UX/UI Designer]` |
 | **Test Automation Engineer (TAE)** | Write the tests at the right level. | `references/role-test-automation-engineer.md` | `[Test Automation Engineer]` |
 | **Project Manager (PM)** | Diligence audit; bounce back if work isn't actually done. | `references/role-project-manager.md` | `[Project Manager]` |
 | **Work Checker (WC)** | Audit every phase before handoff. Catches the ~80% of self-audit defects. | `references/role-work-checker.md` | `[Work Checker]` |
 
-The orchestrator is the seventh actor — the conductor. It tracks state (current phase, branch, PR number, bounce-back counts) and dispatches each persona.
+The orchestrator is the eighth actor — the conductor. It tracks state (current phase, branch, PR number, bounce-back counts) and dispatches each persona.
 
 ## The reference material
 
@@ -36,8 +37,9 @@ The orchestrator and each spawned sub-agent should consult these as needed:
 | File | Purpose |
 |------|---------|
 | `references/role-principal-engineer.md` | PE charter, GitHub comment template, what they don't do, lazy-PE failure modes. |
-| `references/role-qa-engineer.md` | QA charter, testable-AC patterns, AC→Test mapping, comment templates. |
+| `references/role-qa-engineer.md` | QA charter, testable-AC patterns, AC→Test mapping, Playwright oversight, comment templates. |
 | `references/role-cloud-architect.md` | CA charter, IaC change detection heuristic, when to escalate to human. |
+| `references/role-ux-designer.md` | UX charter, design-system detection, design principles for projects with none, Playwright usage, Phase 3 + Phase 5 comment templates. |
 | `references/role-test-automation-engineer.md` | TAE charter, test pyramid application, per-test discipline. |
 | `references/role-project-manager.md` | PM charter, audit checklist, bounce-back protocol. |
 | `references/role-work-checker.md` | WC charter, universal + role-specific audit lists, "check your work" prompt. |
@@ -45,7 +47,7 @@ The orchestrator and each spawned sub-agent should consult these as needed:
 | `references/solid-applied.md` | SOLID with smell+fix per principle; when not to apply. |
 | `references/test-strategy.md` | Test pyramid, coverage philosophy, determinism rules. |
 | `references/code-review-checklist.md` | The PE's self-review checklist; same one a human reviewer uses. |
-| `references/example-implementation-session.md` | A worked end-to-end run showing all 11 phases. |
+| `references/example-implementation-session.md` | A worked end-to-end run showing all 13 phases. |
 
 ## Prerequisites
 

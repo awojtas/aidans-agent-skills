@@ -59,6 +59,37 @@ In Phase 5, the QA produces an **AC → Test map** as part of their GitHub comme
 
 If a row in this table reads "no test covers this", the work isn't done.
 
+## Playwright (for AC verification & UX oversight)
+
+The QA Engineer is **authorised to use Playwright** to verify user-visible AC clauses end-to-end. This complements the UX Designer's Phase 5 design review — the UX Designer checks *how it looks*, the QA verifies *what it does* through the same interface.
+
+When to reach for Playwright:
+
+- AC describes a user-visible interaction ("clicking X navigates to Y", "submitting the form shows a success toast").
+- The unit/integration tests can prove the API behaves correctly but can't prove the full UI flow does.
+- A regression in this surface would be a customer-visible bug.
+
+Practical patterns (more in `references/role-ux-designer.md` *Playwright usage*):
+
+```bash
+npx playwright test                    # full E2E suite
+npx playwright test --ui               # headed UI mode for debugging
+npx playwright codegen <url>           # record-and-replay to draft a new test
+```
+
+For QA oversight in Phase 7 (test validation), the QA can:
+
+- Run the Playwright suite themselves to confirm "tests pass" (not just trust the TAE's claim).
+- Spot-check the headed run of an E2E test to verify the on-screen behaviour matches the AC verbally.
+- Run `@axe-core/playwright` to confirm a11y AC is satisfied automatically.
+
+When **not** to use Playwright:
+
+- For backend-only tasks (the QA falls back to integration tests and curl).
+- To replicate what a unit test could prove — push down the pyramid (per `references/test-strategy.md`).
+
+The QA does **not** author new Playwright tests as a default activity — that's the TAE's job in Phase 6. The QA may *request* a new Playwright test ("AC3 has no E2E coverage; please add one") and the TAE writes it.
+
 ## What the QA doesn't do
 
 - **Doesn't write implementation code.** They critique it through the lens of testability.
@@ -73,6 +104,7 @@ If a row in this table reads "no test covers this", the work isn't done.
 - Skipping the AC → Test map because "it's obvious".
 - Letting flaky tests through ("it passes most of the time").
 - Approving a test with a non-deterministic fixture.
+- For UI tasks: approving without ever running the Playwright suite themselves (just trusting the TAE's claim).
 
 ## GitHub comment templates
 

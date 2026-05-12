@@ -55,8 +55,8 @@ If `README.md` is missing or empty, do **not** stop. Ask the user (single AskUse
 
 | Option                       | What the agent does                                                                                       |
 |------------------------------|------------------------------------------------------------------------------------------------------------|
-| Describe interactively        | Ask the user for a 3–5 sentence paragraph in chat. Save it to `docs/requirements/00-source-brief.md` so the source is recoverable. |
-| Point to a local file         | User gives a path to a `.md`, `.txt`, or `.pdf` already in the working directory. Read it (use the Read tool — it handles PDFs).   |
+| Describe interactively        | Ask the user for a 3–5 sentence paragraph in chat. Offer to write it to the project's `README.md` (create the file if missing, or append a "Project overview" section if the file exists but is effectively empty) so future invocations of the skill find it the normal way. If the user declines the write, hold the brief in conversation context for this session only. |
+| Point to a local file         | User gives a path to a `.md`, `.txt`, or `.pdf` already in the working directory. Read it (the Read tool handles PDFs natively).   |
 | Point to a URL                | User gives a link to a public page, gist, or hosted PDF. Fetch with WebFetch.                              |
 | Point to a Google Doc / Notion / Confluence page | Use the matching MCP server if available (Google Drive, Notion, Atlassian). If none is configured, ask the user to paste the contents or export to markdown/PDF and pick one of the options above. |
 

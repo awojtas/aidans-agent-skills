@@ -10,6 +10,11 @@
       "description": "Iteratively fixes build errors and lint warnings until the project compiles cleanly. Supports .NET, Node.js, Rust, Go, Java, Make, and more."
     },
     {
+      "name": "confirm-requirements-plugin",
+      "source": "./plugins/confirm-requirements-plugin",
+      "description": "Interactively walks through requirements already documented in docs/requirements/ to validate and refine them. Inventories the folder, prompts All/Specific, then runs a five-pass model per requirement (still-accurate / measurable / assumptions / open-questions / INCOSE quality), advances status with explicit user confirmation, and writes a session log. Companion to /repo-requirements."
+    },
+    {
       "name": "design-system-aurora-plugin",
       "source": "./plugins/design-system-aurora-plugin",
       "description": "Glass Aurora design system — ethereal glassmorphism, aurora gradients, neon glows, and a purple-cyan color scheme for consistent UI components."

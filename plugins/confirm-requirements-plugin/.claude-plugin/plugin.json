@@ -1,0 +1,11 @@
+{
+	"name": "confirm-requirements-plugin",
+	"description": "Adds a /confirm-requirements skill that interactively walks through requirements already documented in docs/requirements/ to validate and refine them. For each requirement: re-reads it back to the user, checks whether the underlying assumptions still hold, asks whether linked open questions have been resolved since, pressure-tests fit criteria, applies the INCOSE quality checklist, identifies new edge cases, and advances status (Draft → Reviewed → Approved) when criteria are met. Companion to /repo-requirements: that one elicits, this one refines.",
+	"version": "1.0.0",
+	"author": {
+		"name": "Aidan Wojtas",
+		"url": "https://github.com/awojtas/aidans-agent-skills"
+	},
+	"repository": "https://github.com/awojtas/aidans-agent-skills",
+	"skills": "./skills/"
+}

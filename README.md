@@ -176,6 +176,30 @@ Highly interactive — set aside 30–90 minutes for a first useful pass. Pause 
 
 ---
 
+### Confirm Requirements (`/confirm-requirements`)
+
+The refining companion to `/repo-requirements`. Where the eliciter produces requirements from interview, this one validates the ones already on disk and advances them through the status lifecycle.
+
+What it does:
+
+- Inventories `docs/requirements/` and shows you an annotated directory listing with status counts (Drafts vs Reviewed, open vs resolved questions, unvalidated vs validated assumptions, stale items)
+- Prompts you up front — "All requirements" or "Specific requirement(s)" — and tailors the session accordingly (one file, one requirement, just the Drafts, etc.)
+- For each requirement in scope, runs a **five-pass model**:
+  1. **Still accurate?** Echoes the statement back and asks what's changed
+  2. **Fit criterion measurable?** Pressure-tests how you'd actually verify it
+  3. **Assumptions still hold?** Walks every linked `A-NNN` — validate, falsify, or extract new ones
+  4. **Open questions resolved?** Walks every linked `OQ-NNN` — resolve and update
+  5. **INCOSE quality + smell list** — hostile re-read catches the worst-case-minimum-bar implementations
+- Advances `Status: Draft → Reviewed` only with explicit user confirmation. Never auto-promotes.
+- Updates the requirement file in place; moves resolved open questions to their "Resolved" section (keeps as decision history); updates assumption validation states.
+- Cascades: when an assumption is **Falsified**, scans every linked requirement and flags downstream impacts.
+- Appends a structured **session log** entry to `docs/requirements/session-log.md` — the audit trail of every confirmation pass.
+- Includes a worked before/after example (`example-confirmation-session.md`) showing a Draft requirement → Reviewed across one session.
+
+Use it periodically (after stakeholder conversations, after market changes, after assumptions get tested). Say "confirm requirements", "review requirements", "validate requirements", "walk through the requirements", or "pressure-test what we have".
+
+---
+
 ### Sentry Recent Issues (`/sentry-recent-issues`)
 
 Pulls recent Sentry issues, figures out what's going on in the code, and tells you how to fix them.

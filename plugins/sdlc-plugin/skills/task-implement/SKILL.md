@@ -1,6 +1,6 @@
 ---
 name: implement-task
-description: Implements a single GitHub issue end-to-end through a multi-persona orchestration — branch setup → ticket validation → cloud architecture review → UX design specification → implementation → UX design review → tests → test validation → lint+build → diligence audit → PR + self-review → review-feedback handling. Each persona (Principal Engineer, QA Engineer, Cloud Architect, UX/UI Designer, Test Automation Engineer, Project Manager, Work Checker) is spawned as a focused sub-agent, posts a `[Role Name]` comment on the GitHub issue with their status, and hands off to the next. The UX Designer establishes the design spec before implementation and verifies the rendered output afterwards using Playwright; the QA Engineer is also authorised to use Playwright for AC oversight. The Work Checker runs after every other persona and audits their work — empirically catches defects ~80% of the time. The Project Manager runs near the end and bounces back any phase where the audit finds gaps. Designed for long-running comprehensive work (potentially hours) on important tasks where quality outweighs speed. Use when the user says "implement task #X", "do issue #X properly", "fully implement issue #X", "take this through to PR", "comprehensive implementation", or wants a thorough multi-role pass on a single ticket. Companion to the lighter `/issue-worker` skill — `/implement-task` is the heavyweight version with structured handoffs and audit gates.
+description: Implements a single GitHub issue end-to-end through a multi-persona orchestration — branch setup → ticket validation → cloud architecture review → UX design specification → implementation → UX design review → tests → test validation → lint+build → diligence audit → PR + self-review → review-feedback handling. Each persona (Principal Engineer, QA Engineer, Cloud Architect, UX/UI Designer, Test Automation Engineer, Project Manager, Work Checker) is spawned as a focused sub-agent, posts a `[Role Name]` comment on the GitHub issue with their status, and hands off to the next. The UX Designer establishes the design spec before implementation and verifies the rendered output afterwards using Playwright; the QA Engineer is also authorised to use Playwright for AC oversight. The Work Checker runs after every other persona and audits their work — empirically catches defects ~80% of the time. The Project Manager runs near the end and bounces back any phase where the audit finds gaps. Designed for long-running comprehensive work (potentially hours) on important tasks where quality outweighs speed. Use when the user says "implement task #X", "do issue #X properly", "fully implement issue #X", "take this through to PR", "comprehensive implementation", or wants a thorough multi-role pass on a single ticket. Companion to the lighter `/issue-worker` skill — `/task-implement` is the heavyweight version with structured handoffs and audit gates.
 ---
 
 # Implementing a task end-to-end with role-based orchestration
@@ -10,9 +10,9 @@ This skill takes one GitHub issue from "picked up" to "PR ready for human merge"
 ## When to use this vs the lighter alternatives
 
 - `/issue-worker` — single-agent quick pass. Use when the task is small and the quality bar is "merges cleanly".
-- `/implement-task` — multi-agent orchestration. Use when the task is important, complex, or risk-bearing, and the quality bar is "audited, fully tested, self-reviewed".
+- `/task-implement` — multi-agent orchestration. Use when the task is important, complex, or risk-bearing, and the quality bar is "audited, fully tested, self-reviewed".
 
-If you're not sure, default to `/issue-worker` for tasks under ~half a day of work and `/implement-task` for anything bigger or anything carrying production risk.
+If you're not sure, default to `/issue-worker` for tasks under ~half a day of work and `/task-implement` for anything bigger or anything carrying production risk.
 
 ## The personas
 
@@ -53,11 +53,11 @@ The orchestrator and each spawned sub-agent should consult these as needed:
 
 1. **Working directory is inside a git repo** with a GitHub remote.
 2. **`gh` CLI authenticated** with write access to the repo (issues + PRs + comments). `gh auth status` shows `repo` scope.
-3. **The issue exists.** The user passes the issue number (e.g. `/implement-task 42`). If they didn't, ask which issue.
-4. **The issue has a clear Definition of Done and Acceptance Criteria** — these were authored by `/tasks-from-requirements` typically. If the issue is sparse, recommend `/confirm-requirements` on the linked requirement first.
+3. **The issue exists.** The user passes the issue number (e.g. `/task-implement 42`). If they didn't, ask which issue.
+4. **The issue has a clear Definition of Done and Acceptance Criteria** — these were authored by `/tasks-create-from-requirements` typically. If the issue is sparse, recommend `/requirements-validation` on the linked requirement first.
 5. **`main` is the default branch** and is in a clean state. If there's local uncommitted work, stash or commit before invoking.
 6. **The user has time.** This skill can run for hours. Set the expectation.
-7. **`docs/architecture/` is present.** Implementation work without a recorded architecture risks drift from the agreed technical shape. If `docs/architecture/` is missing, surface this to the user before starting — *"No architecture folder found. Implementation can proceed but personas will be implementing against unstated architectural assumptions. Run `/initial-design` first?"* If the user says proceed, the personas treat the existing code as the de facto architecture.
+7. **`docs/architecture/` is present.** Implementation work without a recorded architecture risks drift from the agreed technical shape. If `docs/architecture/` is missing, surface this to the user before starting — *"No architecture folder found. Implementation can proceed but personas will be implementing against unstated architectural assumptions. Run `/platform-design` first?"* If the user says proceed, the personas treat the existing code as the de facto architecture.
 
 ## Workflow
 
@@ -290,7 +290,7 @@ Work Checker runs (PR description complete, Self-review section present, Closes 
 
 This phase is **conditional**. It only runs if a human reviewer has commented on the PR.
 
-If no human review yet, skill moves to Phase 12. The user can re-invoke `/implement-task <issue>` later after human review lands to run Phase 11 (the orchestrator detects this state).
+If no human review yet, skill moves to Phase 12. The user can re-invoke `/task-implement <issue>` later after human review lands to run Phase 11 (the orchestrator detects this state).
 
 When invoked for Phase 11:
 
@@ -330,7 +330,7 @@ The terminal summary:
 - Time elapsed.
 - Bounce-back count (visible signal of quality friction).
 - Number of WC findings caught and fixed (visible signal of self-audit value).
-- Pointer: *"Next: human reviewer assignment. After review, re-invoke `/implement-task <issue-number>` for Phase 11 to address feedback."*
+- Pointer: *"Next: human reviewer assignment. After review, re-invoke `/task-implement <issue-number>` for Phase 11 to address feedback."*
 
 ## Work Checker pattern (the audit gate after every phase)
 
@@ -396,7 +396,7 @@ Stored in memory across the session; printed in the final summary.
 - **No auto-fixing across roles.** The Work Checker reports; it doesn't fix. The role fixes.
 - **No infinite bounce-back.** 3 strikes per role per session, then escalate to the user.
 - **No multi-issue batching.** One issue per session. If the user wants multiple, run the skill multiple times.
-- **No requirement rework.** If the implementation reveals the requirement is wrong, the PE stops and recommends `/rework` — this skill does not modify requirements.
+- **No requirement rework.** If the implementation reveals the requirement is wrong, the PE stops and recommends `/requirements-rework` — this skill does not modify requirements.
 
 ## Edge cases
 
@@ -405,7 +405,7 @@ Stored in memory across the session; printed in the final summary.
 - **Branch already exists** (re-running after a prior partial session). Detect: `git ls-remote --heads origin <branch>`. If exists, ask the user: resume on this branch, or delete and restart?
 - **PR already exists** for this branch. Resume from Phase 11 (review feedback) or, if no review yet, Phase 10 (re-self-review and post status).
 - **Bounce-back limit hit.** Stop. Post a `[Orchestrator]` comment summarising the situation. Don't continue.
-- **Issue has no AC.** Phase 1 (QA) detects this. If AC can't be inferred from the requirement, the orchestrator stops and recommends `/confirm-requirements` first.
+- **Issue has no AC.** Phase 1 (QA) detects this. If AC can't be inferred from the requirement, the orchestrator stops and recommends `/requirements-validation` first.
 - **Project has no test setup at all** (no test runner, no test directories). TAE detects this and surfaces it — implementation can proceed but the skill warns the PE before Phase 8 (lint + build) that there's nothing to lint/build the test target against. PM in Phase 9 will treat "no tests added" as a defect unless the project genuinely has no testing infrastructure (and even then it's a flag for the user).
 - **Backend-only task with no user-visible surface.** The UX Designer in Phase 3 produces a short spec covering response shape / error messages / observability semantics, and Phase 5 is a brief review of those. Both still happen — the audit trail captures the consideration.
 - **No design system in the repo.** The UX Designer in Phase 3 defines initial design principles (typographic scale, palette, spacing, radius, shadows) and posts them on the issue. These seed the project's eventual design system.

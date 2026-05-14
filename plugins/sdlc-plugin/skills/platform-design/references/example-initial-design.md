@@ -1,6 +1,6 @@
 # Worked Example: Initial Design for a hypothetical "Codeview" project
 
-A condensed run of `/initial-design` on a hypothetical project whose README says:
+A condensed run of `/platform-design` on a hypothetical project whose README says:
 
 > **Codeview** — a tool for inspecting GitHub repositories, with a three-state toggle (Preview / Code / Blame) on every file view. Markdown renders inline. Designed for developers reading other people's code.
 
@@ -169,5 +169,5 @@ Total: ~250 lines of markdown, written in a 30-minute conversation. Light, focus
 1. **Light touch is the point.** The interview is 7 topics, each 3-5 questions. The user's first-stab thinking gets captured; perfection isn't the goal.
 2. **Defaults are surfaced, not hidden.** "Single-region us-east-1 for v1" is an explicit ADR with a re-decide trigger, not a buried assumption.
 3. **Open questions are first-class.** OQ-001/002/003 capture what the team deliberately didn't decide — and what would unblock the decision.
-4. **The output informs downstream work.** When `/create-requirements` runs next, it can ask requirement questions in the context of "this is a serverless web app on Vercel with GitHub OAuth and Postgres" — not "what kind of system is this even?" That's the whole point.
+4. **The output informs downstream work.** When `/requirements-create-from-design` runs next, it can ask requirement questions in the context of "this is a serverless web app on Vercel with GitHub OAuth and Postgres" — not "what kind of system is this even?" That's the whole point.
 5. **The renderer-extension-list decision in ADR-006 resolves a question** that the `create-requirements` worked example later treats as an open question (OQ-005 in that example). In a real flow, the architecture skill would resolve it first and the requirements skill would skip the open question. The two examples are sequential snapshots — different points in time, same project.

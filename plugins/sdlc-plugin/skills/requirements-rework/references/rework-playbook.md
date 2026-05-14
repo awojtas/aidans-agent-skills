@@ -12,9 +12,9 @@ Rework is appropriate when:
 
 Rework is **not** appropriate when:
 
-- The current plan is fine and the user just wants to add features → `/create-requirements` for new requirements, then `/tasks-from-requirements` for new tasks.
-- A single requirement is unclear → `/confirm-requirements` will pressure-test it.
-- The user wants to start over from scratch → `/create-requirements`, deliberately ignoring the existing docs.
+- The current plan is fine and the user just wants to add features → `/requirements-create-from-design` for new requirements, then `/tasks-create-from-requirements` for new tasks.
+- A single requirement is unclear → `/requirements-validation` will pressure-test it.
+- The user wants to start over from scratch → `/requirements-create-from-design`, deliberately ignoring the existing docs.
 - A bug emerged in shipped code → fix the bug, don't rework the requirement.
 
 ## The mindset
@@ -95,7 +95,7 @@ After the existing-thing assessment, ask: **what's missing?**
 - Are there new requirements the new direction needs that weren't previously captured?
 - Are there new tasks (GitHub issues) that didn't exist in the old plan?
 
-For new requirements: write them following the templates the `create-requirements` skill uses (`functional-domain.md`, `nfr-section.md`). Add them to the appropriate file in `docs/requirements/`. Don't bulk-elicit — keep this pass tight; if the gap is huge, finish the rework and follow up with a full `/create-requirements` session.
+For new requirements: write them following the templates the `create-requirements` skill uses (`functional-domain.md`, `nfr-section.md`). Add them to the appropriate file in `docs/requirements/`. Don't bulk-elicit — keep this pass tight; if the gap is huge, finish the rework and follow up with a full `/requirements-create-from-design` session.
 
 For new tasks: draft them following the issue template (see the `tasks-from-requirements` skill's `issue-template.md`). Stage them appropriately — if they're Phase 1 human-required work, label and milestone accordingly.
 

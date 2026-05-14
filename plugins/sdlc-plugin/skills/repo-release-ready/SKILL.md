@@ -70,7 +70,7 @@ Compute three values once and reuse them everywhere:
 ```bash
 git checkout main
 git pull --ff-only
-git checkout -b chore/repo-level-up
+git checkout -b chore/repo-release-ready
 ```
 
 All file scaffolding goes on this branch. Don't push directly to `main`.
@@ -114,12 +114,12 @@ The PR template overwrite happens in Step 3 already. For AGENTS.md:
 ```bash
 git add .github/ AGENTS.md .gitguardian.yaml
 git commit -m "Level up: promotion flow, secret scan, rulesets, PR template"
-git push -u origin chore/repo-level-up
+git push -u origin chore/repo-release-ready
 
 gh pr create \
   --base main \
   --title "Repo level-up: release branches, promotion flow, security scanning" \
-  --body "Adds the maturity layer scaffolded by /repo-level-up. See the linked 'Checklist for Human Admin' issue (opened after merge) for the remaining manual setup steps."
+  --body "Adds the maturity layer scaffolded by /repo-release-ready. See the linked 'Checklist for Human Admin' issue (opened after merge) for the remaining manual setup steps."
 ```
 
 **Do not auto-merge.** Let the user review and merge themselves — this PR drops branch-protection-relevant scaffolding and they'll want to eyeball it.

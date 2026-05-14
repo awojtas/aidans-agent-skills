@@ -92,7 +92,7 @@ Keep the theme short (under 30 chars). The phase number is what drives the task 
 
 Always exists. Always majority-`human-required`. Reasoning in `human-required-checklist.md`.
 
-If a project has zero foundation/setup work (rare — usually because `/repo-bootstrap` and `/repo-level-up` already ran), Phase 1 can be lighter, but it always contains the human decisions / accounts / secrets that the rest depend on.
+If a project has zero foundation/setup work (rare — usually because `/repo-bootstrap` and `/repo-release-ready` already ran), Phase 1 can be lighter, but it always contains the human decisions / accounts / secrets that the rest depend on.
 
 ### How many phases?
 

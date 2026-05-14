@@ -10,12 +10,12 @@ Before any change, list open and recently closed issues:
 # Open issues, with labels, milestone, and full body
 gh issue list --state open --limit 200 \
   --json number,title,labels,milestone,body,assignees \
-  > /tmp/rework-open.json
+  > /tmp/requirements-rework-open.json
 
 # Recently closed, in case the rework reopens something
 gh issue list --state closed --limit 50 \
   --json number,title,labels,milestone,closedAt,stateReason \
-  > /tmp/rework-closed.json
+  > /tmp/requirements-rework-closed.json
 
 # Find issues with linked PRs — closing these needs extra care
 gh search prs --state open --json number,title,body --jq '
@@ -97,7 +97,7 @@ Update labels and milestone afterward if the rework places the task in a new pha
 
 ## Creating new issues
 
-New issues from rework follow the same template as `/tasks-from-requirements` (see the `tasks-from-requirements` skill's `references/issue-template.md`). The only difference is the **`Context` section** — the new issue should cite the rework session as its origin:
+New issues from rework follow the same template as `/tasks-create-from-requirements` (see the `tasks-from-requirements` skill's `references/issue-template.md`). The only difference is the **`Context` section** — the new issue should cite the rework session as its origin:
 
 ```markdown
 ## Context
@@ -110,7 +110,7 @@ New issues from rework follow the same template as `/tasks-from-requirements` (s
 - **Origin:** Rework session YYYY-MM-DD — see session log.
 ```
 
-The `Origin: Rework session ...` line is what distinguishes a rework-born task from a `/tasks-from-requirements`-born task in the audit trail.
+The `Origin: Rework session ...` line is what distinguishes a rework-born task from a `/tasks-create-from-requirements`-born task in the audit trail.
 
 ```bash
 gh issue create \
@@ -166,7 +166,7 @@ gh issue edit "$n3" --body-file <(sed "s/BLOCKER_PLACEHOLDER/#$n1/g" /tmp/5.3.md
 gh issue edit "$n1" --body-file <(sed "s/BLOCKS_PLACEHOLDER/#$n2, #$n3/g" /tmp/5.1.md)
 ```
 
-Same pattern `/tasks-from-requirements` uses; reused here verbatim.
+Same pattern `/tasks-create-from-requirements` uses; reused here verbatim.
 
 ## What never to do
 

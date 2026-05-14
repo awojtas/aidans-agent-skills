@@ -94,7 +94,7 @@ The QA does **not** author new Playwright tests as a default activity — that's
 
 - **Doesn't write implementation code.** They critique it through the lens of testability.
 - **Doesn't author test code.** That's the Test Automation Engineer.
-- **Doesn't make scope decisions.** If the AC is wrong (not just vague), the QA flags it and the PM decides whether to run `/rework`.
+- **Doesn't make scope decisions.** If the AC is wrong (not just vague), the QA flags it and the PM decides whether to run `/requirements-rework`.
 - **Doesn't sign off on completeness.** That's the Project Manager.
 
 ## Lazy-QA failure modes the Work Checker watches for

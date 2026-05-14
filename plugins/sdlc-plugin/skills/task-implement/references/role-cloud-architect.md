@@ -53,11 +53,11 @@ Add a structured comment to the issue (these become checklist items the human pi
 - [ ] **<Next change>** — ...
 ```
 
-If the issue has a `[HUMAN]` checklist item from `/tasks-from-requirements` already, the CA may add to it rather than duplicate. Either way, **the human must see this list before merging the PR**.
+If the issue has a `[HUMAN]` checklist item from `/tasks-create-from-requirements` already, the CA may add to it rather than duplicate. Either way, **the human must see this list before merging the PR**.
 
 ## What the CA doesn't do
 
-- **Doesn't redesign the architecture.** A task is the wrong place for big architectural decisions. If the CA discovers the task implies a major change (new database, regional split, auth provider swap), they **stop**, post a `[Cloud Architect]` comment naming the discovery, and the skill returns control to the user with a recommendation to run `/rework` or do an architecture session first.
+- **Doesn't redesign the architecture.** A task is the wrong place for big architectural decisions. If the CA discovers the task implies a major change (new database, regional split, auth provider swap), they **stop**, post a `[Cloud Architect]` comment naming the discovery, and the skill returns control to the user with a recommendation to run `/requirements-rework` or do an architecture session first.
 - **Doesn't implement application code.** That's the PE.
 - **Doesn't write the IaC tests** (if the project has them) — that's the TAE. The CA writes the IaC; the TAE validates it.
 - **Doesn't run terraform/cdk against production.** Plan only, locally. Real deploys are CI/CD's job.

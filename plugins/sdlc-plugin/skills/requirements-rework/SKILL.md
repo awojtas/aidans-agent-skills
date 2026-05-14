@@ -30,14 +30,14 @@ Rework is the explicit "everyone catches up to reality" step. It's interactive, 
 
 | File                                            | When to consult                                                                |
 |-------------------------------------------------|---------------------------------------------------------------------------------|
-| `references/rework-playbook.md`                 | The four-pass model. When rework is the right tool vs. one of the other skills. |
+| `references/requirements-rework-playbook.md`                 | The four-pass model. When rework is the right tool vs. one of the other skills. |
 | `references/cleanup-principles.md`              | Delete vs. archive vs. keep decision tree. Issue closure principles.            |
 | `references/github-issue-management.md`         | `gh` CLI patterns for close/update/reopen/create with audit-trail comments.    |
 | `references/example-rework-session.md`          | Worked example: narrow rework (dynamic-manifest discovery) — full session.     |
 
 ## Prerequisites
 
-1. **`docs/requirements/` exists and has content.** If not, this is the wrong skill — point at `/create-requirements` to elicit requirements first.
+1. **`docs/requirements/` exists and has content.** If not, this is the wrong skill — point at `/requirements-create-from-design` to elicit requirements first.
 2. **`gh` CLI authenticated with write access** to the repo. The skill closes/edits issues; without write access, only the doc side can run.
 3. **Working directory is inside the target git repo.**
 4. **The user can name the rework rationale in one or two sentences.** If they can't, push back — *"What did you discover? Be specific. We're not doing a rework on vague feeling."* Vague rationale produces vague rework.
@@ -145,7 +145,7 @@ This is usually a short list, often empty. Don't over-fish.
 
 Now the existing-stuff assessment is complete. Ask: *what's missing?*
 
-- **New requirements** the new direction needs that weren't captured? Draft them following the templates the `create-requirements` skill uses. If the gap is huge (>5 new requirements), stop and suggest a separate `/create-requirements` session — rework is for narrow corrections, not re-scoping.
+- **New requirements** the new direction needs that weren't captured? Draft them following the templates the `create-requirements` skill uses. If the gap is huge (>5 new requirements), stop and suggest a separate `/requirements-create-from-design` session — rework is for narrow corrections, not re-scoping.
 - **New tasks (GitHub issues)** that didn't exist in the old plan? Draft them following the standard issue template, citing the rework session as the origin in their `Context` section.
 
 ### Step 8: Proposed change set + approval
@@ -245,11 +245,11 @@ The session log is the durable audit trail. Future readers reconstructing "why d
 Print a tight summary to the user:
 
 - Counts (requirements changed, issues changed) with deltas.
-- Any items that need follow-up — for example, *"Falsified assumption A-003 was caught; one downstream requirement (FR-…) was updated to match. If you find more downstream effects later, a fresh `/confirm-requirements` pass on the affected file will catch them."*
+- Any items that need follow-up — for example, *"Falsified assumption A-003 was caught; one downstream requirement (FR-…) was updated to match. If you find more downstream effects later, a fresh `/requirements-validation` pass on the affected file will catch them."*
 - Pointer to next step:
   - Resume implementation if the plan is now consistent.
-  - `/tasks-from-requirements` if the rework created new requirements that need staging into issues (only if Pass 4 added many new requirements — typically not needed).
-  - `/confirm-requirements` if the rework left several requirements still Draft.
+  - `/tasks-create-from-requirements` if the rework created new requirements that need staging into issues (only if Pass 4 added many new requirements — typically not needed).
+  - `/requirements-validation` if the rework left several requirements still Draft.
 
 Show the diff (`git status`, `git diff`). Don't auto-commit — let the user review and commit.
 
@@ -258,19 +258,19 @@ Show the diff (`git status`, `git diff`). Don't auto-commit — let the user rev
 - **No silent destructive operations.** Every delete and every issue-close is named in the change set and approved before execution.
 - **No archive-by-default.** Archive needs explicit posterity justification per `cleanup-principles.md`. The default for "no longer relevant" is delete.
 - **No `wontfix` labels** on issues. Close them with a clear closure comment instead.
-- **No new requirement elicitation from scratch.** If the rework triggers a need for wholesale new requirements, finish the rework narrowly and point the user at `/create-requirements` for the bigger conversation.
+- **No new requirement elicitation from scratch.** If the rework triggers a need for wholesale new requirements, finish the rework narrowly and point the user at `/requirements-create-from-design` for the bigger conversation.
 - **No code changes.** Rework is about docs and issues. Code changes are a downstream consequence — they happen in implementation sessions against the updated issues.
 - **No `gh issue delete`.** Closure is the destructive operation; delete loses the audit trail.
 - **No partial commits during execution.** Run the full execution batch; let the user commit the whole rework as one logical change in git.
 
 ## Edge cases
 
-- **`docs/requirements/` is missing.** Stop and point at `/create-requirements`.
+- **`docs/requirements/` is missing.** Stop and point at `/requirements-create-from-design`.
 - **`gh` not authenticated.** Can do the doc side of the rework but not the issue side. Warn clearly; ask the user to authenticate and re-run if both are needed.
 - **No open issues yet.** The rework is doc-only. Skip Pass 3; the workflow still works.
 - **Issue has linked open PR.** Surface explicitly before closing — *"#X has an open PR #Y. Close PR first / merge PR first / leave issue open until PR resolved — which?"*
 - **Rework rationale changes mid-session.** Stop. Resync. The rationale is the anchor for everything else; if it shifts, prior passes' classifications may be wrong.
 - **User wants to bulk-classify everything as Delete** (e.g. *"just close all Phase 4 issues"*). Push back. Each issue gets a deliberate classification, with the reason captured. Bulk close is for the script-driven step 10, not for the assessment.
-- **The change set is enormous** (rework touches > 50% of requirements). This is a smell — the requirements doc may have been wrong, not just stale. Surface to the user: *"This rework is touching more than half the doc. Are we sure rework is the right tool, or is this a re-scoping that needs `/create-requirements`?"*
+- **The change set is enormous** (rework touches > 50% of requirements). This is a smell — the requirements doc may have been wrong, not just stale. Surface to the user: *"This rework is touching more than half the doc. Are we sure rework is the right tool, or is this a re-scoping that needs `/requirements-create-from-design`?"*
 - **The user wants to delete `07-assumptions.md` entries for falsified assumptions.** Don't. Falsified assumptions stay (as learning record). The Falsified status is the signal.
 - **The user wants to delete `08-open-questions.md` Resolved entries.** Don't. Resolved questions are decision history.

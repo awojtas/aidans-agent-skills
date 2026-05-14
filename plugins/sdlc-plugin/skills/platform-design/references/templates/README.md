@@ -38,6 +38,6 @@ Major open questions outstanding: see `05-open-questions.md`.
 
 Once this folder has enough content that requirements work isn't blocked by architectural ambiguity:
 
-1. Run `/create-requirements` to elicit functional + non-functional requirements (which will reference this folder).
+1. Run `/requirements-create-from-design` to elicit functional + non-functional requirements (which will reference this folder).
 2. As requirements firm up, revisit this folder — some open questions will resolve, some new ones will emerge.
-3. When implementation starts (`/implement-task`), the Principal Engineer, Cloud Architect, and UX Designer all read this folder.
+3. When implementation starts (`/task-implement`), the Principal Engineer, Cloud Architect, and UX Designer all read this folder.

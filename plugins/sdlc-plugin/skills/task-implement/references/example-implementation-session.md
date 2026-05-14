@@ -1,6 +1,6 @@
 # Worked Example: Implementing issue #42
 
-A condensed run of `/implement-task 42` on a hypothetical issue: *"2.1 Implement `POST /api/auth/signin` endpoint with email+password"*. Issue body says it implements FR-AUTH-001 and FR-AUTH-002. Phase 0 through Phase 12. Each persona's GitHub comment is shown verbatim; the orchestrator's state shown inline.
+A condensed run of `/task-implement 42` on a hypothetical issue: *"2.1 Implement `POST /api/auth/signin` endpoint with email+password"*. Issue body says it implements FR-AUTH-001 and FR-AUTH-002. Phase 0 through Phase 12. Each persona's GitHub comment is shown verbatim; the orchestrator's state shown inline.
 
 The example is condensed (no full code shown) — purpose is to demonstrate the orchestration pattern, the comment trail, the Work Checker findings, the Project Manager bounce-back, and how the UX Designer's two phases handle a backend-only task without manufacturing work.
 
@@ -408,7 +408,7 @@ PE posts:
 
 ## Phase 11 — Pending
 
-Phase 11 only runs if a human reviewer comments. The orchestrator pauses here. The user re-invokes `/implement-task 42` after human review lands to resume.
+Phase 11 only runs if a human reviewer comments. The orchestrator pauses here. The user re-invokes `/task-implement 42` after human review lands to resume.
 
 ---
 
@@ -430,7 +430,7 @@ Orchestrator posts:
 >
 > PR is ready for human review and merge.
 >
-> When review feedback lands, re-invoke `/implement-task 42` to run Phase 11 (address feedback).
+> When review feedback lands, re-invoke `/task-implement 42` to run Phase 11 (address feedback).
 
 Terminal summary to the user matches the above.
 

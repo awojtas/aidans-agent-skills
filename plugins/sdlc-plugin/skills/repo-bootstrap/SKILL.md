@@ -130,7 +130,7 @@ Print a short summary:
 - Repo URL: `https://github.com/<owner>/<slug>`
 - Local path: `~/src/<slug>`
 - Files scaffolded (a flat list)
-- One-line pointer: _"When you're ready to add a branching strategy, CI, deploys, etc., run `/repo-level-up`."_
+- One-line pointer: _"When you're ready to add a branching strategy, CI, deploys, etc., run `/repo-release-ready`."_
 
 ## Strict non-goals
 
@@ -146,7 +146,7 @@ Do **not** add any of the following from this skill. They belong to `repo-level-
 - Issue and PR labels beyond what GitHub creates by default
 - Any language-specific tooling (package.json, pyproject.toml, Cargo.toml, etc.) — the user picks the stack later
 
-If the user asks for any of these during the bootstrap, acknowledge the request and say it will be handled by `/repo-level-up` once the repo is up.
+If the user asks for any of these during the bootstrap, acknowledge the request and say it will be handled by `/repo-release-ready` once the repo is up.
 
 ## Edge cases
 

@@ -17,7 +17,7 @@ Read the **Statement** verbatim back to the user. Ask:
 
 If the user pauses or says "actually, we should..." — capture the edit and re-read the new version.
 
-If the architecture has drifted away from what the requirement assumed, this is a cascade signal — surface it. The requirement may need an Update, or a previously-accepted architectural decision may have invalidated a downstream requirement, and that needs a `/rework` rather than just a confirmation tweak.
+If the architecture has drifted away from what the requirement assumed, this is a cascade signal — surface it. The requirement may need an Update, or a previously-accepted architectural decision may have invalidated a downstream requirement, and that needs a `/requirements-rework` rather than just a confirmation tweak.
 
 ### Pass 2 — Fit criterion is measurable?
 

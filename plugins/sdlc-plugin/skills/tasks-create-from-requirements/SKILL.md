@@ -36,8 +36,8 @@ The middle path: produce a **small-batch** plan, phase by phase, that's concrete
 
 ## Prerequisites
 
-1. **`docs/requirements/` exists and has content.** If it's missing or all stub templates, stop and point the user at `/create-requirements`.
-2. **Most requirements are at Status: Reviewed (or better).** If the doc is mostly `Draft`, the plan will inherit ambiguity. Suggest a pass of `/confirm-requirements` first.
+1. **`docs/requirements/` exists and has content.** If it's missing or all stub templates, stop and point the user at `/requirements-create-from-design`.
+2. **Most requirements are at Status: Reviewed (or better).** If the doc is mostly `Draft`, the plan will inherit ambiguity. Suggest a pass of `/requirements-validation` first.
 3. **`gh` CLI authenticated with write access** to the target repo. `gh auth status` should show repo write/admin scope. Without it, the skill can produce the plan markdown but cannot create issues.
 4. **Working directory is inside the target git repo.** `gh` uses the local git remote to know which repo to write to.
 
@@ -61,7 +61,7 @@ Tasks-from-requirements progress:
 
 **First, if `docs/architecture/` exists, read it.** The recorded architectural decisions (`04-decisions.md`) and integrations list (`03-external-integrations.md`) drive which Phase 1 [HUMAN] tasks the plan needs — account creation for each integration, secrets for the chosen stack, hosting setup per the ADRs. Open questions in `docs/architecture/05-open-questions.md` may also become [HUMAN] decision tasks in Phase 1 if they block downstream work.
 
-If `docs/architecture/` is missing, **mention it to the user** before planning — *"No architecture folder. The plan will inherit assumptions about stack and hosting from `docs/requirements/06-constraints.md` and the existing code. Consider running `/initial-design` first to make those choices explicit."* If the user proceeds, the plan defaults to whatever the code + constraints imply.
+If `docs/architecture/` is missing, **mention it to the user** before planning — *"No architecture folder. The plan will inherit assumptions about stack and hosting from `docs/requirements/06-constraints.md` and the existing code. Consider running `/platform-design` first to make those choices explicit."* If the user proceeds, the plan defaults to whatever the code + constraints imply.
 
 Then walk `docs/requirements/`. Build an in-memory model from:
 
@@ -232,16 +232,16 @@ Also commit the `docs/implementation-plan.md` file so the plan is preserved in g
 
 - **No phase labels.** Phases are milestones; resist user requests to add `phase:1` or `phase:2` labels.
 - **No code generation.** This is a planning skill. Actual implementation happens after issues are created, in separate sessions.
-- **No requirement editing.** If decomposition surfaces that a requirement is unclear or wrong, point the user at `/confirm-requirements` rather than fixing in place.
+- **No requirement editing.** If decomposition surfaces that a requirement is unclear or wrong, point the user at `/requirements-validation` rather than fixing in place.
 - **No auto-assigning issues.** Assignment is a human decision. (The skill may suggest "this is a good candidate for the AI" via the absence of `human-required`, but doesn't assign.)
 - **No `Won't (this release)` items.** Explicitly out of scope per the requirements doc; no issues created for them.
 - **No size labels** (S/M/L), no **phase labels**, no `wip`/`in-progress` labels (those are PR states).
 
 ## Edge cases
 
-- **`docs/requirements/` is missing.** Stop and point at `/create-requirements`.
-- **`docs/requirements/` is all stubs.** Stop and point at `/create-requirements` to populate.
-- **Most requirements are `Draft`.** Suggest `/confirm-requirements` to firm them up first, but offer to plan anyway with all-issues-marked-Draft.
+- **`docs/requirements/` is missing.** Stop and point at `/requirements-create-from-design`.
+- **`docs/requirements/` is all stubs.** Stop and point at `/requirements-create-from-design` to populate.
+- **Most requirements are `Draft`.** Suggest `/requirements-validation` to firm them up first, but offer to plan anyway with all-issues-marked-Draft.
 - **`gh` not authenticated.** Produce the plan markdown but skip Steps 7-9. Tell the user to authenticate and re-run.
 - **Labels exist with different colours.** Leave them alone — the user has a system, don't override it.
 - **Existing issues with matching titles.** Surface them. Ask: skip (don't recreate), update (re-edit the body), or create-with-suffix (e.g., "1.1 [HUMAN] Decide on browser support matrix (replan 2026-05-13)").

@@ -1,20 +1,20 @@
 ---
 name: requirements-add
-description: Adds a single new requirement to an existing docs/requirements/ tree. Checks for duplicates and conflicts against the requirements already on disk, decides interactively with the user whether the new requirement extends an existing file or stands as a new one, and elaborates the requirement in depth (statement, fit criterion, rationale, traces-to, assumptions, open questions) using the same disciplines as /create-requirements but at single-requirement granularity. For when one new requirement surfaces *after* the initial bulk elicitation — not for the whole-tree case (that's /create-requirements). Trigger phrases include "add a requirement", "add this requirement", "we need a new requirement for X", "document this new requirement", "capture this as a requirement", "I forgot a requirement".
+description: Adds a single new requirement to an existing docs/requirements/ tree. Checks for duplicates and conflicts against the requirements already on disk, decides interactively with the user whether the new requirement extends an existing file or stands as a new one, and elaborates the requirement in depth (statement, fit criterion, rationale, traces-to, assumptions, open questions) using the same disciplines as /requirements-create-from-design but at single-requirement granularity. For when one new requirement surfaces *after* the initial bulk elicitation — not for the whole-tree case (that's /requirements-create-from-design). Trigger phrases include "add a requirement", "add this requirement", "we need a new requirement for X", "document this new requirement", "capture this as a requirement", "I forgot a requirement".
 ---
 
 Adds **one** new requirement to an established `docs/requirements/` tree, with a duplicate/conflict pre-check and proper elaboration.
 
 ## When to use this skill vs others
 
-- **No requirements tree yet?** Use `/create-requirements` instead.
+- **No requirements tree yet?** Use `/requirements-create-from-design` instead.
 - **Tree exists, single new requirement to add?** This skill.
-- **A discovery is invalidating the existing plan?** Use `/rework`.
-- **Re-validating existing requirements?** Use `/confirm-requirements`.
+- **A discovery is invalidating the existing plan?** Use `/requirements-rework`.
+- **Re-validating existing requirements?** Use `/requirements-validation`.
 
 ## Workflow
 
-1. **Read `docs/requirements/`.** If it doesn't exist, stop and tell the user to run `/create-requirements` first. Read `docs/architecture/` too if it's present — the new requirement must respect the recorded architecture.
+1. **Read `docs/requirements/`.** If it doesn't exist, stop and tell the user to run `/requirements-create-from-design` first. Read `docs/architecture/` too if it's present — the new requirement must respect the recorded architecture.
 
 2. **Capture the new requirement in one or two lines from the user.** The raw ask, not the polished form. You'll elaborate it later.
 
@@ -30,7 +30,7 @@ Adds **one** new requirement to an established `docs/requirements/` tree, with a
    - Non-functional → which quality attribute file in `04-non-functional/`?
    - Edge case: the new requirement spans multiple domains. Propose splitting it.
 
-6. **Elaboration interview.** Use the same disciplines as `/create-requirements`, scoped to one requirement:
+6. **Elaboration interview.** Use the same disciplines as `/requirements-create-from-design`, scoped to one requirement:
    - **Statement** — RFC 2119 verb (SHALL / SHOULD / MAY).
    - **Fit criterion** — observable, measurable, verifiable.
    - **Rationale** — why this requirement exists.
@@ -39,7 +39,7 @@ Adds **one** new requirement to an established `docs/requirements/` tree, with a
    - **New assumptions** — capture into `07-assumptions.md` if any surface.
    - **New open questions** — capture into `08-open-questions.md` if any surface.
    - **MoSCoW** — Must / Should / Could / Won't. Pressure-test Musts honestly.
-   - **Status** — default `Draft`; user can promote later via `/confirm-requirements`.
+   - **Status** — default `Draft`; user can promote later via `/requirements-validation`.
 
 7. **INCOSE sanity check.** Quick pass against necessary / unambiguous / singular / verifiable / traceable. Push back if any fail.
 
@@ -51,8 +51,8 @@ Adds **one** new requirement to an established `docs/requirements/` tree, with a
 
 ## Guardrails
 
-- **One requirement per invocation.** If the user has five new ones, run the skill five times. Bulk additions belong in `/create-requirements`.
-- **Don't auto-promote status.** New requirements start `Draft`. Status changes are `/confirm-requirements`'s job.
+- **One requirement per invocation.** If the user has five new ones, run the skill five times. Bulk additions belong in `/requirements-create-from-design`.
+- **Don't auto-promote status.** New requirements start `Draft`. Status changes are `/requirements-validation`'s job.
 - **Don't bypass the duplicate check** — it's the whole reason this skill exists rather than the user just editing a file by hand.
 - **Don't restructure the tree.** If the new requirement doesn't fit the existing organisation, ask the user before reorganising — don't silently move files.
 - **Respect the architecture.** If `docs/architecture/` is present and the new requirement is impossible under the recorded architecture, surface that before writing anything.
@@ -63,4 +63,4 @@ Adds **one** new requirement to an established `docs/requirements/` tree, with a
 - Any new assumptions / open questions appended to their registers.
 - Any updated traces-to lines on related requirements.
 - A session-log entry.
-- A short summary to the user: ID assigned, where it lives, status (`Draft`), what to do next (typically: `/confirm-requirements` later to advance the status).
+- A short summary to the user: ID assigned, where it lives, status (`Draft`), what to do next (typically: `/requirements-validation` later to advance the status).

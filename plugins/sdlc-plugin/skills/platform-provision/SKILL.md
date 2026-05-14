@@ -11,7 +11,7 @@ Reads the architecture, works out what cloud platforms / SaaS products / observa
 
 ## Workflow
 
-1. **Read `docs/architecture/`.** If it doesn't exist, stop and tell the user to run `/initial-design` first — provisioning without a recorded architecture is guessing.
+1. **Read `docs/architecture/`.** If it doesn't exist, stop and tell the user to run `/platform-design` first — provisioning without a recorded architecture is guessing.
 
 2. **Inventory what needs to be provisioned.** Walk the architecture and list every external thing the system depends on to run, deploy, observe, or persist. Hosting, observability, databases, auth, email, queues, AI providers, CDN, analytics, search — anything. Don't restrict to a fixed catalogue: anything the architecture names is in scope.
 
@@ -45,7 +45,7 @@ Reads the architecture, works out what cloud platforms / SaaS products / observa
    - Which human-required tasks are still outstanding, if any.
    - A link to the provisioning-checklist GH issue created in Step 5, and whether it's still open. Close the issue (or note the remaining items inline) once provisioning is complete.
 
-   This is the bridge between the architecture doc and the actual state of the cloud. Future skills (`/implement-task`, `/rework`, debugging sessions) read this to know what's real.
+   This is the bridge between the architecture doc and the actual state of the cloud. Future skills (`/task-implement`, `/requirements-rework`, debugging sessions) read this to know what's real.
 
 ## Guardrails
 

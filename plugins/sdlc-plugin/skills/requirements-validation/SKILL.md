@@ -1,11 +1,11 @@
 ---
 name: confirm-requirements
-description: Interactively validates and refines the requirements already documented in docs/requirements/. Starts by inventorying every file and showing the user a directory-style listing with status counts (Drafts vs Reviewed, open vs resolved questions, validated vs unvalidated assumptions), then asks "All requirements" or "Specific requirement(s)" to scope the session. For each requirement in scope, runs a five-pass confirmation (still-accurate / measurable / assumptions-still-hold / open-questions-resolved / INCOSE-quality), echoing the requirement back to the user, capturing edits, advancing status (Draft → Reviewed → Approved) only with explicit confirmation, and updating linked assumption and open-question entries. Appends a session log to docs/requirements/session-log.md. Companion to /create-requirements — that one elicits, this one refines. Use when the user says "confirm requirements", "review requirements", "validate requirements", "pressure-test what we have", "walk through the requirements", "go through each requirement", or wants to advance requirements from Draft to Reviewed.
+description: Interactively validates and refines the requirements already documented in docs/requirements/. Starts by inventorying every file and showing the user a directory-style listing with status counts (Drafts vs Reviewed, open vs resolved questions, validated vs unvalidated assumptions), then asks "All requirements" or "Specific requirement(s)" to scope the session. For each requirement in scope, runs a five-pass confirmation (still-accurate / measurable / assumptions-still-hold / open-questions-resolved / INCOSE-quality), echoing the requirement back to the user, capturing edits, advancing status (Draft → Reviewed → Approved) only with explicit confirmation, and updating linked assumption and open-question entries. Appends a session log to docs/requirements/session-log.md. Companion to /requirements-create-from-design — that one elicits, this one refines. Use when the user says "confirm requirements", "review requirements", "validate requirements", "pressure-test what we have", "walk through the requirements", "go through each requirement", or wants to advance requirements from Draft to Reviewed.
 ---
 
 # Confirming an existing requirements specification
 
-This skill validates requirements that have already been written (by `/create-requirements` or by hand) and helps them advance through the status lifecycle. It is **highly interactive** and **edits files in place**. Every change requires user confirmation; nothing auto-advances silently.
+This skill validates requirements that have already been written (by `/requirements-create-from-design` or by hand) and helps them advance through the status lifecycle. It is **highly interactive** and **edits files in place**. Every change requires user confirmation; nothing auto-advances silently.
 
 ## Why this skill exists
 
@@ -13,7 +13,7 @@ A requirement that was right when it was written may not be right now. Assumptio
 
 ## Operating mode
 
-Same operating principles as `/create-requirements`:
+Same operating principles as `/requirements-create-from-design`:
 
 - Small focused question batches.
 - Echo each requirement back before discussing it.
@@ -30,12 +30,12 @@ Same operating principles as `/create-requirements`:
 | `references/incose-checklist.md`                | Per-requirement and set-level quality checks. Smell list.             |
 | `references/example-confirmation-session.md`    | Worked before/after example of confirming FR-FILEVIEW-004.            |
 
-The sibling `create-requirements` skill (same plugin) carries `example-worked-requirement.md` showing the full multi-file requirement set this confirmation example builds on — use as additional context: `../create-requirements/references/example-worked-requirement.md`.
+The sibling `create-requirements` skill (same plugin) carries `example-worked-requirement.md` showing the full multi-file requirement set this confirmation example builds on — use as additional context: `../requirements-create-from-design/references/example-worked-requirement.md`.
 
 ## Prerequisites
 
-1. **`docs/requirements/` exists** in the working directory. If it doesn't, stop and tell the user to run `/create-requirements` first.
-2. **The doc has at least some content.** If `docs/requirements/` exists but every file is just the template stub, the user should keep eliciting before confirming — stop and suggest `/create-requirements` to continue.
+1. **`docs/requirements/` exists** in the working directory. If it doesn't, stop and tell the user to run `/requirements-create-from-design` first.
+2. **The doc has at least some content.** If `docs/requirements/` exists but every file is just the template stub, the user should keep eliciting before confirming — stop and suggest `/requirements-create-from-design` to continue.
 3. **The user has time for the session.** Set expectation: 5–10 minutes per requirement walked carefully. A full pass on a 30-requirement project is 2–5 hours. Most sessions cover one file or a handful of requirements.
 
 ## Workflow
@@ -55,7 +55,7 @@ Confirmation progress:
 
 **First, if `docs/architecture/` exists, read it.** The architectural design is the context against which requirements are confirmed. If the architecture has changed since requirements were written (newer dates in `docs/architecture/04-decisions.md`, or open questions resolved/added in `docs/architecture/05-open-questions.md`), some requirements may now drift from the architecture — surface those during Pass 1 (still-accurate) of the confirmation.
 
-If `docs/architecture/` doesn't exist, **flag it** — *"Confirmation pass running without an architectural reference. Consider running `/initial-design` after this session to capture the technical shape; many of the assumptions in this requirements set are likely architectural-shape assumptions."*
+If `docs/architecture/` doesn't exist, **flag it** — *"Confirmation pass running without an architectural reference. Consider running `/platform-design` after this session to capture the technical shape; many of the assumptions in this requirements set are likely architectural-shape assumptions."*
 
 Then walk `docs/requirements/`. For each file, compute:
 
@@ -191,7 +191,7 @@ Show the diff (`git status` + a summary of what changed) and let the user commit
 
 ## Strict non-goals for this skill
 
-- **No new feature elicitation.** If the user wants to add features, point them at `/create-requirements`. This skill confirms what exists; eliciting is the other skill's job.
+- **No new feature elicitation.** If the user wants to add features, point them at `/requirements-create-from-design`. This skill confirms what exists; eliciting is the other skill's job.
 - **No silent edits.** Every requirement change is echoed back to the user; every status advancement is explicitly confirmed.
 - **No auto-commit.** Show the diff; let the user commit.
 - **No deletion of content.** Falsified assumptions stay (as learning record). Resolved open questions move within the file. Reworked requirement text is preserved in git history.
@@ -199,8 +199,8 @@ Show the diff (`git status` + a summary of what changed) and let the user commit
 
 ## Edge cases
 
-- **`docs/requirements/` doesn't exist.** Stop and suggest `/create-requirements`.
-- **`docs/requirements/` exists but is empty / all template stubs.** Stop and suggest `/create-requirements` to populate before confirming.
+- **`docs/requirements/` doesn't exist.** Stop and suggest `/requirements-create-from-design`.
+- **`docs/requirements/` exists but is empty / all template stubs.** Stop and suggest `/requirements-create-from-design` to populate before confirming.
 - **User asks to confirm a single requirement that doesn't exist.** Search for it case-insensitively (`grep -ri "FR-AUTH-003" docs/requirements/`). If found in a non-obvious file, surface the location and confirm. If not found, list close matches.
 - **A confirmation surfaces a needed change that's bigger than a single requirement** ("this whole NFR category needs revisiting"). Stop the per-requirement pass, surface the systemic issue, and propose either continuing one-by-one or pausing the session and starting a fresh elicitation pass for that area.
 - **Falsified assumption with many downstream requirements** (10+). Don't try to fix all of them in one session. Mark each linked requirement back to Draft, log the cascade in the session log, and propose a follow-up session focused on those Drafts.

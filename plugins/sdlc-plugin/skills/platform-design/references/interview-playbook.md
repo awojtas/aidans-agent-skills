@@ -4,7 +4,7 @@ How to draw an initial architectural design out of a project owner without going
 
 ## Conversational principles
 
-- **Light touch.** This is a first stab; don't pressure-test like `/confirm-requirements` does. Capture the user's current thinking and surface what's clearly unknown.
+- **Light touch.** This is a first stab; don't pressure-test like `/requirements-validation` does. Capture the user's current thinking and surface what's clearly unknown.
 - **One topic at a time.** Don't ask 12 questions about hosting in the same breath as 12 about data. Walk the topics in the order below.
 - **Document open questions immediately.** When the user says "I'm not sure" or "let's figure that out later" — add an entry to `05-open-questions.md` right then.
 - **Default-assume sensibly.** If the project doesn't know, propose a sensible default and tag it as a default-assumption. "I'll assume single-region us-east-1 for v1 unless you'd rather choose differently."

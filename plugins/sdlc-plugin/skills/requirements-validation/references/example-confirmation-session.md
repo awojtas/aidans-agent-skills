@@ -1,6 +1,6 @@
 # Worked Example: Confirming FR-FILEVIEW-004
 
-A before/after walkthrough of one confirmation session. The starting state is taken from the sibling `create-requirements` skill's example: `../create-requirements/references/example-worked-requirement.md` — the GitHub Preview/Code/Blame toggle case.
+A before/after walkthrough of one confirmation session. The starting state is taken from the sibling `create-requirements` skill's example: `../requirements-create-from-design/references/example-worked-requirement.md` — the GitHub Preview/Code/Blame toggle case.
 
 The session here picks up that requirement at **Status: Draft** with one linked open question (OQ-006: should tab switches collapse to a single history entry?), runs the five-pass model, and ends with the requirement at **Status: Reviewed** plus tidied assumptions and open questions.
 

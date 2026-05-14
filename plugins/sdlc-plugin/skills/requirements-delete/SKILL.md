@@ -1,6 +1,6 @@
 ---
 name: requirements-delete
-description: Removes or demotes a single requirement from an existing docs/requirements/ tree, with a full cascade-impact scan first. Asks whether the intent is full deletion or just demotion (lower MoSCoW priority, or moving to Won't). Scans every requirement, assumption, open question, fit criterion, and traces-to chain for references to the target so nothing else silently breaks. Surfaces any open or recently-closed GitHub issues that implement the requirement. Presents the full proposed change set for explicit approval before doing anything destructive. For when one requirement is no longer needed — not for plan-wide pivots (use /rework for those). Trigger phrases include "delete this requirement", "remove FR-X", "we don't need this requirement anymore", "drop this requirement", "demote this requirement", "lower the priority of this requirement".
+description: Removes or demotes a single requirement from an existing docs/requirements/ tree, with a full cascade-impact scan first. Asks whether the intent is full deletion or just demotion (lower MoSCoW priority, or moving to Won't). Scans every requirement, assumption, open question, fit criterion, and traces-to chain for references to the target so nothing else silently breaks. Surfaces any open or recently-closed GitHub issues that implement the requirement. Presents the full proposed change set for explicit approval before doing anything destructive. For when one requirement is no longer needed — not for plan-wide pivots (use /requirements-rework for those). Trigger phrases include "delete this requirement", "remove FR-X", "we don't need this requirement anymore", "drop this requirement", "demote this requirement", "lower the priority of this requirement".
 ---
 
 Removes or demotes **one** requirement from an established `docs/requirements/` tree, after checking that nothing downstream silently breaks.
@@ -8,8 +8,8 @@ Removes or demotes **one** requirement from an established `docs/requirements/` 
 ## When to use this skill vs others
 
 - **One requirement no longer needed?** This skill.
-- **A discovery invalidating the broader plan, with multiple requirements to revisit?** Use `/rework` — it cascades across the whole tree.
-- **Just lowering confidence in a requirement (Approved → Draft)?** That's `/confirm-requirements`'s job, not this one.
+- **A discovery invalidating the broader plan, with multiple requirements to revisit?** Use `/requirements-rework` — it cascades across the whole tree.
+- **Just lowering confidence in a requirement (Approved → Draft)?** That's `/requirements-validation`'s job, not this one.
 
 ## Workflow
 
@@ -61,7 +61,7 @@ Removes or demotes **one** requirement from an established `docs/requirements/` 
 
 ## Guardrails
 
-- **One requirement per invocation.** If multiple are stale, either run the skill multiple times or use `/rework` if they're all part of a single direction-change.
+- **One requirement per invocation.** If multiple are stale, either run the skill multiple times or use `/requirements-rework` if they're all part of a single direction-change.
 - **No silent deletes.** The proposed change set in Step 6 is the gate — never skip straight to execution.
 - **Don't delete a requirement that has open PRs implementing it.** Surface this before doing anything; ask the user how to handle (cancel the PR, complete it then close the issue, etc.).
 - **Don't archive by default.** Git preserves history. Use `docs/archive/` only when the user gives a specific posterity reason (e.g., "we may revisit this in 12 months").

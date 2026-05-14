@@ -1,6 +1,6 @@
 ## Repo Level-Up: Checklist for Human Admin
 
-This repo was just put through `/repo-level-up`. Most of the wiring landed in the PR, but a handful of things need a human with admin permissions on the repo (and on the linked hosting/secret-scanning accounts) to finish. Tick each one when done.
+This repo was just put through `/repo-release-ready`. Most of the wiring landed in the PR, but a handful of things need a human with admin permissions on the repo (and on the linked hosting/secret-scanning accounts) to finish. Tick each one when done.
 
 ### 1. Required GitHub Actions secrets
 

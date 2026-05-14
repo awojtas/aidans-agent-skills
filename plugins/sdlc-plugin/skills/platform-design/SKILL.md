@@ -1,6 +1,6 @@
 ---
 name: initial-design
-description: Produces an initial architectural design for a project — a light first stab capturing the system type, major components, hosting, stack, data model, external integrations, key decisions (as lightweight ADRs), and explicit open questions. Output lands in docs/architecture/ as a small set of focused markdown files. Sits between /repo-bootstrap (just made the repo) and /create-requirements (about to elicit detailed requirements). Without this skill, requirements work happens in an architectural vacuum and bakes in hidden assumptions — e.g. designing a messaging app's requirements without knowing whether it's serial-cable or cloud-infrastructure gives wildly different results. The skill is deliberately light: the goal is "first stab", not "100% baked". Use when the user says "design the architecture", "initial design", "what should we build this on", "sketch the architecture", "what's the technical shape", or when the user has just bootstrapped a repo and hasn't yet thought about the technical shape of what they're building. Companion to /create-requirements (which reads this folder) and /implement-task (whose Principal Engineer, Cloud Architect, and UX Designer all read it).
+description: Produces an initial architectural design for a project — a light first stab capturing the system type, major components, hosting, stack, data model, external integrations, key decisions (as lightweight ADRs), and explicit open questions. Output lands in docs/architecture/ as a small set of focused markdown files. Sits between /repo-bootstrap (just made the repo) and /requirements-create-from-design (about to elicit detailed requirements). Without this skill, requirements work happens in an architectural vacuum and bakes in hidden assumptions — e.g. designing a messaging app's requirements without knowing whether it's serial-cable or cloud-infrastructure gives wildly different results. The skill is deliberately light: the goal is "first stab", not "100% baked". Use when the user says "design the architecture", "initial design", "what should we build this on", "sketch the architecture", "what's the technical shape", or when the user has just bootstrapped a repo and hasn't yet thought about the technical shape of what they're building. Companion to /requirements-create-from-design (which reads this folder) and /task-implement (whose Principal Engineer, Cloud Architect, and UX Designer all read it).
 ---
 
 # Producing an initial architectural design
@@ -141,7 +141,7 @@ Print a tight summary:
 - N decisions captured (ADRs).
 - M open questions captured.
 - Pattern: {{the named pattern from Topic 7}}.
-- **Next step:** run `/create-requirements` next. That skill will read `docs/architecture/` and use it as context — so requirements work will be informed by the technical shape, not done in a vacuum.
+- **Next step:** run `/requirements-create-from-design` next. That skill will read `docs/architecture/` and use it as context — so requirements work will be informed by the technical shape, not done in a vacuum.
 
 Show the diff (`git status` + summary of what was added). Don't auto-commit — let the user review and commit.
 
@@ -161,11 +161,11 @@ If the architectural change is large enough that the existing structure is wrong
 
 ## Strict non-goals
 
-- **No code generation.** This is a design phase. Implementation belongs in `/implement-task`.
+- **No code generation.** This is a design phase. Implementation belongs in `/task-implement`.
 - **No exhaustive design.** The point is a first stab, not a finished design doc. If the conversation runs past 90 minutes, stop and put what's outstanding in `05-open-questions.md`.
 - **No microservices proposals at this stage** unless the user is explicit about why. Default to modular monolith; capture the split as an open question.
 - **No premature optimisation in the design.** No CDN-cache layers proposed before the project has CDN-cacheable content; no separate read/write replicas proposed before the project has measurable read pressure.
-- **No requirement elicitation.** That's `/create-requirements`. If during the interview the user starts giving feature requirements, capture them as a note ("user wants X functionality") and tell them they'll be elicited properly in the next phase.
+- **No requirement elicitation.** That's `/requirements-create-from-design`. If during the interview the user starts giving feature requirements, capture them as a note ("user wants X functionality") and tell them they'll be elicited properly in the next phase.
 - **No pre-emptive ADR creation.** An ADR is recorded *when a decision is made*. Don't pre-create ADRs that say "we'll decide later" — those are open questions, not decisions.
 
 ## Edge cases

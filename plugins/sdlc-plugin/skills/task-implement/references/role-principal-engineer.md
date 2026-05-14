@@ -97,7 +97,7 @@ The PE's job is to not leave any of these. The Work Checker's job is to catch th
 
 If during implementation the PE discovers the requirement is wrong (not just unclear — actually wrong, or impossible, or unsafe), they **stop**, post a `[Principal Engineer]` comment on the GitHub issue explaining what they found, and the skill flow returns control to the user with a recommendation:
 
-- *"This task contradicts requirement FR-XXX. We should run `/rework` before continuing."*
+- *"This task contradicts requirement FR-XXX. We should run `/requirements-rework` before continuing."*
 - *"This task is unsafe (e.g. would expose secrets) — needs a security re-think before continuing."*
 
 The PE doesn't silently implement an unsafe thing. They name the problem and stop.

@@ -122,22 +122,25 @@ Say "work on issue #123" or drop in a GitHub issue link.
 
 ## SDLC bundle — `/sdlc-plugin`
 
-The next twelve skills are bundled together under the **`sdlc-plugin`** marketplace entry. Install once, get the full workflow: bootstrap a fresh repo → level it up to release-ready → sketch the initial architecture → provision the cloud platforms the architecture names → elicit requirements → confirm them → plan the implementation as GitHub issues → implement one issue end-to-end with audited handoffs → check your work whenever you want a focused critical audit → rework when a discovery during implementation changes direction. Plus two single-requirement helpers — `/requirements-add` and `/requirements-delete` — for surgically updating the requirements tree without re-running the bulk elicitation. They're designed to be used in sequence but each is useful on its own.
+The next fifteen skills are bundled together under the **`sdlc-plugin`** marketplace entry. Install once, get the full workflow: bootstrap a fresh repo → draft a high-level solution design → flesh out the platform architecture → provision the cloud platforms → verify the platform → harden the repo for release → derive requirements from the design → validate them → plan the implementation as GitHub issues → implement one issue end-to-end with audited handoffs. Plus five ad-hoc tools — `/status-help` (where am I?), `/requirements-add` and `/requirements-delete` (surgical edits), `/ai-check-work` (generic second-pass audit), and `/requirements-rework` (course-correct on discovery). Designed to be used in sequence but each is useful on its own.
 
-| Order | Skill                                    | What it produces                                           |
-|-------|------------------------------------------|------------------------------------------------------------|
-| 1     | [`/repo-bootstrap`](#repo-bootstrap-repo-bootstrap)             | A new private GitHub repo, cloned to `~/src/<name>`, with starter files. |
-| 2     | [`/repo-level-up`](#repo-level-up-repo-level-up)               | Release branches, promotion workflows, secret scanning, branch protections. |
-| 3     | [`/initial-design`](#initial-design-initial-design)             | `docs/architecture/` — first-stab architectural sketch (system type, components, hosting, stack, data, integrations, lightweight ADRs, open questions). |
-| 4     | [`/provision-platform`](#provision-platform-provision-platform)        | The cloud/SaaS platforms named in `docs/architecture/` actually provisioned — hosting, observability, DBs, auth, etc. Secrets wired into GH Actions; results logged to `docs/architecture/provisioning-log.md`. |
-| 5     | [`/create-requirements`](#create-requirements-create-requirements)        | `docs/requirements/` — interactively elicited functional + non-functional requirements (reads `docs/architecture/` first). |
-| 6     | [`/confirm-requirements`](#confirm-requirements-confirm-requirements)     | Same folder, requirements validated and advanced through `Draft → Reviewed → Approved`. |
-| 7     | [`/tasks-from-requirements`](#tasks-from-requirements-tasks-from-requirements)   | GitHub issues + milestones + labels — small-batch tasks, human-required work front-loaded. |
-| 8     | [`/implement-task`](#implement-task-implement-task)                 | One GitHub issue taken from picked-up to PR-ready, via a seven-persona orchestration (incl. UX/UI Designer) with audit-trail comments. |
-| —     | [`/requirements-add`](#requirements-add-requirements-add)             | A single new requirement added to an existing tree, with duplicate + conflict checks and full elaboration. |
-| —     | [`/requirements-delete`](#requirements-delete-requirements-delete)       | A single requirement removed or demoted, with a full cascade-impact scan across the tree and any GitHub issues that implement it. |
-| —     | [`/check-work`](#check-work-check-work)                         | A generic "please just check your work carefully" second-pass skill. Works on anything — code, plans, writing, analysis. Saves typing the phrase. |
-| —     | [`/rework`](#rework-rework)                                 | Assertively course-corrects both the requirements docs *and* the open GitHub issues when an implementation-time discovery invalidates the plan. |
+| Order | Skill | What it produces |
+|-------|-------|------------------|
+| 1     | [`/repo-bootstrap`](#repo-bootstrap-repo-bootstrap)                                    | A new private GitHub repo, cloned to `~/src/<name>`, with starter files. |
+| 2     | [`/solution-design`](#solution-design-solution-design)                                 | `docs/design/solution-design.md` — first-stab combined business + technical solution view. Bridges README and `docs/architecture/`. |
+| 3     | [`/platform-design`](#platform-design-platform-design)                                 | `docs/architecture/` — fleshed-out architectural sketch (system type, components, hosting, stack, data, integrations, lightweight ADRs). |
+| 4     | [`/platform-provision`](#platform-provision-platform-provision)                        | The cloud/SaaS platforms named in `docs/architecture/` actually provisioned. Secrets wired into GH Actions; results logged to `docs/architecture/provisioning-log.md`. |
+| 5     | [`/platform-verify`](#platform-verify-platform-verify)                                 | Smoke test + security pass on the provisioned platform. Output appended to the provisioning log. |
+| 6     | [`/repo-release-ready`](#repo-release-ready-repo-release-ready)                        | Release branches, promotion workflows, secret scanning, branch protections. |
+| 7     | [`/requirements-create-from-design`](#requirements-create-from-design-requirements-create-from-design) | `docs/requirements/` — functional + non-functional requirements derived from the solution design (falls back to README, then interactive). |
+| 8     | [`/requirements-validation`](#requirements-validation-requirements-validation)         | Same folder; requirements validated and advanced through `Draft → Reviewed → Approved`. |
+| 9     | [`/tasks-create-from-requirements`](#tasks-create-from-requirements-tasks-create-from-requirements) | GitHub issues + milestones + labels — small-batch tasks, human-required work front-loaded. |
+| 10    | [`/task-implement`](#task-implement-task-implement)                                    | One GitHub issue from picked-up to PR-ready, via a seven-persona orchestration (incl. UX/UI Designer) with audit-trail comments. |
+| —     | [`/status-help`](#status-help-status-help)                                             | "Where am I in the workflow?" — analyses repo state and recommends the next concrete step. |
+| —     | [`/requirements-add`](#requirements-add-requirements-add)                              | A single new requirement added to an existing tree, with duplicate + conflict checks. |
+| —     | [`/requirements-delete`](#requirements-delete-requirements-delete)                     | A single requirement removed or demoted, with cascade-impact scan across the tree and GitHub issues. |
+| —     | [`/ai-check-work`](#ai-check-work-ai-check-work)                                       | Generic "please just check your work carefully" second-pass skill. Works on anything. |
+| —     | [`/requirements-rework`](#requirements-rework-requirements-rework)                     | Assertively course-corrects requirements docs *and* open GitHub issues when a discovery invalidates the plan. |
 
 ---
 
@@ -152,37 +155,42 @@ What it does:
 - Scaffolds `.gitignore`, `.gitattributes`, `AGENTS.md`, `CLAUDE.md`, `README.md`, `LICENSE` (proprietary), `.github/copilot-instructions.md`, `.github/pull_request_template.md`, and a `check-root-docs` workflow that enforces only `README/AGENTS/CLAUDE.md` in the repo root
 - Makes the initial commit and pushes to `origin/main`
 
-Day-0 only — branching, CI, deploys, dependabot, observability, etc. are out of scope and belong to the companion `/repo-level-up` skill below.
+Day-0 only — branching, CI, deploys, dependabot, observability, etc. are out of scope and belong to the companion `/repo-release-ready` skill later in the chain.
 
 Say "new project", "bootstrap a repo", or "spin up a project".
 
 ---
 
-### Repo Level-Up (`/repo-level-up`)
+### Solution Design (`/solution-design`)
 
-Takes a freshly bootstrapped repo to release-ready maturity. The companion to `/repo-bootstrap`.
+The bridge between `README.md` ("what is this") and `docs/architecture/` ("how is this engineered"). A **first-thinking** combined business + technical view of the solution — explicit that it'll be wrong in places and will evolve.
 
 What it does:
 
-- Adds `release/uat` and `release/prod` branches off `main`
-- Scaffolds promotion workflows: `main → release/uat` and `main → release/prod`, with a Vercel deployment-status gate and a `force_deploy` escape hatch on production
-- Adds GitGuardian secret scanning, Claude On-Demand (`@claude` mentions), vibe-guard SARIF, a Copilot setup stub, and Dependabot (`github-actions` ecosystem)
-- Replaces the minimal PR template with a version-label-aware one (`version:major/minor/patch/skip`)
-- Installs three branch-protection rulesets via `gh api`: `Main <Repo>`, `UAT <Repo>`, `Production <Repo>` — all requiring PRs and blocking force-push / deletion
-- Appends a "Deployment & Branching Strategy" section to `AGENTS.md`
-- Opens a **"Checklist for Human Admin"** GitHub issue listing every manual step that's left (secrets to add, Vercel project to wire up, GitHub Security toggles to flip, version labels to create, etc.)
+- Reads `README.md` as the seed. If missing, asks for a brief project description
+- Walks **15 sections** in a short focused interview (10-15 minutes — *not* the deeper `/platform-design` slog):
+  - Purpose & problem (Jobs-to-be-Done framing), users & personas, value & success criteria
+  - Key features / capabilities, high-level user flows, **major screens / surfaces** (thinking-level, not specs)
+  - System context (one C4-context Mermaid diagram), major components (C4-container, 5-9 boxes)
+  - Solution strategy (3-5 biggest design choices), data approach, external integrations
+  - NFR drivers (across AWS Well-Architected pillars), constraints, risks & open questions
+  - **First-stab disclaimer** — prominent; the doc is consciously a first version and will evolve
+- Writes a single `docs/design/solution-design.md` covering all 15 sections
+- **Evolve mode** on re-invoke — appends *Superseded YYYY-MM-DD* entries rather than overwriting; old framings remain as history
 
-Run it after `/repo-bootstrap` when you're ready to lock down branches and start shipping. Say "level up this repo", "make this release-ready", "add UAT and prod branches", or "harden this repo".
+Grounded in [C4 model (Simon Brown)](https://c4model.com/) — Context + Container levels, Arc42 sections 1-5, TOGAF Architecture Vision (Phase A), Lean Canvas (Ash Maurya), Jobs-to-be-Done (Clayton Christensen), AWS Well-Architected Framework, IEEE/ISO/IEC 42010.
+
+Use it right after `/repo-bootstrap`. Say "solution design", "draft an HLD", "high-level design", "sketch the solution", "vision doc".
 
 ---
 
-### Initial Design (`/initial-design`)
+### Platform Design (`/platform-design`)
 
-The bridge between *"the repo exists"* and *"we know what we're building in detail"*. Captures a **first stab** at the architecture so the requirements skill isn't elicited in a vacuum (a "messaging app" looks very different over serial cable vs cloud — the architecture decides which).
+Fleshes out the architecture into a recorded set of decisions. Deeper and more rigorous than the upstream `/solution-design`. The canonical input for `/platform-provision`, `/requirements-create-from-design`, and the audit gates in `/task-implement`.
 
 What it does:
 
-- Reads `README.md` and any existing context.
+- Reads `docs/design/solution-design.md` if present (and `README.md`), plus any existing `docs/architecture/`.
 - Walks **7 topics** in order — system type, hosting/runtime, major components, stack, data, external integrations, architecture pattern fit. 3-5 questions per topic; 30-90 minutes total.
 - Writes `docs/architecture/` as a small set of focused markdown files:
   - `00-system-overview.md` — system context + container view (with Mermaid diagram)
@@ -197,11 +205,11 @@ What it does:
 
 Grounded in [Simon Brown's C4 model](https://c4model.com/), [Michael Nygard's ADR format](https://github.com/joelparkerhenderson/architecture-decision-record), Fowler's [`MonolithFirst`](https://martinfowler.com/bliki/MonolithFirst.html), and [The Twelve-Factor App](https://12factor.net/).
 
-Use it right after `/repo-bootstrap` (and before `/create-requirements`). Say "initial design", "design the architecture", "what's the technical shape", or "sketch the architecture".
+Use it right after `/solution-design`. Say "platform design", "design the architecture", "what's the technical shape", "flesh out the architecture".
 
 ---
 
-### Provision Platform (`/provision-platform`)
+### Platform Provision (`/platform-provision`)
 
 Stands up the cloud platforms and SaaS services the architecture names — and then wires the resulting secrets into GitHub Actions so the deployed system can actually run.
 
@@ -214,17 +222,54 @@ What it does:
 - Wires secrets into GitHub Actions (`gh secret set`) and the platforms' env stores; updates `.env.example` with the names (never the values)
 - Records everything in `docs/architecture/provisioning-log.md` — the bridge between the architecture doc and the actual state of the cloud
 
-Run it after `/initial-design` and before you really start building. Say "provision the platform", "stand up the stack", "set up the infrastructure", "wire up the cloud services", or "spin up the runtime".
+Run it after `/platform-design`. Say "provision the platform", "stand up the stack", "set up the infrastructure", "wire up the cloud services", or "spin up the runtime".
 
 ---
 
-### Create Requirements (`/create-requirements`)
+### Platform Verify (`/platform-verify`)
 
-Interactively elicits software requirements (both functional and non-functional) from you and writes them up as a structured set of short markdown files in `docs/requirements/`.
+The smoke-test + security-audit companion to `/platform-provision`. Confirms the platforms actually exist, secrets are wired correctly, and the security posture is sensible before serious development begins.
 
 What it does:
 
-- Reads your `README.md` (default grounding source) and any existing context, then runs a stakeholder + goals + scope discovery interview. If no `README.md` exists, asks you to supply an alternative source — describe the project in chat, or point at a local file, URL, PDF, or doc-server page
+- Reads `docs/architecture/provisioning-log.md` to know what was stood up
+- **Reachability checks** — every platform answers via MCP / CLI / API; resources exist at their recorded IDs and URLs
+- **Secret hygiene** — every secret listed is set in the right scope (GH Actions repo or env, platform env stores); `.env.example` lists names but no values; no values committed to history
+- **Wiring** — CI workflows can read the secrets they need; a smoke build / preview deploy succeeds
+- **Security posture** — branch protection on `main` + release branches, secret scanning, dependabot / SCA, least-privilege on tokens, no accidentally-public resources, default-deny IAM where applicable
+- Cross-checks against `/repo-release-ready` once both have run
+- Appends a verification block to the provisioning log (or spins out `docs/architecture/platform-verification.md`) with green/red per check + remediation steps
+
+Run it right after `/platform-provision`. Say "verify the platform", "smoke-test the platform", "check the platform is wired up", "security pass on the platform", "is the platform ready".
+
+---
+
+### Repo Release Ready (`/repo-release-ready`)
+
+Takes a freshly bootstrapped + provisioned + verified repo to release-ready maturity. Adds the release branches, promotion workflows, secret scanning, and branch-protection rulesets that turn the repo into something safe to ship from.
+
+What it does:
+
+- Adds `release/uat` and `release/prod` branches off `main`
+- Scaffolds promotion workflows: `main → release/uat` and `main → release/prod`, with a Vercel deployment-status gate and a `force_deploy` escape hatch on production
+- Adds GitGuardian secret scanning, Claude On-Demand (`@claude` mentions), vibe-guard SARIF, a Copilot setup stub, and Dependabot (`github-actions` ecosystem)
+- Replaces the minimal PR template with a version-label-aware one (`version:major/minor/patch/skip`)
+- Installs three branch-protection rulesets via `gh api`: `Main <Repo>`, `UAT <Repo>`, `Production <Repo>` — all requiring PRs and blocking force-push / deletion
+- Appends a "Deployment & Branching Strategy" section to `AGENTS.md`
+- Opens a **"Checklist for Human Admin"** GitHub issue listing every manual step that's left (secrets to add, Vercel project to wire up, GitHub Security toggles to flip, version labels to create, etc.)
+
+Best to run after `/platform-verify` so the deploy gates reference real provisioned infra. Say "release ready", "make this release-ready", "add UAT and prod branches", or "harden this repo".
+
+---
+
+### Requirements Create From Design (`/requirements-create-from-design`)
+
+Interactively elicits software requirements (both functional and non-functional) and writes them up as a structured set of short markdown files in `docs/requirements/`.
+
+What it does:
+
+- **Source preference chain**: reads `docs/design/solution-design.md` first if it exists (the richest source); falls back to `README.md`; falls back to asking the user interactively (describe the project in chat, point at a local file, URL, PDF, or doc-server page)
+- Reads `docs/architecture/` if present so requirements respect the recorded architecture (not just the design)
 - Captures **goals AND non-goals** explicitly — the non-goals section is treated as more important than the goals one (most project blow-outs come from under-documented "won't do" items)
 - Walks each functional domain (auth, billing, admin, ...) one at a time with question banks adapted from BABOK
 - Walks every ISO 25010 quality attribute (performance, security, reliability, usability, maintainability, compatibility, portability) plus modern additions (observability, privacy/compliance, accessibility, i18n, cost) — won't let you skip a category
@@ -233,15 +278,15 @@ What it does:
 - Runs an INCOSE quality-checklist sweep at the end (necessary / unambiguous / singular / verifiable / traceable, etc.)
 - Designed as a multi-session skill — re-invoke to pick up where the last session stopped
 
-Grounded in [Volere](https://www.volere.org/), [ISO/IEC/IEEE 29148:2018](https://www.iso.org/standard/72089.html), [ISO/IEC 25010](https://en.wikipedia.org/wiki/ISO/IEC_25010), the INCOSE Guide for Writing Requirements, [BABOK](https://www.iiba.org/standards-and-resources/babok/), and [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119). The output feeds a downstream architecture-design phase.
+Grounded in [Volere](https://www.volere.org/), [ISO/IEC/IEEE 29148:2018](https://www.iso.org/standard/72089.html), [ISO/IEC 25010](https://en.wikipedia.org/wiki/ISO/IEC_25010), the INCOSE Guide for Writing Requirements, [BABOK](https://www.iiba.org/standards-and-resources/babok/), and [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
 
 Highly interactive — set aside 30–90 minutes for a first useful pass. Pause and resume any time. Say "create requirements", "elicit requirements", "document requirements", "what should this project do", or "scope this out".
 
 ---
 
-### Confirm Requirements (`/confirm-requirements`)
+### Requirements Validation (`/requirements-validation`)
 
-The refining companion to `/create-requirements`. Where the eliciter produces requirements from interview, this one validates the ones already on disk and advances them through the status lifecycle.
+The refining companion to `/requirements-create-from-design`. Validates the requirements already on disk and advances them through the status lifecycle.
 
 What it does:
 
@@ -256,16 +301,15 @@ What it does:
 - Advances `Status: Draft → Reviewed` only with explicit user confirmation. Never auto-promotes.
 - Updates the requirement file in place; moves resolved open questions to their "Resolved" section (keeps as decision history); updates assumption validation states.
 - Cascades: when an assumption is **Falsified**, scans every linked requirement and flags downstream impacts.
-- Appends a structured **session log** entry to `docs/requirements/session-log.md` — the audit trail of every confirmation pass.
-- Includes a worked before/after example (`example-confirmation-session.md`) showing a Draft requirement → Reviewed across one session.
+- Appends a structured **session log** entry to `docs/requirements/session-log.md` — the audit trail of every validation pass.
 
-Use it periodically (after stakeholder conversations, after market changes, after assumptions get tested). Say "confirm requirements", "review requirements", "validate requirements", "walk through the requirements", or "pressure-test what we have".
+Use it periodically (after stakeholder conversations, after market changes, after assumptions get tested). Say "validate requirements", "review requirements", "walk through the requirements", or "pressure-test what we have".
 
 ---
 
-### Tasks from Requirements (`/tasks-from-requirements`)
+### Tasks Create From Requirements (`/tasks-create-from-requirements`)
 
-Turns the requirements you've already documented (via `/create-requirements` and refined via `/confirm-requirements`) into a concrete plan of GitHub issues. Pure planning — no code generation.
+Turns the requirements you've already documented (via `/requirements-create-from-design` and refined via `/requirements-validation`) into a concrete plan of GitHub issues. Pure planning — no code generation.
 
 What it does:
 
@@ -280,15 +324,13 @@ What it does:
 - **Shows you the full plan as a markdown document first** (`docs/implementation-plan.md`) so you can edit it before any GitHub issue is created. Nothing is created without your explicit approval.
 - Detects existing labels, milestones, and issues by title — never duplicates on re-run
 
-Companion to `/create-requirements` and `/confirm-requirements`. Run it once the requirements are mostly Reviewed and you're ready to start work.
-
-Say "plan the implementation", "create issues from requirements", "break this into tasks", "what do we build first", or "make me a backlog".
+Run it once the requirements are mostly Reviewed and you're ready to start work. Say "plan the implementation", "create issues from requirements", "break this into tasks", "what do we build first", or "make me a backlog".
 
 ---
 
-### Implement Task (`/implement-task`)
+### Task Implement (`/task-implement`)
 
-The heavyweight implementation skill. Takes a single GitHub issue from picked-up through to PR-ready via a seven-persona orchestration. Designed for long-running runs (hours) on important tasks. The lighter `/issue-worker` is the right tool for small tasks; `/implement-task` is for tasks worth the audit gates.
+The heavyweight implementation skill. Takes a single GitHub issue from picked-up through to PR-ready via a seven-persona orchestration. Designed for long-running runs (hours) on important tasks. The lighter `/issue-worker` is the right tool for small tasks; `/task-implement` is for tasks worth the audit gates.
 
 What it does:
 
@@ -313,6 +355,24 @@ Use it when quality matters more than speed. Say "implement task #X", "do issue 
 
 ---
 
+### Status Help (`/status-help`)
+
+The *"where am I in the workflow?"* helper. Scans the repo state and recommends a single concrete next step in the SDLC bundle workflow. Designed for the moment in a multi-step project where you've lost track of where you are.
+
+What it does:
+
+- Reads what's on disk in `docs/design/`, `docs/architecture/`, `docs/requirements/`, plus git state, branches, open PRs, and GitHub issues
+- Maps current state to a phase in the workflow chain (`repo-bootstrap` → `solution-design` → ... → `task-implement`)
+- Looks for incompleteness or incongruity — empty doc, missing decision, requirement stuck in Draft, plan approved but no issues created — and surfaces it
+- Recommends **one** concrete next step (with up to 2 alternatives if multiple paths are reasonable)
+- Flags **rewinds** explicitly if a prior step's output looks unfinished or messy
+
+Output is ~10 lines in chat. No files written. Doesn't run anything — just recommends.
+
+Say "what's next", "status help", "where am I in the workflow", "what step am I on", "recommend next step", "navigate the SDLC", "what now".
+
+---
+
 ### Requirements Add (`/requirements-add`)
 
 Adds a **single** new requirement to an established `docs/requirements/` tree. For the case where one new requirement surfaces after the initial elicitation, and you want it captured properly rather than dropped into a file by hand.
@@ -321,10 +381,10 @@ What it does:
 
 - Checks for duplicates and conflicts against every existing `FR-`/`NFR-` statement and fit criterion *before* writing anything
 - Decides interactively with you whether the new requirement belongs in an existing domain/attribute file or warrants a new one
-- Runs the same elaboration disciplines as `/create-requirements` (RFC 2119 statement, observable fit criterion, rationale, traces-to, MoSCoW, INCOSE sanity check) — scoped to one requirement
+- Runs the same elaboration disciplines as `/requirements-create-from-design` (RFC 2119 statement, observable fit criterion, rationale, traces-to, MoSCoW, INCOSE sanity check) — scoped to one requirement
 - Captures any new assumptions and open questions into the existing registers (`07-assumptions.md`, `08-open-questions.md`)
 - Assigns the next available `FR-<DOMAIN>-NNN` / `NFR-<ATTR>-NNN` ID by inferring the existing convention
-- Defaults status to `Draft` (never auto-promotes — that's `/confirm-requirements`'s job)
+- Defaults status to `Draft` (never auto-promotes — that's `/requirements-validation`'s job)
 - Appends a structured entry to `docs/requirements/session-log.md` as the audit trail
 
 Use it whenever a single requirement needs to be added cleanly. Say "add a requirement", "we need a new requirement for X", "document this new requirement", "capture this as a requirement", "I forgot a requirement".
@@ -346,11 +406,11 @@ What it does:
 - Flags any open PRs implementing the target before closing the issue — you decide what happens to the PR
 - Appends a structured entry to `docs/requirements/session-log.md`
 
-For one-requirement-at-a-time cleanup. If a discovery is invalidating a chunk of the plan (multiple requirements, dependent assumptions falsified), `/rework` is the right tool instead. Say "delete this requirement", "remove FR-X", "we don't need this requirement anymore", "drop this requirement", "demote this requirement".
+For one-requirement-at-a-time cleanup. If a discovery is invalidating a chunk of the plan (multiple requirements, dependent assumptions falsified), `/requirements-rework` is the right tool instead. Say "delete this requirement", "remove FR-X", "we don't need this requirement anymore", "drop this requirement", "demote this requirement".
 
 ---
 
-### Check Work (`/check-work`)
+### AI Check Work (`/ai-check-work`)
 
 A generic "please just check your work carefully on this" second-pass skill. The whole point is to save you typing that phrase out every time. Works on anything — code, plans, writing, analysis, designs, calculations, summaries.
 
@@ -367,7 +427,7 @@ Say "check your work", "double-check this", "look this over", "did I miss anythi
 
 ---
 
-### Rework (`/rework`)
+### Requirements Rework (`/requirements-rework`)
 
 Course-corrects both the requirements (`docs/requirements/`) *and* the open GitHub issues when something discovered during early implementation invalidates the original plan. The one in the SDLC bundle that hopefully doesn't get called often — but when you need it, you really need it.
 
@@ -377,13 +437,13 @@ What it does:
 - **Walks every requirement** — classifies each as Keep / Update / Delete / Archive
 - **Walks every open issue** — classifies each as Keep / Update / Close, plus checks recently closed issues for any to Reopen
 - **Cascades through assumptions and open questions** — falsified assumption → every linked requirement re-inspected; resolved question → entry moves to Resolved with the answer
-- **Gap analysis** — identifies new requirements / new tasks the new direction needs (kept narrow; if the gap is huge, suggests a fresh `/create-requirements` session instead)
+- **Gap analysis** — identifies new requirements / new tasks the new direction needs (kept narrow; if the gap is huge, suggests a fresh `/requirements-create-from-design` session instead)
 - **Shows the proposed change set as a single markdown document** for explicit approval before any destructive action
 - **Default behaviour is assertive cleanup.** Git preserves deleted files; closed GitHub issues are recoverable. `docs/archive/` exists only for artefacts with specific posterity value, and only with a documented rationale. No `wontfix` label sprawl on issues.
 - Appends a structured **rework entry to `docs/requirements/session-log.md`** as the durable audit trail
 - Watches for issues with linked PRs — surfaces before closing rather than dangling references
 
-Use it sparingly. When you need it, run `/rework`. Say "rework this", "we need to change direction", "pivot", "course-correct", "this isn't going to work anymore", or "scrap that and...".
+Use it sparingly. When you need it, run `/requirements-rework`. Say "rework this", "we need to change direction", "pivot", "course-correct", "this isn't going to work anymore", or "scrap that and...".
 
 ---
 

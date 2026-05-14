@@ -54,7 +54,7 @@ Twenty-one skills bundled under the **`sdlc-plugin`** marketplace entry, coverin
 | —     | [`/issue-work`](#issue-work-issue-work)                                                | Lightweight end-to-end implementation of one GitHub issue — sibling to `/task-implement`, without the persona overhead. |
 | —     | [`/sentry-triage`](#sentry-triage-sentry-triage)                                       | Investigates recent Sentry issues, traces them to code, recommends fixes. |
 | —     | [`/build-fix`](#build-fix-build-fix)                                                   | Iteratively fixes build errors and lint warnings until the project compiles cleanly. |
-| —     | [`/e2e-fix`](#e2e-fix-e2e-fix)                                                         | Diagnoses and fixes failing or flaky end-to-end tests (Playwright, Cypress, WebDriver). |
+| —     | [`/test-fix`](#test-fix-test-fix)                                                       | Diagnoses and fixes failing or flaky tests of any kind — unit, integration, or end-to-end. |
 
 ---
 
@@ -443,21 +443,21 @@ Ask Claude to fix build errors, clean up lint warnings, or just paste your build
 
 ---
 
-### E2E Fix (`/e2e-fix`)
+### Test Fix (`/test-fix`)
 
-Your E2E tests are failing. This skill figures out why and fixes them. The dev-loop standalone of what `/task-implement`'s test-validation phase does inside a task.
+Your tests are failing — unit, integration, or end-to-end. This skill figures out why and fixes them. The dev-loop standalone of what `/task-implement`'s test-validation phase does inside a task.
 
-Works with Playwright, Cypress, and WebDriver.
+Examples in the skill body are drawn from E2E (Playwright, Cypress, WebDriver) because that's where flakiness is most acute, but the workflow applies to any test type — Jest, Vitest, Pytest, JUnit, Go test, RSpec, etc.
 
 What it does:
 
-- Finds your runner config, test specs, helpers, and seed scripts
+- Finds your runner config, test specs, helpers, and seed scripts — whatever stack the project uses
 - Reproduces failures in isolation before touching anything
 - Sorts failures into categories: real bug, flaky test, environment-dependent, platform-specific
-- Digs into root causes like data setup mismatches, race conditions, stale locators, or auth leakage
-- Makes the smallest fix that actually solves the problem, then re-runs to confirm
+- Digs into root causes like data setup mismatches, race conditions, stale locators, auth leakage, non-deterministic inputs, hidden order dependencies
+- Makes the smallest fix that actually solves the problem, then re-runs to confirm — including stability runs (repeat-each) for flaky tests
 
-Use it when E2E tests break, specs are flaky, or your CI test job is red.
+Use it when tests break, specs are flaky, or your CI test job is red.
 
 ---
 

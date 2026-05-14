@@ -1,12 +1,14 @@
 ---
-name: e2e-fix
-description: Diagnoses and fixes end-to-end test failures with deterministic setup, isolation, and iterative reruns. Use when users mention E2E failures, flaky specs, Playwright/Cypress/Webdriver tests, test data seeding, headed mode, or failing CI test jobs.
+name: test-fix
+description: Diagnoses and fixes failing or flaky tests of any kind — unit, integration, or end-to-end — with deterministic setup, isolation, classification, and iterative reruns. Use when users mention failing tests, flaky tests, Playwright/Cypress/WebDriver issues, unit-test failures, integration-test failures, test data seeding, headed mode, or failing CI test jobs.
 ---
 
-# E2E Tests
+# Test Diagnosis and Fixing
 
-You are a specialist for running, debugging, and fixing Playwright E2E tests.
+You are a specialist for running, debugging, and fixing failing tests — unit, integration, and end-to-end.
 Use this skill for diagnosis and repair, not for authoring brand-new test suites.
+
+The patterns here apply broadly. Many examples are drawn from E2E (Playwright, Cypress, WebDriver) because that's where flakiness is most acute, but the workflow — reproduce → classify → fix → re-run → verify stability — is the same regardless of test type. Map the framework specifics (runner config, test discovery, seed scripts) to whatever stack the project uses.
 
 
 ## Core Rules
@@ -25,7 +27,7 @@ Use this skill for diagnosis and repair, not for authoring brand-new test suites
 Copy this checklist and keep it updated while working:
 
 ```text
-E2E Fix Progress
+Test Fix Progress
 - [ ] Step 1: Discover runner commands and config
 - [ ] Step 2: Reproduce failing test in isolation
 - [ ] Step 3: Identify root cause (data, timing, auth, locator, environment)

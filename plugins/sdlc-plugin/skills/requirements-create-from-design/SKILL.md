@@ -44,14 +44,16 @@ If the user wants the skill to "just generate everything from the README", **dec
 ## Prerequisites
 
 1. **Working directory is a project directory** (ideally a git repo, but not required).
-2. **A grounding source exists.** The skill needs *something* describing the project's purpose before the interview is useful. The default is the repo's `README.md`. If it isn't present, see "Choosing a grounding source" below — the skill will ask the user to supply an alternative rather than refusing to start.
+2. **A grounding source exists.** The skill needs *something* describing the project's purpose before the interview is useful. Preferred is `docs/design/solution-design.md` (the output of `/solution-design`) — the richest source. Falls back to the repo's `README.md`, then to interactive supply. See "Choosing a grounding source" below.
 3. **The user has time for a real conversation.** Set expectation: a first useful pass is typically 30–90 minutes. They can pause and resume.
 
 ### Choosing a grounding source
 
-`README.md` in the working directory is the default. If it exists, read it and move on — no question needed.
+**Preferred — `docs/design/solution-design.md`.** If this file exists, use it. It's the structured output of `/solution-design`, combining business + technical framing across 15 sections — far richer than a README. Read it and move on.
 
-If `README.md` is missing or empty, do **not** stop. Ask the user (single AskUserQuestion turn) how they want to supply project context:
+**Fallback 1 — `README.md`.** If solution-design is missing, use the repo's `README.md` if non-empty.
+
+**Fallback 2 — interactive supply.** If neither exists, do **not** stop. Ask the user (single AskUserQuestion turn) how they want to supply project context:
 
 | Option                       | What the agent does                                                                                       |
 |------------------------------|------------------------------------------------------------------------------------------------------------|
@@ -91,7 +93,7 @@ Throughout: assumptions go in `07-assumptions.md`, deferred items go in `08-open
 
 Read in this order, surfacing what you learn back to the user:
 
-1. **Grounding source** — `README.md` is the default. If it's present and non-empty, read it for purpose, intended users, and any feature list. If it's missing or empty, run the "Choosing a grounding source" flow from the Prerequisites section before continuing. Do not proceed past this step without a grounding source.
+1. **Grounding source — prefer `docs/design/solution-design.md`.** If this file exists, it's the richest source: combined business + technical framing from a structured `/solution-design` interview. Read it for purpose, key features, user flows, surfaces, NFR drivers, and constraints. If it's missing, fall back to `README.md` (same handling as before). If both are missing or empty, run the "Choosing a grounding source" flow from the Prerequisites section before continuing. Do not proceed past this step without a grounding source.
 2. `AGENTS.md` if present — additional context.
 3. **`docs/architecture/` if present** — the initial architectural design (produced by `/platform-design`). Read every file. The architecture defines the technical shape of the system (web app vs CLI, cloud vs on-device, monolith vs microservices, which integrations, which data stores). **Requirements work must respect this shape** — a "messaging" requirement looks very different on a serial-cable system vs a cloud system, and the architecture tells you which. Note any open questions in `docs/architecture/05-open-questions.md` — these may surface during requirements work as things that need to be decided before a requirement can be made concrete.
 4. `docs/requirements/` if present — **this is a continuation, not a fresh start**. Read all existing files and ask the user where they want to resume. Do not overwrite without permission.
@@ -292,7 +294,7 @@ If `docs/requirements/` already exists when the skill is invoked:
 
 ## Edge cases
 
-- **README is missing or empty.** Don't stop — run the "Choosing a grounding source" flow in the Prerequisites section so the user can supply an alternative (interactive description, local file, URL, doc-server link). Only stop if the user declines to supply any source at all.
+- **Both `docs/design/solution-design.md` and `README.md` are missing or empty.** Don't stop — run the "Choosing a grounding source" flow in the Prerequisites section so the user can supply an alternative (interactive description, local file, URL, doc-server link). Suggest running `/solution-design` first as the cleanest path; otherwise carry on with the interactive fallback. Only stop if the user declines to supply any source at all.
 - **User wants the skill to "just produce a draft".** Explain the failure mode (see "Operating mode" above) and offer a structured option: the agent can produce *empty-but-scaffolded* files, populated only with what's in the README, and mark every section as `Draft — pending interview`. This is honest and still useful.
 - **The project is a hard fork or rewrite of an existing system.** Ask for the original system's docs; use `references/elicitation-playbook.md`'s "document analysis" technique. Capture differences from the original explicitly.
 - **Multi-stakeholder review (rare for solo founders).** Each stakeholder gets a turn at the relevant sections; conflicts go to `08-open-questions.md` with both viewpoints captured.

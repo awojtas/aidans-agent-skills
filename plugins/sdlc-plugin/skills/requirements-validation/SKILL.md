@@ -1,5 +1,5 @@
 ---
-name: confirm-requirements
+name: requirements-validation
 description: Interactively validates and refines the requirements already documented in docs/requirements/. Starts by inventorying every file and showing the user a directory-style listing with status counts (Drafts vs Reviewed, open vs resolved questions, validated vs unvalidated assumptions), then asks "All requirements" or "Specific requirement(s)" to scope the session. For each requirement in scope, runs a five-pass confirmation (still-accurate / measurable / assumptions-still-hold / open-questions-resolved / INCOSE-quality), echoing the requirement back to the user, capturing edits, advancing status (Draft → Reviewed → Approved) only with explicit confirmation, and updating linked assumption and open-question entries. Appends a session log to docs/requirements/session-log.md. Companion to /requirements-create-from-design — that one elicits, this one refines. Use when the user says "confirm requirements", "review requirements", "validate requirements", "pressure-test what we have", "walk through the requirements", "go through each requirement", or wants to advance requirements from Draft to Reviewed.
 ---
 

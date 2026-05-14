@@ -1,5 +1,5 @@
 ---
-name: initial-design
+name: platform-design
 description: Produces an initial architectural design for a project — a light first stab capturing the system type, major components, hosting, stack, data model, external integrations, key decisions (as lightweight ADRs), and explicit open questions. Output lands in docs/architecture/ as a small set of focused markdown files. Sits between /repo-bootstrap (just made the repo) and /requirements-create-from-design (about to elicit detailed requirements). Without this skill, requirements work happens in an architectural vacuum and bakes in hidden assumptions — e.g. designing a messaging app's requirements without knowing whether it's serial-cable or cloud-infrastructure gives wildly different results. The skill is deliberately light: the goal is "first stab", not "100% baked". Use when the user says "design the architecture", "initial design", "what should we build this on", "sketch the architecture", "what's the technical shape", or when the user has just bootstrapped a repo and hasn't yet thought about the technical shape of what they're building. Companion to /requirements-create-from-design (which reads this folder) and /task-implement (whose Principal Engineer, Cloud Architect, and UX Designer all read it).
 ---
 

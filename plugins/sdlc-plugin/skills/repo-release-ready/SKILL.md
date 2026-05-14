@@ -1,5 +1,5 @@
 ---
-name: repo-level-up
+name: repo-release-ready
 description: Levels up a freshly bootstrapped GitHub repo to release-ready maturity. Creates release/uat and release/prod branches off main, scaffolds promotion workflows (main → release/uat, main → release/prod) with a Vercel deployment-status gate and a force_deploy escape hatch, installs GitGuardian secret scanning, Claude On-Demand (@claude mentions), vibe-guard SARIF, Copilot setup stub, Dependabot (github-actions), an enhanced version-label-aware PR template, branch protection rulesets for all three branches, and finally opens a "Checklist for Human Admin" GitHub issue covering the remaining manual steps (secrets, Vercel, label creation, Security tab toggles). Use when the user says "level up this repo", "make this repo release-ready", "add promotion workflows", "set up release branches", "add UAT and prod branches", "harden this repo", or any variation that signals "go from day-0 to production-ready scaffolding". Companion skill to /repo-bootstrap — designed to run on a repo that was bootstrapped with that skill, though it works on any git repo that has a `main` branch and a GitHub remote.
 ---
 

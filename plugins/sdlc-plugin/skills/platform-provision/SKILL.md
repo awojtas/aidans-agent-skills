@@ -1,5 +1,5 @@
 ---
-name: provision-platform
+name: platform-provision
 description: Provisions the runtime / cloud platforms an application needs to actually run and deploy — hosting providers, observability services, databases, auth providers, email senders, queues, anything the architecture names. Reads docs/architecture/ to inventory what needs to exist, then uses every channel available (connected MCP servers, installed CLIs, HTTP APIs) to stand it all up. Batches the bits only a human can do (sign-ups, billing, copying secrets out of dashboards) into a single checklist, then wires the resulting secrets into GitHub Actions and the platforms' env stores. Trigger phrases include "provision the platform", "stand up the stack", "set up the infrastructure", "wire up the cloud services", "spin up the runtime", "create the cloud resources", "bootstrap the platform".
 ---
 

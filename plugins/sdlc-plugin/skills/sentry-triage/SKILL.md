@@ -1,5 +1,5 @@
 ---
-name: sentry-recent-issues
+name: sentry-triage
 description: Investigate recent or specific Sentry issues for any project. Fetches issues via the Sentry MCP, determines frequency and recurrence, researches root cause in the codebase, and recommends fixes with regression tests. Use when the user mentions Sentry issues, production errors, error monitoring, or asks to triage recent exceptions.
 ---
 

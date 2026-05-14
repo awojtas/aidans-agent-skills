@@ -1,5 +1,5 @@
 ---
-name: issue-prioritiser
+name: issue-prioritise
 description: Reviews open GitHub issues in the current repo, applies priority labels, checks relevance, and recommends the next issues to work on. Use when the user mentions prioritising issues, triaging the backlog, "what should I work on next", ranking issues, labelling priorities, or reviewing open issues for importance.
 ---
 

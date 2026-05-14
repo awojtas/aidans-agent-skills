@@ -5,54 +5,19 @@
   },
   "plugins": [
     {
-      "name": "build-fixer-plugin",
-      "source": "./plugins/build-fixer-plugin",
-      "description": "Iteratively fixes build errors and lint warnings until the project compiles cleanly. Supports .NET, Node.js, Rust, Go, Java, Make, and more."
+      "name": "sdlc-plugin",
+      "source": "./plugins/sdlc-plugin",
+      "description": "21 bundled skills for the full Software Development Lifecycle — plan, build, ship, operate, maintain. From repo bootstrap through task implementation, plus helpers for status, audit, course-correction, backlog and production-error triage, and dev-loop fixes."
+    },
+    {
+      "name": "content-plugin",
+      "source": "./plugins/content-plugin",
+      "description": "Content tools — humanise AI-sounding prose and migrate Teams chats to Confluence pages."
     },
     {
       "name": "design-system-aurora-plugin",
       "source": "./plugins/design-system-aurora-plugin",
       "description": "Glass Aurora design system — ethereal glassmorphism, aurora gradients, neon glows, and a purple-cyan color scheme for consistent UI components."
-    },
-    {
-      "name": "e2e-test-runner-fixer-plugin",
-      "source": "./plugins/e2e-test-runner-fixer-plugin",
-      "description": "Diagnoses and fixes end-to-end test failures with deterministic setup, isolation, and iterative reruns. Supports Playwright, Cypress, and WebDriver."
-    },
-    {
-      "name": "issue-closer-plugin",
-      "source": "./plugins/issue-closer-plugin",
-      "description": "Reviews open GitHub issues and closes any where the work has been fully completed and checked in."
-    },
-    {
-      "name": "issue-prioritiser-plugin",
-      "source": "./plugins/issue-prioritiser-plugin",
-      "description": "Reviews open GitHub issues, applies priority labels, checks relevance, and recommends the next issues to work on."
-    },
-    {
-      "name": "issue-worker-plugin",
-      "source": "./plugins/issue-worker-plugin",
-      "description": "Implements a GitHub issue end-to-end — reads the issue, explores the project, writes code, adds tests, and verifies everything passes."
-    },
-    {
-      "name": "sdlc-plugin",
-      "source": "./plugins/sdlc-plugin",
-      "description": "15 bundled skills for the Software Development Lifecycle — from repo bootstrap to task implementation, plus helpers for status, surgical requirement edits, audit, and course-correction."
-    },
-    {
-      "name": "sentry-recent-issues-plugin",
-      "source": "./plugins/sentry-recent-issues-plugin",
-      "description": "Investigates recent or specific Sentry issues, determines frequency and recurrence, researches root cause in the codebase, and recommends fixes."
-    },
-    {
-        "name": "teams-to-confluence-plugin",
-        "source": "./plugins/teams-to-confluence-plugin",
-        "description": "Adds a /teams-to-confluence skill for taking Teams chat content and creating/updating Confluence pages"
-    },
-    {
-        "name": "write-like-a-human-plugin",
-        "source": "./plugins/write-like-a-human-plugin",
-        "description": "Write prose that sounds authentically human and avoids detectable AI patterns. Covers vocabulary, punctuation, structure, and tone."
     }
   ]
 }

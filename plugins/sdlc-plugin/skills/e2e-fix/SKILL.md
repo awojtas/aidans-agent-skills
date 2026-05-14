@@ -1,5 +1,5 @@
 ---
-name: e2e-test-runner-fixer
+name: e2e-fix
 description: Diagnoses and fixes end-to-end test failures with deterministic setup, isolation, and iterative reruns. Use when users mention E2E failures, flaky specs, Playwright/Cypress/Webdriver tests, test data seeding, headed mode, or failing CI test jobs.
 ---
 

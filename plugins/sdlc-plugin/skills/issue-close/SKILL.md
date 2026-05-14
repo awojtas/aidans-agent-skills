@@ -1,5 +1,5 @@
 ---
-name: issue-closer
+name: issue-close
 description: Reviews open GitHub issues in the current repo and closes any where the work has been fully completed and checked in. Use when the user mentions closing stale issues, cleaning up done issues, "close completed issues", "review open issues", tidying the backlog, or when issues may have been implemented but not closed.
 ---
 

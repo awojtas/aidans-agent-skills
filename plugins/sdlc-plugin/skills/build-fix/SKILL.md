@@ -1,5 +1,5 @@
 ---
-name: build-fixer
+name: build-fix
 description: Iteratively fix build errors and lint warnings until the project compiles cleanly. Use this skill whenever the user mentions build failures, compilation errors, "fix the build", "make it compile", broken builds, CI failures related to compilation, lint errors, linting issues, "run lint", "fix lint warnings", or any variation of "the build is broken" or "fix these errors". Also trigger when the user pastes compiler output, build logs, or says things like "I'm getting errors when I build" or "can you get this to compile". Covers .NET (dotnet build), Node.js (npm/pnpm/yarn build), and other common build systems.
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: task-implement
-description: Implements a single GitHub issue end-to-end through a multi-persona orchestration — branch setup → ticket validation → cloud architecture review → UX design specification → implementation → UX design review → tests → test validation → lint+build → diligence audit → PR + self-review → review-feedback handling. Each persona (Principal Engineer, QA Engineer, Cloud Architect, UX/UI Designer, Test Automation Engineer, Project Manager, Work Checker) is spawned as a focused sub-agent, posts a `[Role Name]` comment on the GitHub issue with their status, and hands off to the next. The UX Designer establishes the design spec before implementation and verifies the rendered output afterwards using Playwright; the QA Engineer is also authorised to use Playwright for AC oversight. The Work Checker runs after every other persona and audits their work — empirically catches defects ~80% of the time. The Project Manager runs near the end and bounces back any phase where the audit finds gaps. Designed for long-running comprehensive work (potentially hours) on important tasks where quality outweighs speed. Use when the user says "implement task #X", "do issue #X properly", "fully implement issue #X", "take this through to PR", "comprehensive implementation", or wants a thorough multi-role pass on a single ticket. Companion to the lighter `/issue-worker` skill — `/task-implement` is the heavyweight version with structured handoffs and audit gates.
+description: Implements a single GitHub issue end-to-end through a multi-persona orchestration — branch setup → ticket validation → cloud architecture review → UX design specification → implementation → UX design review → tests → test validation → lint+build → diligence audit → PR + self-review → review-feedback handling. Each persona (Principal Engineer, QA Engineer, Cloud Architect, UX/UI Designer, Test Automation Engineer, Project Manager, Work Checker) is spawned as a focused sub-agent, posts a `[Role Name]` comment on the GitHub issue with their status, and hands off to the next. The UX Designer establishes the design spec before implementation and verifies the rendered output afterwards using Playwright; the QA Engineer is also authorised to use Playwright for AC oversight. The Work Checker runs after every other persona and audits their work — empirically catches defects ~80% of the time. The Project Manager runs near the end and bounces back any phase where the audit finds gaps. Designed for long-running comprehensive work (potentially hours) on important tasks where quality outweighs speed. Use when the user says "implement task #X", "do issue #X properly", "fully implement issue #X", "take this through to PR", "comprehensive implementation", or wants a thorough multi-role pass on a single ticket. Companion to the lighter `/issue-work` skill — `/task-implement` is the heavyweight version with structured handoffs and audit gates.
 ---
 
 # Implementing a task end-to-end with role-based orchestration
@@ -9,10 +9,10 @@ This skill takes one GitHub issue from "picked up" to "PR ready for human merge"
 
 ## When to use this vs the lighter alternatives
 
-- `/issue-worker` — single-agent quick pass. Use when the task is small and the quality bar is "merges cleanly".
+- `/issue-work` — single-agent quick pass. Use when the task is small and the quality bar is "merges cleanly".
 - `/task-implement` — multi-agent orchestration. Use when the task is important, complex, or risk-bearing, and the quality bar is "audited, fully tested, self-reviewed".
 
-If you're not sure, default to `/issue-worker` for tasks under ~half a day of work and `/task-implement` for anything bigger or anything carrying production risk.
+If you're not sure, default to `/issue-work` for tasks under ~half a day of work and `/task-implement` for anything bigger or anything carrying production risk.
 
 ## The personas
 
@@ -391,7 +391,7 @@ Stored in memory across the session; printed in the final summary.
 
 ## Strict non-goals
 
-- **No skipping phases.** The 13-phase sequence is intentional. If the user wants a lighter pass, use `/issue-worker`.
+- **No skipping phases.** The 13-phase sequence is intentional. If the user wants a lighter pass, use `/issue-work`.
 - **No silent merging.** This skill never merges the PR. That's a human decision.
 - **No auto-fixing across roles.** The Work Checker reports; it doesn't fix. The role fixes.
 - **No infinite bounce-back.** 3 strikes per role per session, then escalate to the user.

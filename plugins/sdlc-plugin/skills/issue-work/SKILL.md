@@ -1,5 +1,5 @@
 ---
-name: issue-worker
+name: issue-work
 description: Implements a GitHub issue end-to-end in any codebase — reads the issue, explores the project, writes code, adds tests, and verifies everything passes. Use when the user says "work on issue", "implement issue #", "pick up issue", "fix issue", "start on this ticket", or provides a GitHub issue link or number to implement.
 ---
 

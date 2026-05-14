@@ -1,7 +1,7 @@
 {
 	"name": "sdlc-plugin",
-	"description": "15 bundled skills for the Software Development Lifecycle — from repo bootstrap to task implementation, plus helpers for status, surgical requirement edits, audit, and course-correction.",
-	"version": "3.0.1",
+	"description": "21 bundled skills for the full Software Development Lifecycle — plan, build, ship, operate, maintain. Workflow chain from repo bootstrap to task implementation, plus helpers for status, surgical requirement edits, audit, course-correction, backlog triage, production-error triage, and dev-loop fixes (build / E2E).",
+	"version": "4.0.0",
 	"author": {
 		"name": "Aidan Wojtas",
 		"url": "https://github.com/awojtas/aidans-agent-skills"

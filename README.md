@@ -18,111 +18,19 @@ Then close and re-open Claude Code - skills don't hot-reload, so you need a fres
 
 Want to add a skill? Point your AI coding agent at this repo and tell it what you want to build. The [AGENTS.md](AGENTS.md) file has the full walkthrough for adding a new plugin and skill, so the agent can handle the scaffolding, file structure, and marketplace registration on its own.
 
-## Skills
+## Plugins
 
-### Build Fixer (`/build-fixer`)
+The marketplace ships three plugins:
 
-Runs your build, reads the errors, fixes them, runs it again. Keeps going until it compiles or it's clear something needs human attention.
-
-Works with .NET, Node.js (npm/pnpm/yarn/bun), Rust, Go, Java (gradle/maven), Make, and others.
-
-What it does:
-
-- Figures out your build command from project files
-- Classifies errors as fixable code problems vs. environment issues it can't solve
-- Loops through fixes until the build passes or it stops making progress
-- Tells you what's left if anything still fails
-
-Ask Claude to fix build errors, clean up lint warnings, or just paste your build output.
-
----
-
-### Design System Aurora (`/design-system-aurora`)
-
-A full design system built around glassmorphism, aurora gradients, neon glows, and a purple-cyan palette. Think frosted glass cards with glowing edges.
-
-What it does:
-
-- Gives you design tokens for colors, typography, spacing, and shadows
-- Walks you through glassmorphic styling - backdrop blur, translucent borders, neon glow effects
-- Includes aurora gradient animations and gradient text patterns
-- Covers responsive design, dark mode, accessibility, and animation
-- Comes with reference docs for tokens, glass patterns, and component examples
-
-Use it when you're building or tweaking UI components and want them to match the Aurora look.
-
----
-
-### E2E Test Runner and Fixer (`/e2e-test-runner-fixer`)
-
-Your E2E tests are failing. This skill figures out why and fixes them.
-
-Works with Playwright, Cypress, and WebDriver.
-
-What it does:
-
-- Finds your runner config, test specs, helpers, and seed scripts
-- Reproduces failures in isolation before touching anything
-- Sorts failures into categories: real bug, flaky test, environment-dependent, platform-specific
-- Digs into root causes like data setup mismatches, race conditions, stale locators, or auth leakage
-- Makes the smallest fix that actually solves the problem, then re-runs to confirm
-
-Use it when E2E tests break, specs are flaky, or your CI test job is red.
-
----
-
-### Issue Closer (`/issue-closer`)
-
-Goes through your open GitHub issues and closes the ones where the work is already done.
-
-What it does:
-
-- Pulls up all open issues in the current repo
-- Checks for evidence that they're finished - merged PRs, commits, code that matches the request
-- Closes anything that's clearly done, with a comment explaining why
-- Gives you a summary of what got closed and what's still open
-
-Good for cleaning up a backlog that's gotten stale, or after a sprint where tickets didn't get closed along the way.
-
----
-
-### Issue Prioritiser (`/issue-prioritiser`)
-
-Looks at your open GitHub issues and helps you figure out what to work on next.
-
-What it does:
-
-- Pulls issues matching a filter (milestone, label, or everything)
-- Checks whether each issue is still relevant and well-defined enough to act on
-- Rates priority based on impact, how often people hit the problem, and effort to fix
-- Labels them: highest, high, medium, low, nice to have
-- Flags issues that might already be done or too stale to matter
-- Recommends a ranked list of what to tackle first
-
-Use it when the backlog feels like a mess and you need a starting point.
-
----
-
-### Issue Worker (`/issue-worker`)
-
-Give it a GitHub issue and it does the whole thing - reads the ticket, understands the codebase, writes code, adds tests, and makes sure everything passes.
-
-What it does:
-
-- Reads the issue and pulls out acceptance criteria and scope
-- Explores the repo to understand conventions, build system, and stack
-- Creates a branch and writes the minimum changes needed
-- Adds unit and integration tests using whatever patterns already exist
-- Runs lint, type-check, build, and tests, fixing anything that fails
-- Double-checks against the acceptance criteria before reporting back
-
-Say "work on issue #123" or drop in a GitHub issue link.
+- **[`/sdlc-plugin`](#sdlc-bundle--sdlc-plugin)** — 21 skills for the full Software Development Lifecycle (plan → build → ship → operate → maintain). The headline bundle.
+- **[`/content-plugin`](#content-tools--content-plugin)** — 2 skills for shaping prose and migrating content alongside software.
+- **[`/design-system-aurora-plugin`](#design-system-aurora--design-system-aurora-plugin)** — 1 skill: the Aurora design system (glassmorphism, aurora gradients, neon glows, purple-cyan palette).
 
 ---
 
 ## SDLC bundle — `/sdlc-plugin`
 
-The next fifteen skills are bundled together under the **`sdlc-plugin`** marketplace entry. Install once, get the full workflow: bootstrap a fresh repo → draft a high-level solution design → flesh out the platform architecture → provision the cloud platforms → verify the platform → harden the repo for release → derive requirements from the design → validate them → plan the implementation as GitHub issues → implement one issue end-to-end with audited handoffs. Plus five ad-hoc tools — `/status-help` (where am I?), `/requirements-add` and `/requirements-delete` (surgical edits), `/ai-check-work` (generic second-pass audit), and `/requirements-rework` (course-correct on discovery). Designed to be used in sequence but each is useful on its own.
+Twenty-one skills bundled under the **`sdlc-plugin`** marketplace entry, covering the full lifecycle: bootstrap a fresh repo → draft a high-level solution design → flesh out the platform architecture → provision the cloud platforms → verify the platform → harden the repo for release → derive requirements from the design → validate them → plan the implementation as GitHub issues → implement one issue end-to-end with audited handoffs. Plus **eleven ad-hoc helpers** covering workflow navigation, surgical requirement edits, audit, course-correction, backlog management, production-error triage, and dev-loop fixes. Designed to be used in sequence but each is useful on its own.
 
 | Order | Skill | What it produces |
 |-------|-------|------------------|
@@ -139,8 +47,14 @@ The next fifteen skills are bundled together under the **`sdlc-plugin`** marketp
 | —     | [`/status-help`](#status-help-status-help)                                             | "Where am I in the workflow?" — analyses repo state and recommends the next concrete step. |
 | —     | [`/requirements-add`](#requirements-add-requirements-add)                              | A single new requirement added to an existing tree, with duplicate + conflict checks. |
 | —     | [`/requirements-delete`](#requirements-delete-requirements-delete)                     | A single requirement removed or demoted, with cascade-impact scan across the tree and GitHub issues. |
+| —     | [`/requirements-rework`](#requirements-rework-requirements-rework)                     | Course-corrects requirements docs *and* open GitHub issues when a discovery invalidates the plan. |
 | —     | [`/ai-check-work`](#ai-check-work-ai-check-work)                                       | Generic "please just check your work carefully" second-pass skill. Works on anything. |
-| —     | [`/requirements-rework`](#requirements-rework-requirements-rework)                     | Assertively course-corrects requirements docs *and* open GitHub issues when a discovery invalidates the plan. |
+| —     | [`/issue-close`](#issue-close-issue-close)                                             | Closes GitHub issues whose work has already been done — backlog hygiene. |
+| —     | [`/issue-prioritise`](#issue-prioritise-issue-prioritise)                              | Ranks and labels open GitHub issues by priority; recommends what to work on next. |
+| —     | [`/issue-work`](#issue-work-issue-work)                                                | Lightweight end-to-end implementation of one GitHub issue — sibling to `/task-implement`, without the persona overhead. |
+| —     | [`/sentry-triage`](#sentry-triage-sentry-triage)                                       | Investigates recent Sentry issues, traces them to code, recommends fixes. |
+| —     | [`/build-fix`](#build-fix-build-fix)                                                   | Iteratively fixes build errors and lint warnings until the project compiles cleanly. |
+| —     | [`/e2e-fix`](#e2e-fix-e2e-fix)                                                         | Diagnoses and fixes failing or flaky end-to-end tests (Playwright, Cypress, WebDriver). |
 
 ---
 
@@ -330,7 +244,7 @@ Run it once the requirements are mostly Reviewed and you're ready to start work.
 
 ### Task Implement (`/task-implement`)
 
-The heavyweight implementation skill. Takes a single GitHub issue from picked-up through to PR-ready via a seven-persona orchestration. Designed for long-running runs (hours) on important tasks. The lighter `/issue-worker` is the right tool for small tasks; `/task-implement` is for tasks worth the audit gates.
+The heavyweight implementation skill. Takes a single GitHub issue from picked-up through to PR-ready via a seven-persona orchestration. Designed for long-running runs (hours) on important tasks. The lighter `/issue-work` is the right tool for small tasks; `/task-implement` is for tasks worth the audit gates.
 
 What it does:
 
@@ -410,23 +324,6 @@ For one-requirement-at-a-time cleanup. If a discovery is invalidating a chunk of
 
 ---
 
-### AI Check Work (`/ai-check-work`)
-
-A generic "please just check your work carefully on this" second-pass skill. The whole point is to save you typing that phrase out every time. Works on anything — code, plans, writing, analysis, designs, calculations, summaries.
-
-What it does:
-
-- Re-examines whatever was just produced with the *"would I ship this as-is?"* lens
-- Reports findings specifically — what's wrong, where — so they're actionable, not vague
-- Doesn't redo the work; doesn't pedant on stylistic taste; doesn't request features
-- Stops after two passes — if issues remain on a second audit, the underlying work needs rethinking, not a third audit
-
-Empirically a focused second-pass critique surfaces something worth changing about 80% of the time (Madaan et al., *Self-Refine*).
-
-Say "check your work", "double-check this", "look this over", "did I miss anything", "review what you just did", "go over this again", "self-review".
-
----
-
 ### Requirements Rework (`/requirements-rework`)
 
 Course-corrects both the requirements (`docs/requirements/`) *and* the open GitHub issues when something discovered during early implementation invalidates the original plan. The one in the SDLC bundle that hopefully doesn't get called often — but when you need it, you really need it.
@@ -447,19 +344,148 @@ Use it sparingly. When you need it, run `/requirements-rework`. Say "rework this
 
 ---
 
-### Sentry Recent Issues (`/sentry-recent-issues`)
+### AI Check Work (`/ai-check-work`)
 
-Pulls recent Sentry issues, figures out what's going on in the code, and tells you how to fix them.
+A generic "please just check your work carefully on this" second-pass skill. The whole point is to save you typing that phrase out every time. Works on anything — code, plans, writing, analysis, designs, calculations, summaries.
+
+What it does:
+
+- Re-examines whatever was just produced with the *"would I ship this as-is?"* lens
+- Reports findings specifically — what's wrong, where — so they're actionable, not vague
+- Doesn't redo the work; doesn't pedant on stylistic taste; doesn't request features
+- Stops after two passes — if issues remain on a second audit, the underlying work needs rethinking, not a third audit
+
+Empirically a focused second-pass critique surfaces something worth changing about 80% of the time (Madaan et al., *Self-Refine*).
+
+Say "check your work", "double-check this", "look this over", "did I miss anything", "review what you just did", "go over this again", "self-review".
+
+---
+
+### Issue Close (`/issue-close`)
+
+Goes through your open GitHub issues and closes the ones where the work is already done — pure backlog hygiene.
+
+What it does:
+
+- Pulls up all open issues in the current repo
+- Checks for evidence that they're finished — merged PRs, commits, code that matches the request
+- Closes anything that's clearly done, with a comment explaining why
+- Gives you a summary of what got closed and what's still open
+
+Good for cleaning up a backlog that's gotten stale, or after a sprint where tickets didn't get closed along the way.
+
+---
+
+### Issue Prioritise (`/issue-prioritise`)
+
+Looks at your open GitHub issues and helps you figure out what to work on next.
+
+What it does:
+
+- Pulls issues matching a filter (milestone, label, or everything)
+- Checks whether each issue is still relevant and well-defined enough to act on
+- Rates priority based on impact, how often people hit the problem, and effort to fix
+- Labels them: highest, high, medium, low, nice to have
+- Flags issues that might already be done or too stale to matter
+- Recommends a ranked list of what to tackle first
+
+Use it when the backlog feels like a mess and you need a starting point.
+
+---
+
+### Issue Work (`/issue-work`)
+
+The lightweight counterpart to `/task-implement`. Give it a GitHub issue and it does the whole thing — reads the ticket, understands the codebase, writes code, adds tests, and makes sure everything passes. Skips the multi-persona orchestration `/task-implement` uses.
+
+What it does:
+
+- Reads the issue and pulls out acceptance criteria and scope
+- Explores the repo to understand conventions, build system, and stack
+- Creates a branch and writes the minimum changes needed
+- Adds unit and integration tests using whatever patterns already exist
+- Runs lint, type-check, build, and tests, fixing anything that fails
+- Double-checks against the acceptance criteria before reporting back
+
+Use `/issue-work` for small tasks; reach for `/task-implement` when the task warrants the heavyweight audit gates. Say "work on issue #123" or drop in a GitHub issue link.
+
+---
+
+### Sentry Triage (`/sentry-triage`)
+
+Pulls recent Sentry issues, figures out what's going on in the code, and tells you how to fix them. Production-error triage that often feeds back into `/requirements-rework` or new tasks created via `/tasks-create-from-requirements`.
 
 What it does:
 
 - Fetches issues from Sentry for a given org, project, and environment
 - Classifies each one as recurring, regression, or new
-- Summarizes affected users, frequency, and timing
+- Summarises affected users, frequency, and timing
 - Traces stack traces back to actual code in your repo
 - Suggests a root-cause fix and a regression test
 
 Use it when production errors pile up or you get a Sentry alert you need to triage.
+
+---
+
+### Build Fix (`/build-fix`)
+
+Runs your build, reads the errors, fixes them, runs it again. Keeps going until it compiles or it's clear something needs human attention. The dev-loop standalone of what `/task-implement`'s lint+build phase does internally.
+
+Works with .NET, Node.js (npm/pnpm/yarn/bun), Rust, Go, Java (gradle/maven), Make, and others.
+
+What it does:
+
+- Figures out your build command from project files
+- Classifies errors as fixable code problems vs. environment issues it can't solve
+- Loops through fixes until the build passes or it stops making progress
+- Tells you what's left if anything still fails
+
+Ask Claude to fix build errors, clean up lint warnings, or just paste your build output.
+
+---
+
+### E2E Fix (`/e2e-fix`)
+
+Your E2E tests are failing. This skill figures out why and fixes them. The dev-loop standalone of what `/task-implement`'s test-validation phase does inside a task.
+
+Works with Playwright, Cypress, and WebDriver.
+
+What it does:
+
+- Finds your runner config, test specs, helpers, and seed scripts
+- Reproduces failures in isolation before touching anything
+- Sorts failures into categories: real bug, flaky test, environment-dependent, platform-specific
+- Digs into root causes like data setup mismatches, race conditions, stale locators, or auth leakage
+- Makes the smallest fix that actually solves the problem, then re-runs to confirm
+
+Use it when E2E tests break, specs are flaky, or your CI test job is red.
+
+---
+
+## Content tools — `/content-plugin`
+
+Two skills for shaping prose and migrating content that ships alongside your software.
+
+| Skill | What it produces |
+|-------|------------------|
+| [`/prose-humanize`](#prose-humanize-prose-humanize) | Text that sounds authentically human, not AI-generated. |
+| [`/teams-to-confluence`](#teams-to-confluence-teams-to-confluence) | A Confluence page derived from a Microsoft Teams chat. |
+
+---
+
+### Prose Humanize (`/prose-humanize`)
+
+Makes your text sound like a person wrote it, not a language model.
+
+What it does:
+
+- Strips out the AI vocabulary that gives the game away (words like "delve," "tapestry," "underscore")
+- Swaps em dashes and curly quotes for the plain punctuation people actually type
+- Mixes up sentence length and structure so it doesn't read like a template
+- Breaks the formulaic patterns AI falls into — the rule of three, the "not just X but Y" construction, the tidy intro-body-conclusion
+- Cuts promotional language, fake hedging, and vague claims about significance
+- Runs a voice checklist on everything before handing it over
+
+Use it for blog posts, articles, essays, emails, creative writing, marketing copy — anything that should sound like you wrote it.
 
 ---
 
@@ -471,7 +497,7 @@ What it does:
 
 - Asks what chat, what to extract, and what date range
 - Finds and confirms the right Teams chat before pulling anything
-- Pulls messages and organizes them into a real page with decisions, action items, and technical details
+- Pulls messages and organises them into a real page with decisions, action items, and technical details
 - Shows you the proposed title, space, parent page, and content before creating anything
 - Creates the page and confirms it published correctly
 
@@ -479,17 +505,16 @@ Ask it to save a Teams chat to Confluence or create a wiki page from a discussio
 
 ---
 
-### Write Like a Human (`/write-like-a-human`)
+## Design System Aurora — `/design-system-aurora-plugin`
 
-Makes your text sound like a person wrote it, not a language model.
+A full design system built around glassmorphism, aurora gradients, neon glows, and a purple-cyan palette. Think frosted glass cards with glowing edges.
 
 What it does:
 
-- Strips out the AI vocabulary that gives the game away (words like "delve," "tapestry," "underscore")
-- Swaps em dashes and curly quotes for the plain punctuation people actually type
-- Mixes up sentence length and structure so it doesn't read like a template
-- Breaks the formulaic patterns AI falls into - the rule of three, the "not just X but Y" construction, the tidy intro-body-conclusion
-- Cuts promotional language, fake hedging, and vague claims about significance
-- Runs a voice checklist on everything before handing it over
+- Gives you design tokens for colors, typography, spacing, and shadows
+- Walks you through glassmorphic styling — backdrop blur, translucent borders, neon glow effects
+- Includes aurora gradient animations and gradient text patterns
+- Covers responsive design, dark mode, accessibility, and animation
+- Comes with reference docs for tokens, glass patterns, and component examples
 
-Use it for blog posts, articles, essays, emails, creative writing, marketing copy - anything that should sound like you wrote it.
+Use it when you're building or tweaking UI components and want them to match the Aurora look.

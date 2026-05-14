@@ -1,6 +1,6 @@
 {
-	"name": "write-like-a-human-plugin",
-	"description": "Adds a /write-like-a-human skill for producing natural, human-sounding prose",
+	"name": "content-plugin",
+	"description": "Content tools — humanise AI-sounding prose and migrate Teams chats to Confluence pages.",
 	"version": "1.0.0",
 	"author": {
 		"name": "Aidan Wojtas",

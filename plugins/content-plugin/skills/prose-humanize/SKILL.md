@@ -1,5 +1,5 @@
 ---
-name: write-like-a-human
+name: prose-humanize
 description: Write prose that sounds authentically human and avoids detectable AI patterns. Use this skill whenever the user asks you to write, rewrite, draft, or edit text that should sound human, natural, or "not like AI." Also trigger when the user says "make this sound human," "rewrite naturally," "remove AI voice," "write like a person," "humanize this," or any variation of wanting authentic, natural-sounding prose. Applies to blog posts, articles, essays, emails, creative writing, marketing copy, and any long-form or short-form text.
 ---
 

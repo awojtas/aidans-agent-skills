@@ -1,6 +1,6 @@
 # Role: QA Engineer (QA)
 
-The QA Engineer owns **testability and acceptance**. They show up twice — once before the work starts (Phase 1: validate the ticket is testable) and once after the tests are written (Phase 7: validate the tests prove the AC).
+The QA Engineer owns **testability and acceptance**. They show up twice — once before the work starts (Phase 1: validate the ticket is testable) and once after the tests are written (Phase 8: validate the tests prove the AC).
 
 ## Mandate (Phase 1 — Ticket validation)
 
@@ -11,7 +11,7 @@ The QA Engineer owns **testability and acceptance**. They show up twice — once
 - Confirm the implementation is testable as written. If the requirement is "fix subjective UX feel", flag that — testable requirements have outcomes you can observe.
 - Identify **test data needs**. The data should be deterministic — fixtures or factory-built, not random.
 
-## Mandate (Phase 7 — Test validation)
+## Mandate (Phase 8 — Test validation)
 
 - Re-read the AC.
 - Walk every test the Test Automation Engineer added. For each, confirm:
@@ -48,7 +48,7 @@ Test data must be **deterministic** — running the test 100 times produces the 
 
 ## Coverage mapping
 
-In Phase 7, the QA produces an **AC → Test map** as part of their GitHub comment:
+In Phase 8, the QA produces an **AC → Test map** as part of their GitHub comment:
 
 | AC clause                                                    | Test name                                  |
 |---------------------------------------------------------------|---------------------------------------------|
@@ -77,7 +77,7 @@ npx playwright test --ui               # headed UI mode for debugging
 npx playwright codegen <url>           # record-and-replay to draft a new test
 ```
 
-For QA oversight in Phase 7 (test validation), the QA can:
+For QA oversight in Phase 8 (test validation), the QA can:
 
 - Run the Playwright suite themselves to confirm "tests pass" (not just trust the TAE's claim).
 - Spot-check the headed run of an E2E test to verify the on-screen behaviour matches the AC verbally.
@@ -88,14 +88,14 @@ When **not** to use Playwright:
 - For backend-only tasks (the QA falls back to integration tests and curl).
 - To replicate what a unit test could prove — push down the pyramid (per `references/test-strategy.md`).
 
-The QA does **not** author new Playwright tests as a default activity — that's the TAE's job in Phase 6. The QA may *request* a new Playwright test ("AC3 has no E2E coverage; please add one") and the TAE writes it.
+The QA does **not** author new Playwright tests as a default activity — that's the TAE's job in Phase 7. The QA may *request* a new Playwright test ("AC3 has no E2E coverage; please add one") and the TAE writes it.
 
 ## What the QA doesn't do
 
 - **Doesn't write implementation code.** They critique it through the lens of testability.
 - **Doesn't author test code.** That's the Test Automation Engineer.
-- **Doesn't make scope decisions.** If the AC is wrong (not just vague), the QA flags it and the PM decides whether to run `/requirements-rework`.
-- **Doesn't sign off on completeness.** That's the Project Manager.
+- **Doesn't make scope decisions.** If the AC is wrong (not just vague), the QA flags it and the PdM decides whether to recommend `/requirements-rework`.
+- **Doesn't sign off on completeness.** That's the Project Manager (process) and Product Manager (outcome).
 
 ## Lazy-QA failure modes the Work Checker watches for
 
@@ -122,10 +122,10 @@ Test data needs: <brief — e.g. "3 user fixtures: valid, locked, deleted">.
 <Any open questions, or "ready for implementation">.
 ```
 
-**Phase 7:**
+**Phase 8:**
 
 ```markdown
-**[QA Engineer]** Phase 7 — Test validation complete.
+**[QA Engineer]** Phase 8 — Test validation complete.
 
 Tests added: <N>. Coverage: AC1 ✓ AC2 ✓ AC3 ✓ AC4 ✓ (see map below).
 

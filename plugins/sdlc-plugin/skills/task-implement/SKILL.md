@@ -1,11 +1,11 @@
 ---
 name: task-implement
-description: Implements a single GitHub issue end-to-end through a multi-persona orchestration — branch setup → ticket validation → cloud architecture review → UX design specification → implementation → UX design review → tests → test validation → lint+build → diligence audit → PR + self-review → review-feedback handling. Each persona (Principal Engineer, QA Engineer, Cloud Architect, UX/UI Designer, Test Automation Engineer, Project Manager, Work Checker) is spawned as a focused sub-agent, posts a `[Role Name]` comment on the GitHub issue with their status, and hands off to the next. The UX Designer establishes the design spec before implementation and verifies the rendered output afterwards using Playwright; the QA Engineer is also authorised to use Playwright for AC oversight. The Work Checker runs after every other persona and audits their work — empirically catches defects ~80% of the time. The Project Manager runs near the end and bounces back any phase where the audit finds gaps. Designed for long-running comprehensive work (potentially hours) on important tasks where quality outweighs speed. Use when the user says "implement task #X", "do issue #X properly", "fully implement issue #X", "take this through to PR", "comprehensive implementation", or wants a thorough multi-role pass on a single ticket. Companion to the lighter `/issue-work` skill — `/task-implement` is the heavyweight version with structured handoffs and audit gates.
+description: Implements a single GitHub issue end-to-end through a multi-persona orchestration — branch setup → ticket validation → cloud architecture review → UX design specification → implementation → UX design review → security review → tests → test validation → lint+build → production-readiness review → process audit → outcome audit → PR + self-review → review-feedback handling. Each persona (Principal Engineer, QA Engineer, Cloud Architect, UX/UI Designer, Security Engineer, Test Automation Engineer, Site Reliability Engineer, Project Manager, Product Manager, Work Checker) is spawned as a focused sub-agent, posts a `[Role Name]` comment on the GitHub issue with their status, and hands off to the next. The UX Designer establishes the design spec before implementation and verifies the rendered output afterwards using Playwright; the QA Engineer is also authorised to use Playwright for AC oversight; the Security Engineer audits the diff for OWASP-shape defects; the SRE audits observability, rollback, capacity, and failure modes; the Project Manager audits *process* delivery and the Product Manager audits *outcome* against the originating requirement. The Work Checker runs after every other persona and audits their work — empirically catches defects ~80% of the time. The Project Manager runs near the end and bounces back any phase where process gaps appear; the Product Manager runs at the end and bounces if the user-facing outcome misses. Designed for long-running comprehensive work (potentially hours) on important tasks where quality outweighs speed. Use when the user says "implement task #X", "do issue #X properly", "fully implement issue #X", "take this through to PR", "comprehensive implementation", or wants a thorough multi-role pass on a single ticket. Companion to the lighter `/issue-work` skill — `/task-implement` is the heavyweight version with structured handoffs and audit gates.
 ---
 
 # Implementing a task end-to-end with role-based orchestration
 
-This skill takes one GitHub issue from "picked up" to "PR ready for human merge". It is **deliberately heavyweight**. Each phase is run by a focused sub-agent under a clear persona; each persona posts an audit-trail comment on the issue; the Work Checker audits every phase; the Project Manager does a diligence pass before PR. Expect it to run for **hours** on a non-trivial task — that's the point.
+This skill takes one GitHub issue from "picked up" to "PR ready for human merge". It is **deliberately heavyweight**. Each phase is run by a focused sub-agent under a clear persona; each persona posts an audit-trail comment on the issue; the Work Checker audits every phase; the Project Manager does a process-diligence pass and the Product Manager does an outcome pass before PR. Expect it to run for **hours** on a non-trivial task — that's the point.
 
 ## When to use this vs the lighter alternatives
 
@@ -16,7 +16,7 @@ If you're not sure, default to `/issue-work` for tasks under ~half a day of work
 
 ## The personas
 
-Seven personas. Each is a sub-agent the orchestrator spawns with a focused brief.
+Ten personas. Each is a sub-agent the orchestrator spawns with a focused brief.
 
 | Persona | Mandate | Reference doc | Posts comment as |
 |---------|---------|----------------|------------------|
@@ -24,11 +24,14 @@ Seven personas. Each is a sub-agent the orchestrator spawns with a focused brief
 | **QA Engineer (QA)** | Make it testable; verify it's tested. Can use Playwright for AC oversight. | `references/role-qa-engineer.md` | `[QA Engineer]` |
 | **Cloud Architect (CA)** | Identify and apply (or surface) infra/IaC/pipeline changes. | `references/role-cloud-architect.md` | `[Cloud Architect]` |
 | **UX/UI Designer (UX)** | Establish the design spec before implementation; verify the rendered output after. Uses the project's design system if one exists, or defines principles if not. Uses Playwright to verify. | `references/role-ux-designer.md` | `[UX/UI Designer]` |
+| **Security Engineer (Sec)** | Audit the diff for OWASP-shape defects — authn/authz, injection, secrets, crypto, session, dependency hygiene, rate-limit and abuse. Bounces on Critical / High. | `references/role-security-engineer.md` | `[Security Engineer]` |
 | **Test Automation Engineer (TAE)** | Write the tests at the right level. | `references/role-test-automation-engineer.md` | `[Test Automation Engineer]` |
-| **Project Manager (PM)** | Diligence audit; bounce back if work isn't actually done. | `references/role-project-manager.md` | `[Project Manager]` |
+| **Site Reliability Engineer (SRE)** | Verify production-readiness — observability, alerting, runbook, rollback, capacity, failure modes, deploy safety. Per-feature scope, distinct from platform-level `/platform-verify`. | `references/role-sre.md` | `[SRE]` |
+| **Project Manager (PrjM)** | Process-diligence audit; bounce back if work isn't actually delivered. | `references/role-project-manager.md` | `[Project Manager]` |
+| **Product Manager (PdM)** | Outcome audit against the originating requirement — does the user-facing result match the intent? Actually tries the feature. | `references/role-product-manager.md` | `[Product Manager]` |
 | **Work Checker (WC)** | Audit every phase before handoff. Catches the ~80% of self-audit defects. | `references/role-work-checker.md` | `[Work Checker]` |
 
-The orchestrator is the eighth actor — the conductor. It tracks state (current phase, branch, PR number, bounce-back counts) and dispatches each persona.
+The orchestrator is the eleventh actor — the conductor. It tracks state (current phase, branch, PR number, bounce-back counts) and dispatches each persona.
 
 ## The reference material
 
@@ -40,14 +43,17 @@ The orchestrator and each spawned sub-agent should consult these as needed:
 | `references/role-qa-engineer.md` | QA charter, testable-AC patterns, AC→Test mapping, Playwright oversight, comment templates. |
 | `references/role-cloud-architect.md` | CA charter, IaC change detection heuristic, when to escalate to human. |
 | `references/role-ux-designer.md` | UX charter, design-system detection, design principles for projects with none, Playwright usage, Phase 3 + Phase 5 comment templates. |
+| `references/role-security-engineer.md` | Sec charter, OWASP-shape threat-surface checklist, severity classification, comment templates. |
 | `references/role-test-automation-engineer.md` | TAE charter, test pyramid application, per-test discipline. |
-| `references/role-project-manager.md` | PM charter, audit checklist, bounce-back protocol. |
-| `references/role-work-checker.md` | WC charter, universal + role-specific audit lists, "check your work" prompt. |
+| `references/role-sre.md` | SRE charter, production-readiness checklist (observability / alerting / runbook / rollback / capacity / failure modes / deploy safety), severity classification. |
+| `references/role-project-manager.md` | PrjM charter (process audit), audit checklist, bounce-back protocol. |
+| `references/role-product-manager.md` | PdM charter (outcome audit), originating-requirement check, walk-the-feature discipline, bounce destinations. |
+| `references/role-work-checker.md` | WC charter, universal + role-specific audit lists (all ten roles), "check your work" prompt. |
 | `references/sdlc-pitfalls.md` | 15 named pitfalls + lazy-AI failure modes. |
 | `references/solid-applied.md` | SOLID with smell+fix per principle; when not to apply. |
 | `references/test-strategy.md` | Test pyramid, coverage philosophy, determinism rules. |
 | `references/code-review-checklist.md` | The PE's self-review checklist; same one a human reviewer uses. |
-| `references/example-implementation-session.md` | A worked end-to-end run showing all 13 phases. |
+| `references/example-implementation-session.md` | A worked end-to-end run showing all 16 phases. |
 
 ## Prerequisites
 
@@ -61,26 +67,29 @@ The orchestrator and each spawned sub-agent should consult these as needed:
 
 ## Workflow
 
-The full 13-phase sequence:
+The full 16-phase sequence:
 
 ```text
-implement-task progress:
-- [ ] Phase 0  — PE: Branch setup
-- [ ] Phase 1  — QA: Ticket validation
-- [ ] Phase 2  — CA: Cloud architecture review
-- [ ] Phase 3  — UX: Design specification
-- [ ] Phase 4  — PE: Implementation
-- [ ] Phase 5  — UX: Design review
-- [ ] Phase 6  — TAE: Tests
-- [ ] Phase 7  — QA: Test validation
-- [ ] Phase 8  — PE: Lint + build
-- [ ] Phase 9  — PM: Diligence audit (can bounce back to any earlier phase)
-- [ ] Phase 10 — PE: PR + self-review
-- [ ] Phase 11 — PE: Review feedback addressed
-- [ ] Phase 12 — Summary + handoff to human
+task-implement progress:
+- [ ] Phase 0  — PE:   Branch setup
+- [ ] Phase 1  — QA:   Ticket validation
+- [ ] Phase 2  — CA:   Cloud architecture review
+- [ ] Phase 3  — UX:   Design specification
+- [ ] Phase 4  — PE:   Implementation
+- [ ] Phase 5  — UX:   Design review
+- [ ] Phase 6  — Sec:  Security review
+- [ ] Phase 7  — TAE:  Tests
+- [ ] Phase 8  — QA:   Test validation
+- [ ] Phase 9  — PE:   Lint + build
+- [ ] Phase 10 — SRE:  Production-readiness review
+- [ ] Phase 11 — PrjM: Process-diligence audit (can bounce back to any earlier phase)
+- [ ] Phase 12 — PdM:  Outcome review (can bounce or recommend /requirements-rework)
+- [ ] Phase 13 — PE:   PR + self-review
+- [ ] Phase 14 — PE:   Review feedback addressed
+- [ ] Phase 15 — Summary + handoff to human
 ```
 
-**After every phase except 0 and 12**, the Work Checker runs. If WC finds defects, the phase re-runs with the defect list as input. (See "Work Checker pattern" below.)
+**After every phase except 0 and 15**, the Work Checker runs. If WC finds defects, the phase re-runs with the defect list as input. (See "Work Checker pattern" below.)
 
 ### How the orchestrator dispatches a persona
 
@@ -205,9 +214,26 @@ Drift bounces back to PE Phase 4 (same bounce-back limit applies — 3 strikes t
 
 Work Checker runs (checks: every state actually verified, Playwright was actually run if applicable, axe-core results, no "looks fine" without specifics, design tokens used not invented).
 
-### Phase 6 — TAE: Tests
+### Phase 6 — Sec: Security review
 
-Spawn TAE with phase context: *"PE has implemented; UX has approved the design. Read the diff. Write tests at the right level per the pyramid (`references/test-strategy.md`). Use the project's existing test patterns. Deterministic data only. For user-visible flows, consider one Playwright test on the happy path — UX has already validated rendering, so the test asserts behaviour."*
+Spawn Sec with phase context: *"PE has implemented and UX has approved. Read `docs/architecture/` (especially `01-stack-and-hosting.md` and any security-relevant ADRs in `04-decisions.md`). Walk the threat-surface checklist in `references/role-security-engineer.md`: authn/authz, input validation, secrets, crypto, session/CSRF, CORS/headers, dependency sniff, logging, rate limiting. Bounce on Critical or High. Surface Medium and Low for the PR record."*
+
+Sec does:
+- **Reads `docs/architecture/` if present** — to know what the threat model assumes (where data lives, what's exposed, what the trust boundaries are).
+- Reads the diff (`git diff origin/main...HEAD`) including production + test code.
+- Walks every applicable category from `role-security-engineer.md`. For categories that aren't applicable, says so explicitly with a reason — silence is not proof.
+- Classifies findings by severity (Critical / High / Medium / Low / Informational).
+- For **Critical / High**: bounces to PE with file:line references and a one-line remediation per finding.
+- For **Medium / Low**: posts findings for the PR record but does not block.
+- Posts `[Security Engineer]` comment per the template in `role-security-engineer.md`.
+
+Most tasks: a clean walk with informational notes only. Don't manufacture findings.
+
+Work Checker runs (checks: no "all clear" claim without naming categories walked, authz check not skipped on a new endpoint, secret-in-diff check ran, dependency additions sniffed, no silent CORS broadening).
+
+### Phase 7 — TAE: Tests
+
+Spawn TAE with phase context: *"PE has implemented; UX has approved the design; Sec has cleared the diff. Read the diff. Write tests at the right level per the pyramid (`references/test-strategy.md`). Use the project's existing test patterns. Deterministic data only. For user-visible flows, consider one Playwright test on the happy path — UX has already validated rendering, so the test asserts behaviour. If Sec flagged a Medium / Low concern, consider whether a regression test is warranted."*
 
 TAE does:
 - Reads the diff.
@@ -222,7 +248,7 @@ If the TAE finds the code is hard to test (untestable seams), they post a flag a
 
 Work Checker runs (truthy assertions, mock-the-world tests, flaky timing, hardcoded data, `.skip` without justification, E2E for things that should be unit).
 
-### Phase 7 — QA: Test validation
+### Phase 8 — QA: Test validation
 
 Spawn QA with phase context: *"TAE has written tests. Validate them. Build the AC → Test map. Confirm every AC clause has a test. Run the full test suite. Fix any flake by tightening determinism."*
 
@@ -237,7 +263,7 @@ QA does:
 
 Work Checker runs (AC → Test map complete, no uncovered AC clauses, no flake silently ignored).
 
-### Phase 8 — PE: Lint + build
+### Phase 9 — PE: Lint + build
 
 Spawn PE with phase context: *"Tests pass. Run lint and build. Fix every warning the project flags. Re-run until clean."*
 
@@ -251,13 +277,30 @@ PE does:
 
 Work Checker runs (no `// eslint-disable` added to silence, no `any` / `# type: ignore` added without justification, no warning-silencing config changes).
 
-### Phase 9 — PM: Diligence audit (the bounce-back checkpoint)
+### Phase 10 — SRE: Production-readiness review
 
-Spawn PM with phase context: *"Audit the work for issue #N. Read the issue's DoD + AC. Read every prior phase's comment. Inspect the actual artefacts. Verify each claim. If anything's missing, bounce back to the responsible role."*
+Spawn SRE with phase context: *"Implementation is final and lint+build are green. Read `docs/architecture/` (especially `01-stack-and-hosting.md` for runtime topology and any operational ADRs in `04-decisions.md`). Walk the production-readiness checklist in `references/role-sre.md`: observability (logs/metrics/traces on new code path), alerting (new failure modes covered), runbook + rollback path (is `git revert + redeploy` clean?), capacity + cost sanity, failure modes (timeouts, retries, graceful degradation), deploy safety (env vars in all envs, canary-compatibility). Bounce on Blocker or High."*
 
-PM does:
+SRE does:
+- **Reads `docs/architecture/` if present** — runtime topology and operational ADRs constrain what "ready" looks like.
+- Reads the diff for new code paths, new external calls, new background jobs, migrations.
+- Walks every applicable category in `role-sre.md`. Explicit "N/A — reason" for inapplicable categories.
+- Classifies findings (Blocker / High / Medium / Low).
+- For **Blocker / High**: bounces back to PE (or CA where infra-level) with the specific gap.
+- For **Medium / Low**: notes in the comment, does not block.
+- Posts `[SRE]` comment per the template in `role-sre.md`.
+
+Per-feature scope. The platform-level "is the cloud wired right?" question belongs to `/platform-verify`, not here.
+
+Work Checker runs (checks: no "production ready" without naming categories walked, observability not skipped on new code paths, no timeout-less external calls approved, no irreversible migrations approved, SLO-less projects flagged not waved through).
+
+### Phase 11 — PrjM: Process-diligence audit (the bounce-back checkpoint)
+
+Spawn PrjM with phase context: *"Audit the work for issue #N for **process and execution**. Read the issue's DoD + AC. Read every prior phase's comment. Inspect the actual artefacts. Verify each claim. If anything's missing, bounce back to the responsible role. The PdM in the next phase will audit *outcome* — your job here is delivery quality."*
+
+PrjM does:
 - Reads the issue.
-- Reads every `[<Role>]` comment posted on the issue.
+- Reads every `[<Role>]` comment posted on the issue (PE, QA, CA, UX, Sec, TAE, SRE comments).
 - Inspects the diff via `gh pr diff` or `git diff origin/main...HEAD`.
 - Runs the test suite themselves to verify "green" claims.
 - Runs lint + build themselves to verify "green" claims.
@@ -266,14 +309,35 @@ PM does:
 
 **Two outcomes:**
 
-- **Clean.** PM posts `APPROVED`. Skill proceeds to Phase 10.
-- **Defects.** PM posts the bounce-back comment naming the responsible role and the specific gaps. The orchestrator returns control to that role's phase. **Bounce-back limit: 3 per role per session.** If a role gets bounced 3 times, the skill stops and escalates to the user.
+- **Clean.** PrjM posts `APPROVED`. Skill proceeds to Phase 12.
+- **Defects.** PrjM posts the bounce-back comment naming the responsible role and the specific gaps. The orchestrator returns control to that role's phase. **Bounce-back limit: 3 per role per session.** If a role gets bounced 3 times, the skill stops and escalates to the user.
 
-Work Checker runs after PM's audit (checks for "looks good" without specifics, missed TODO additions).
+Work Checker runs after PrjM's audit (checks for "looks good" without specifics, missed TODO additions, drifting into outcome-auditing).
 
-### Phase 10 — PE: PR + self-review
+### Phase 12 — PdM: Outcome review
 
-Spawn PE with phase context: *"PM approved. Push final commits. Raise the PR following the template in `role-principal-engineer.md`. Self-review the diff line-by-line per `code-review-checklist.md`. Fix anything the self-review surfaces."*
+Spawn PdM with phase context: *"PrjM has confirmed the work was *executed* properly. Your job is to confirm it was the *right thing* to do. Read the originating requirement(s) in `docs/requirements/` — not the issue, the requirement. Read the UX Phase 5 design review comment. Then actually use the feature (dev server, Playwright, or whatever surface is appropriate). Walk the outcome checklist in `references/role-product-manager.md`. Bounce if the user-facing result misses the requirement's intent."*
+
+PdM does:
+- Reads the originating requirement (followed via `Implements:` references in the issue).
+- Reads the issue body + the UX Phase 5 comment.
+- Runs the feature themselves (dev server, click through, exercise the path the user would take).
+- Walks the outcome checklist in `role-product-manager.md`: intent, experience, scope, trade-offs surfaced, feedback loop.
+- Posts the audit result.
+
+**Three outcomes:**
+
+- **Clean.** PdM posts `APPROVED`. Skill proceeds to Phase 13.
+- **Outcome gap.** PdM bounces back to PE or UX with the specific gap (see `role-product-manager.md` bounce-destination table).
+- **Requirement-level wrongness.** If the implementation faithfully built what the requirement asked for but the requirement itself was wrong, PdM does not bounce within this session — they recommend `/requirements-rework` and the skill stops. This is a deliberate hard exit.
+
+**Bounce-back limit: 3 per role per session** (same as PrjM's).
+
+Work Checker runs after PdM's audit (checks: requirement actually read, feature actually tried not just diff-read, fit-criterion measurability addressed, no taste-pedantry passed off as defect).
+
+### Phase 13 — PE: PR + self-review
+
+Spawn PE with phase context: *"PrjM + PdM both approved. Push final commits. Raise the PR following the template in `role-principal-engineer.md`. Self-review the diff line-by-line per `code-review-checklist.md`. Fix anything the self-review surfaces."*
 
 PE does:
 - Pushes any final commits.
@@ -286,13 +350,13 @@ PE does:
 
 Work Checker runs (PR description complete, Self-review section present, Closes #N link, CI is green).
 
-### Phase 11 — PE: Review feedback
+### Phase 14 — PE: Review feedback
 
 This phase is **conditional**. It only runs if a human reviewer has commented on the PR.
 
-If no human review yet, skill moves to Phase 12. The user can re-invoke `/task-implement <issue>` later after human review lands to run Phase 11 (the orchestrator detects this state).
+If no human review yet, skill moves to Phase 15. The user can re-invoke `/task-implement <issue>` later after human review lands to run Phase 14 (the orchestrator detects this state).
 
-When invoked for Phase 11:
+When invoked for Phase 14:
 
 Spawn PE with phase context: *"Human review left comments. Address each one. For legitimate comments — fix, commit, push. For ones you disagree with — reply explaining the reasoning. Resolve threads only after the change or after the reviewer agrees. Resolve any merge conflicts."*
 
@@ -307,7 +371,7 @@ PE does:
 
 Work Checker runs (every legitimate comment addressed, no comments silently dismissed, merge conflicts cleanly resolved).
 
-### Phase 12 — Summary + handoff
+### Phase 15 — Summary + handoff
 
 Final summary post by the orchestrator (not a persona) to the GitHub issue, plus a final terminal summary to the user:
 
@@ -330,11 +394,11 @@ The terminal summary:
 - Time elapsed.
 - Bounce-back count (visible signal of quality friction).
 - Number of WC findings caught and fixed (visible signal of self-audit value).
-- Pointer: *"Next: human reviewer assignment. After review, re-invoke `/task-implement <issue-number>` for Phase 11 to address feedback."*
+- Pointer: *"Next: human reviewer assignment. After review, re-invoke `/task-implement <issue-number>` for Phase 14 to address feedback."*
 
 ## Work Checker pattern (the audit gate after every phase)
 
-After **every** persona phase except Phase 0 and Phase 12, the orchestrator spawns the Work Checker:
+After **every** persona phase except Phase 0 and Phase 15, the orchestrator spawns the Work Checker:
 
 ```
 Agent({
@@ -377,11 +441,11 @@ Across the long-running session:
   "issue_number": 42,
   "owner_repo": "awojtas/example",
   "branch": "42-add-rate-limit-to-signin",
-  "pr_number": null,  // until Phase 10
+  "pr_number": null,  // until Phase 13
   "current_phase": 4,
   "bounce_back_counts": {
     "PE": { "Phase 4": 1 },
-    "TAE": { "Phase 6": 0 }
+    "TAE": { "Phase 7": 0 }
   },
   "wc_findings_total": 4
 }
@@ -391,7 +455,7 @@ Stored in memory across the session; printed in the final summary.
 
 ## Strict non-goals
 
-- **No skipping phases.** The 13-phase sequence is intentional. If the user wants a lighter pass, use `/issue-work`.
+- **No skipping phases.** The 16-phase sequence is intentional. If the user wants a lighter pass, use `/issue-work`.
 - **No silent merging.** This skill never merges the PR. That's a human decision.
 - **No auto-fixing across roles.** The Work Checker reports; it doesn't fix. The role fixes.
 - **No infinite bounce-back.** 3 strikes per role per session, then escalate to the user.
@@ -403,10 +467,12 @@ Stored in memory across the session; printed in the final summary.
 - **Issue doesn't exist.** `gh issue view <N>` fails — stop with a clear error.
 - **Issue is closed.** Ask the user if they want to reopen it before starting.
 - **Branch already exists** (re-running after a prior partial session). Detect: `git ls-remote --heads origin <branch>`. If exists, ask the user: resume on this branch, or delete and restart?
-- **PR already exists** for this branch. Resume from Phase 11 (review feedback) or, if no review yet, Phase 10 (re-self-review and post status).
+- **PR already exists** for this branch. Resume from Phase 14 (review feedback) or, if no review yet, Phase 13 (re-self-review and post status).
 - **Bounce-back limit hit.** Stop. Post a `[Orchestrator]` comment summarising the situation. Don't continue.
 - **Issue has no AC.** Phase 1 (QA) detects this. If AC can't be inferred from the requirement, the orchestrator stops and recommends `/requirements-validation` first.
-- **Project has no test setup at all** (no test runner, no test directories). TAE detects this and surfaces it — implementation can proceed but the skill warns the PE before Phase 8 (lint + build) that there's nothing to lint/build the test target against. PM in Phase 9 will treat "no tests added" as a defect unless the project genuinely has no testing infrastructure (and even then it's a flag for the user).
+- **Project has no test setup at all** (no test runner, no test directories). TAE detects this and surfaces it — implementation can proceed but the skill warns the PE before Phase 9 (lint + build) that there's nothing to lint/build the test target against. PrjM in Phase 11 will treat "no tests added" as a defect unless the project genuinely has no testing infrastructure (and even then it's a flag for the user).
+- **Project has no observability at all** (no logger, no metrics framework, no tracing). SRE in Phase 10 detects this and surfaces it to the user — implementation can proceed but production-readiness is degraded. SRE flags adding minimal logging as a follow-up issue.
+- **Project has no SLOs.** SRE in Phase 10 surfaces this — alert thresholds without SLOs are arbitrary. Flag as a candidate decision for the user; do not manufacture SLOs in-session.
 - **Backend-only task with no user-visible surface.** The UX Designer in Phase 3 produces a short spec covering response shape / error messages / observability semantics, and Phase 5 is a brief review of those. Both still happen — the audit trail captures the consideration.
 - **No design system in the repo.** The UX Designer in Phase 3 defines initial design principles (typographic scale, palette, spacing, radius, shadows) and posts them on the issue. These seed the project's eventual design system.
 - **Playwright not set up in the repo.** UX Designer and TAE detect this. They proceed with the verification they can do (visual inspection, axe-core stand-alone, manual run) and flag Playwright setup as a follow-up issue.

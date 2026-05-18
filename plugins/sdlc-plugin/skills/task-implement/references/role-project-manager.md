@@ -52,9 +52,9 @@ If a claim can't be verified, the PM treats it as not-done and bounces back.
 
 ### Build + lint
 
-- [ ] Lint runs clean (the PE claimed this in Phase 8 — the PM verifies).
+- [ ] Lint runs clean (the PE claimed this in Phase 9 — the PrjM verifies).
 - [ ] Build completes (same).
-- [ ] CI is green if PR has been pushed (Phase 11+).
+- [ ] CI is green if PR has been pushed (Phase 13+).
 
 ### Commits + PR
 
@@ -86,26 +86,28 @@ The skill then re-runs the named role's phase with the PM's gap list as input. A
 
 **Bounce-back limit:** if the same role gets bounced 3 times for related-but-different issues, the skill stops and escalates to the user — something deeper is wrong (the task may be unclear, or the codebase may have a structural issue).
 
-## What the PM doesn't do
+## What the PrjM doesn't do
 
 - **Doesn't write code.** Pure audit role.
 - **Doesn't write tests.** Same.
+- **Doesn't audit *outcome*.** That's the PdM's job in the next phase. The PrjM checks "was the work executed cleanly"; the PdM checks "did the work deliver the right thing".
 - **Doesn't accept "we'll add it later".** Either it's in this PR or it has a tracking issue in `Out of scope / follow-ups` in the PR description. No silent deferral.
-- **Doesn't accept "good enough".** The PM's bar is the issue's Definition of Done. If the DoD is wrong, the PM flags that to the user.
+- **Doesn't accept "good enough".** The PrjM's bar is the issue's Definition of Done. If the DoD is wrong, the PrjM flags that to the user (likely a candidate to bounce to the PdM for outcome re-evaluation, or to recommend `/requirements-rework`).
 
-## Lazy-PM failure modes the Work Checker watches for
+## Lazy-PrjM failure modes the Work Checker watches for
 
-- "Looks good" without naming what was checked. The PM's audit *must* be itemised.
-- Approving when the PM ran no tests or read no diff.
+- "Looks good" without naming what was checked. The PrjM's audit *must* be itemised.
+- Approving when the PrjM ran no tests or read no diff.
 - Approving when a TODO comment was added in this PR.
 - Approving when a test was `.skip`-ed without explanation.
+- Drifting into outcome auditing ("the user might want X instead") — that's the PdM's job; the PrjM checks delivery against the stated AC, not the AC itself.
 
 ## GitHub comment template
 
 When clean:
 
 ```markdown
-**[Project Manager]** Phase 9 — Diligence audit complete. **APPROVED.**
+**[Project Manager]** Phase 11 — Process diligence audit complete. **APPROVED.**
 
 Checked:
 - DoD checklist: all <N> items verified done (see itemised list below).
@@ -114,8 +116,9 @@ Checked:
 - Commits: atomic, Conventional Commits format, <N> commits in this PR.
 - No TODO/FIXME/debug-prints added in this diff.
 - CA's human-required checklist surfaced in the issue and PR.
+- Sec + SRE phases ran and posted their outcomes.
 
-Issue ready for PE Phase 10 (PR + self-review).
+Issue ready for PdM Phase 12 (outcome review).
 
 <itemised DoD verification, one line per item>
 ```
@@ -123,7 +126,7 @@ Issue ready for PE Phase 10 (PR + self-review).
 When bouncing:
 
 ```markdown
-**[Project Manager]** Phase 9 — Audit found gaps. Bouncing back to <Role>.
+**[Project Manager]** Phase 11 — Audit found gaps. Bouncing back to <Role>.
 
 [as above]
 ```

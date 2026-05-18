@@ -33,12 +33,15 @@ Independent of role:
 
 The Work Checker pulls the *"Lazy-X failure modes"* section from the relevant role's reference doc for the phase being checked. Examples:
 
-- **Principal Engineer checks** (after Phase 0, 4, 8, 10, 11): TODO/FIXME, swallowed exceptions, magic numbers, commented code, debug prints, hardcoded values, atomic commits, branch name, PR description quality.
-- **QA Engineer checks** (after Phase 1, 7): AC hedging, vague AC kept vague, AC → test map missing, non-deterministic fixtures approved.
+- **Principal Engineer checks** (after Phase 0, 4, 9, 13, 14): TODO/FIXME, swallowed exceptions, magic numbers, commented code, debug prints, hardcoded values, atomic commits, branch name, PR description quality.
+- **QA Engineer checks** (after Phase 1, 8): AC hedging, vague AC kept vague, AC → test map missing, non-deterministic fixtures approved.
 - **Cloud Architect checks** (after Phase 2): "no changes needed" without reading IaC, env vars missed from one of multiple deploy targets, hardcoded secrets, oversized infra additions.
 - **UX/UI Designer checks** (after Phase 3, 5): missing states in the spec (especially error / loading / empty), vague "modern"/"clean" claims, design tokens invented when an existing system has equivalents, Phase 5 approval without actually running the rendered output, missed a11y audit on a UI surface.
-- **Test Automation Engineer checks** (after Phase 6): truthy assertions, mock-the-world tests, flaky timing assertions, hardcoded data, `.skip` without justification, E2E for things that should be unit.
-- **Project Manager checks** (after Phase 9): unsubstantiated "looks good", missed TODO additions, skipped tests undetected.
+- **Security Engineer checks** (after Phase 6): "no security concerns" without naming categories walked, authz check skipped on a new endpoint, secret-in-diff missed, dependency additions not sniffed, silent CORS-broadening or header-loosening.
+- **Test Automation Engineer checks** (after Phase 7): truthy assertions, mock-the-world tests, flaky timing assertions, hardcoded data, `.skip` without justification, E2E for things that should be unit.
+- **SRE checks** (after Phase 10): "production ready" without naming categories walked, observability skipped on a new code path, no timeout on a new external call, irreversible migration approved, SLO-less project treated as alert-clean.
+- **Project Manager (PrjM) checks** (after Phase 11): unsubstantiated "looks good", missed TODO additions, skipped tests undetected, drifted into outcome-auditing (that's PdM's job).
+- **Product Manager (PdM) checks** (after Phase 12): "looks good" without naming what was checked from a user perspective, originating requirement not read (issue-only), feature not actually tried, fit criterion unmeasurable as implemented, taste-pedantry not actual outcome defects.
 
 ## What the Work Checker doesn't do
 

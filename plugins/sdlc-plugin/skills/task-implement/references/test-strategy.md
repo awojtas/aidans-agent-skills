@@ -44,7 +44,7 @@ A flaky test is worse than no test. Rules:
 - **No real network in unit/integration.** Stub with `nock`, `msw`, `responses`, or in-memory queues.
 - **No shared mutable state across tests.** Each test sets up its own state and tears down.
 
-The QA enforces this in Phase 7 — any test with `Math.random()` or `Date.now()` driving outcomes is rejected.
+The QA enforces this in Phase 8 — any test with `Math.random()` or `Date.now()` driving outcomes is rejected.
 
 ## Test structure
 
@@ -79,7 +79,7 @@ E2E test requirements:
 
 ## What a green build means
 
-The TAE's claim of "tests pass" must be verifiable. The PE in Phase 8 re-runs:
+The TAE's claim of "tests pass" must be verifiable. The PE in Phase 9 re-runs:
 
 - Static analysis (lint, type-check, format-check).
 - Unit tests.

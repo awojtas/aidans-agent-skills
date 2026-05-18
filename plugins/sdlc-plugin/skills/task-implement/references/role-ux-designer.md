@@ -92,7 +92,7 @@ Even without a formal design system, *think* in components. A page that uses the
 
 ## Playwright usage
 
-Both the UX Designer (Phase 5) and the QA Engineer (Phase 7) have authorisation to use Playwright for verification. Some practical patterns:
+Both the UX Designer (Phase 5) and the QA Engineer (Phase 8) have authorisation to use Playwright for verification. Some practical patterns:
 
 ### Run existing tests
 
@@ -259,7 +259,7 @@ Playwright run: <command + result, or "not applicable for this surface">
 
 <Any minor notes for follow-up — these should NOT block this PR; they go in the issue tracker for next iteration.>
 
-Ready for Phase 6 (tests).
+Ready for Phase 6 (security review) then Phase 7 (tests).
 ```
 
 When drift found:

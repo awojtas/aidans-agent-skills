@@ -1,6 +1,6 @@
 # SDLC Pitfalls — what to defend against during implementation
 
-A reference list the Work Checker and the Project Manager use to spot under-delivery. Drawn from Fowler, Knuth, Pike, McConnell, Kernighan, the refactoring catalogue, and recent research on LLM coding failure modes.
+A reference list the Work Checker, Project Manager (process), and Product Manager (outcome) use to spot under-delivery. Drawn from Fowler, Knuth, Pike, McConnell, Kernighan, the refactoring catalogue, and recent research on LLM coding failure modes.
 
 ## 15 pitfalls — by name
 
@@ -24,7 +24,7 @@ Kernighan: *"The most important single aspect of software development is to be c
 
 ## Lazy-AI-coder failure modes
 
-LLM-specific patterns the Work Checker and Project Manager watch for:
+LLM-specific patterns the Work Checker, Project Manager (process), and Product Manager (outcome) watch for:
 
 - **Truthy assertions.** Tests that call the function and assert truthy/non-null without behavioural coverage.
 - **Skipped edge cases.** Empty, null, boundary, unicode, timezone, concurrency.
@@ -69,7 +69,7 @@ Task-level DoD for this skill:
 - Feature flag wired (if applicable).
 - Observability added (logs / metrics / traces) for new code paths.
 
-The Project Manager checks this list literally. If any item is unchecked, the task isn't done.
+The Project Manager checks this list literally for execution; the Product Manager re-checks the user-facing items (docs, observability, feature flag, AC met) from an outcome lens. If any item is unchecked, the task isn't done.
 
 ## Sources
 

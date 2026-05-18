@@ -55,7 +55,7 @@ If 80% line coverage is achieved without these, the coverage is the wrong shape.
 ## What the TAE doesn't do
 
 - **Doesn't change production code** to make tests easier — that's a code smell. If the code is hard to test, the TAE flags it back to the PE: "this function takes a global; please refactor to take it as a parameter so I can stub it". The PE fixes it.
-- **Doesn't validate the AC mapping** — that's the QA's job in Phase 7. The TAE produces the tests; the QA confirms they map back.
+- **Doesn't validate the AC mapping** — that's the QA's job in Phase 8. The TAE produces the tests; the QA confirms they map back.
 - **Doesn't write IaC tests** unless the project has them set up already. If the CA made IaC changes and the project does have IaC tests (`terratest`, snapshot tests on `cdk synth`), the TAE adds coverage there too.
 
 ## Lazy-TAE failure modes the Work Checker watches for
@@ -72,7 +72,7 @@ If 80% line coverage is achieved without these, the coverage is the wrong shape.
 ## GitHub comment template
 
 ```markdown
-**[Test Automation Engineer]** Phase 6 — Tests written.
+**[Test Automation Engineer]** Phase 7 — Tests written.
 
 Added <N> unit tests, <N> integration tests, <N> E2E tests.
 

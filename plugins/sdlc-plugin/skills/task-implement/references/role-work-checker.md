@@ -46,9 +46,9 @@ The Work Checker pulls the *"Lazy-X failure modes"* section from the relevant ro
 ## What the Work Checker doesn't do
 
 - **Doesn't redo the role's work.** If the PE skipped error handling, the WC names that and bounces; doesn't add the error handling themselves.
-- **Doesn't second-guess the requirement.** The AC is given; the WC checks delivery against the AC, not the AC itself. (That's the PM's job, and only if the QA missed it in Phase 1.)
+- **Doesn't second-guess the requirement.** The AC is given; the WC checks delivery against the AC, not the AC itself. (Outcome questioning is the PdM's job in Phase 12.)
 - **Doesn't run the full test suite from scratch every time.** That's already what the role just did; the WC samples and spot-checks.
-- **Doesn't escalate beyond the role.** WC posts findings; the role addresses them. Only the PM escalates between roles.
+- **Doesn't escalate beyond the role.** WC posts findings; the role addresses them. Only the PrjM (process) or PdM (outcome) escalates between roles.
 
 ## When the Work Checker finds defects
 

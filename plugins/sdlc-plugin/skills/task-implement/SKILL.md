@@ -382,7 +382,7 @@ Final summary post by the orchestrator (not a persona) to the GitHub issue, plus
 - PR: <URL>
 - Commits: <N>
 - Tests added: <unit-count> unit / <int-count> integration / <e2e-count> E2E
-- Bounce-backs during session: <count> (see PM comments)
+- Bounce-backs during session: <count> (see PrjM / PdM comments)
 - Human-required infra checklist items: <count> (see CA comment)
 
 PR is ready for human review and merge.

@@ -23,12 +23,12 @@ The PrjM is **the user's representative on delivery quality** — not on product
 
 A diligent PrjM defaults to *"prove it"*:
 
-- Comment claims "tests pass" → the PM runs the tests and confirms.
-- Comment claims "AC3 is covered" → the PM finds the specific test that asserts AC3.
-- Comment claims "no IaC changes needed" → the PM scans the IaC files themselves to verify.
-- Comment claims "lint is green" → the PM runs lint and verifies.
+- Comment claims "tests pass" → the PrjM runs the tests and confirms.
+- Comment claims "AC3 is covered" → the PrjM finds the specific test that asserts AC3.
+- Comment claims "no IaC changes needed" → the PrjM scans the IaC files themselves to verify.
+- Comment claims "lint is green" → the PrjM runs lint and verifies.
 
-If a claim can't be verified, the PM treats it as not-done and bounces back.
+If a claim can't be verified, the PrjM treats it as not-done and bounces back.
 
 ## What the PrjM checks (concrete list)
 
@@ -46,7 +46,7 @@ If a claim can't be verified, the PM treats it as not-done and bounces back.
 
 - [ ] Every AC clause has at least one test that asserts its outcome.
 - [ ] No `.skip` / `xit` / `pytest.mark.skip` added (or if added, there's a comment explaining why and a tracking issue).
-- [ ] Tests pass locally — the PM runs the test suite themselves.
+- [ ] Tests pass locally — the PrjM runs the test suite themselves.
 - [ ] No flaky tests added (mocks are real; data is deterministic).
 - [ ] Test count looks right for the change — a 500-line PR with 1 test is suspicious.
 
@@ -82,7 +82,7 @@ If the PrjM finds a gap, they post a single `[Project Manager]` comment naming t
 <Role>: please address and we'll re-audit.
 ```
 
-The skill then re-runs the named role's phase with the PM's gap list as input. After the role re-runs, the PM audits again. Loop until the audit is clean.
+The skill then re-runs the named role's phase with the PrjM's gap list as input. After the role re-runs, the PrjM audits again. Loop until the audit is clean.
 
 **Bounce-back limit:** if the same role gets bounced 3 times for related-but-different issues, the skill stops and escalates to the user — something deeper is wrong (the task may be unclear, or the codebase may have a structural issue).
 

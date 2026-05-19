@@ -78,12 +78,15 @@ Match the test framework already in use (Jest, Playwright, xUnit, pytest, etc.).
 
 ### Step 6: Verify
 
-Run the project's full verification suite. Discover commands from Step 2, then run them:
+First, read `AGENTS.md` / `CLAUDE.md` for the project's documented verify chain. If none documented, run these in order:
 
 1. **Lint** — fix all warnings and errors
-2. **Type-check** — if the project uses static types
+2. **Type-check** — if the project uses static types. Almost never bundled into `test:unit`; run it explicitly.
 3. **Build** — confirm it compiles cleanly
-4. **Tests** — run both unit and E2E suites
+4. **Unit tests**
+5. **E2E tests** — if the change is user-visible
+
+Hand off to Step 7 only when every command exits clean.
 
 If anything fails:
 - Read the full error output

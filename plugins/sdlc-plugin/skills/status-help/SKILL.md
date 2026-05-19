@@ -40,7 +40,13 @@ Recommends a single concrete next action, or a small ranked list if multiple pat
    | `/tasks-create-from-requirements` | `docs/implementation-plan.md` + GitHub issues organised into phase milestones |
    | `/task-implement` | Closed issues, merged PRs |
 
-3. **Look for incompleteness or incongruity.** Some heuristics:
+3. **If Step 2 lands on `/task-implement` (closed issues + merged PRs, no in-flight forward artefacts), run quick repo-health probes before recommending.** Artifact-presence is blind to common silent-rot modes in mature repos; these `gh` + `git` calls catch them in seconds:
+   - `gh run list --workflow ci.yml --branch <default> --limit 10` — if recent runs are mostly failing, recommend `/test-fix` or `/build-fix` first.
+   - Inspect `.github/workflows/ci.yml` triggers. If `push: branches: [<default>]` is missing, surface explicitly — many repos rot silently because CI only runs on PRs and nobody reads dependabot's red checks.
+   - `gh pr list --state open --search "created:<$(date -d '-60 days' +%Y-%m-%d)"` — flag stale PRs for human decision (rebase + review, or close).
+   - For every local + remote feature branch, `git cherry main <branch>`. Branches with no `+` lines are squash-merge ghosts; recommend `/branch-prune`.
+
+4. **Look for incompleteness or incongruity.** Some heuristics:
    - Solution-design file exists but is mostly empty / has many placeholder TODOs → re-run `/solution-design`
    - Architecture tree exists but ADR file is empty → architecture incomplete
    - Provisioning log present but no GitHub Actions secrets visible → provisioning may not have been wired in
@@ -48,15 +54,15 @@ Recommends a single concrete next action, or a small ranked list if multiple pat
    - Implementation plan exists but no GitHub issues created → plan was approved but never instantiated
    - Lots of unaddressed `human-required` open issues → human work is the bottleneck; flag it
 
-4. **Recommend the next action.** Prefer a single concrete recommendation:
+5. **Recommend the next action.** Prefer a single concrete recommendation:
    > Next: run `/platform-design` — solution design is in place but `docs/architecture/` is empty.
 
    If multiple paths are reasonable, list up to 3 in priority order with a one-line rationale each.
 
-5. **Flag rewinds explicitly.** If a prior step looks like it ran but produced messy output, surface it:
+6. **Flag rewinds explicitly.** If a prior step looks like it ran but produced messy output, surface it:
    > Note: `docs/design/solution-design.md` looks like a first-draft skeleton — consider re-running `/solution-design` in evolve-mode before proceeding.
 
-6. **Report concisely.** No file written. The output is the recommendation in chat, ~10 lines.
+7. **Report concisely.** No file written. The output is the recommendation in chat, ~10 lines.
 
 ## Guardrails
 

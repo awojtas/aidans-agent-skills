@@ -28,6 +28,10 @@ If it's genuinely unclear what to audit, ask the user in one line. Don't guess.
    - **Half-finished bits** — placeholders, TODOs, "(to be filled in)", stub sections.
    - **Confusing or inaccurate wording** — claims that aren't quite true, sentences a reader would stumble on.
    - **Hand-waved parts** — places where the original pass skipped over something hard.
+   - **If the work is test code, also check:**
+     - Playwright/Cypress locator chains with multiple `.or()` — strict-mode violation candidates; they pass static review but throw at runtime when more than one element matches.
+     - Assertions on text strings that recently moved elsewhere in the same diff — cross-reference with `git log -p -1` of UI source files.
+     - Hardcoded literals (`getByText('Done')`) where the project recently changed the visible label — search the codebase for both old and new.
 
 4. **Report findings** using one of the two formats below.
 

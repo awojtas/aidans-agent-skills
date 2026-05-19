@@ -265,15 +265,18 @@ Work Checker runs (AC → Test map complete, no uncovered AC clauses, no flake s
 
 ### Phase 9 — PE: Lint + build
 
-Spawn PE with phase context: *"Tests pass. Run lint and build. Fix every warning the project flags. Re-run until clean."*
+Spawn PE with phase context: *"Tests pass. Read `AGENTS.md` and `CLAUDE.md` for the project's documented verify chain. If undocumented, run lint → type-check → build → unit tests, in that order, using the package manager and scripts the repo exposes. Type-check in particular is almost never bundled into `test:unit` — run it explicitly. Re-run until every command exits clean. Do not hand off to Phase 10 with any red command."*
 
 PE does:
-- Identifies the project's lint command (from `package.json` scripts, `pyproject.toml`, etc.).
-- Runs lint. Fixes warnings.
-- Runs the build. Fixes failures.
-- Re-runs both until clean.
-- Commits with `chore: ...` or `fix: ...` for lint/build fixes.
-- Posts `[Principal Engineer]` comment with confirmation both are green.
+- Reads `AGENTS.md` / `CLAUDE.md` for the documented verify chain. If undocumented, defaults to:
+  - `<pm> lint`
+  - `<pm> type-check` (or `<pm> -C <web-app> type-check` in a monorepo) — frequently NOT included in `test:unit`.
+  - `<pm> build`
+  - `<pm> test:unit`
+- Runs each in order. Fixes warnings and failures at the root cause — no `// eslint-disable`, no `// @ts-ignore` / `any` / `# type: ignore`, no skipping tests.
+- Re-runs the chain end-to-end until every command exits clean.
+- Commits with `chore: ...` or `fix: ...` for fixes.
+- Posts `[Principal Engineer]` comment listing every verify command and its exit status. Hands off to Phase 10 only when all are green.
 
 Work Checker runs (no `// eslint-disable` added to silence, no `any` / `# type: ignore` added without justification, no warning-silencing config changes).
 

@@ -1,6 +1,6 @@
 ---
 name: ai-ready-repo
-description: Audits an existing mature codebase for AI-readiness — can an AI agent (Claude Code, Copilot, Cursor) actually be effective in this repo, or will it stumble on layout / convention / landmine issues that aren't obvious to humans? Walks three categories — (A) agent-instruction hygiene (AGENTS.md / CLAUDE.md / `@AGENTS.md` import, dev commands documented), (B) layout + stack legibility (root README signposting, monorepo structure, type info, tech-stack red flags AI struggles with), (C) confusion landmines via deep file sampling (stale comments contradicting code, misleading names, hidden re-exports, shadow conventions, lint config that disables type safety, test names that don't match assertions). Reports findings tiered by severity (blocker / major / minor / nit), prompts the user to pick what to fix, applies the approved fixes in a single PR (split if very different areas), and offers to raise GitHub issues for the things it can't auto-fix (renames, convention consolidations). For mature / pre-existing repos that never went through `/repo-bootstrap`. Use when the user says "is this repo AI-ready", "AI readiness check", "make this repo AI-friendly", "agent-readiness audit", "AI tooling audit", "can Claude work in this repo", "agent-onboarding", "AI confusion check", or wants a focused assessment of an existing codebase's friction for AI agents. Companion to `/repo-bootstrap` (greenfield day-0 scaffolding) and `/repo-release-ready` (release-readiness scaffolding) — `/ai-ready-repo` is the *retrofit* for repos that already exist.
+description: Audits an existing mature codebase for AI-readiness — can an AI agent (Claude Code, Copilot, Cursor) actually be effective in this repo, or will it stumble on layout / convention / landmine issues that aren't obvious to humans? Walks three categories — (A) agent-instruction hygiene (AGENTS.md as the cross-tool standard canonical file, CLAUDE.md kept *lean* with just `@AGENTS.md` + optional Claude-specific notes per Anthropic's <200-line guidance, `.github/copilot-instructions.md` with matching `@../AGENTS.md` import, dev commands documented), (B) layout + stack legibility (root README signposting, monorepo structure, type info, tech-stack red flags AI struggles with), (C) confusion landmines via deep file sampling (stale comments contradicting code, misleading names, hidden re-exports, shadow conventions, lint config that disables type safety, test names that don't match assertions). Reports findings tiered by severity (blocker / major / minor / nit), prompts the user to pick what to fix, applies the approved fixes in a single PR (split if very different areas), and offers to raise GitHub issues for the things it can't auto-fix (renames, convention consolidations, CLAUDE.md leanness migrations). For mature / pre-existing repos that never went through `/repo-bootstrap`. Use when the user says "is this repo AI-ready", "AI readiness check", "make this repo AI-friendly", "agent-readiness audit", "AI tooling audit", "can Claude work in this repo", "agent-onboarding", "AI confusion check", or wants a focused assessment of an existing codebase's friction for AI agents. Companion to `/repo-bootstrap` (greenfield day-0 scaffolding) and `/repo-release-ready` (release-readiness scaffolding) — `/ai-ready-repo` is the *retrofit* for repos that already exist.
 ---
 
 # AI-readiness audit for an existing repo
@@ -92,6 +92,21 @@ Claude Code's documented `@<path>` import syntax inlines another file's content 
 - CLAUDE.md exists but doesn't import AGENTS.md → **major** finding (auto-fixable: add `@AGENTS.md` line at the top).
 - CLAUDE.md only mentions AGENTS.md in prose → **major** finding (auto-fixable: add the import directive in addition to the prose).
 - Same check for `.github/copilot-instructions.md` importing `@../AGENTS.md` if both exist.
+
+**A2-lean. CLAUDE.md is lean. The recommended shape is `@AGENTS.md` + (optional) a small Claude-specific section.**
+
+Per Anthropic's Claude Code best-practices guidance, a shorter CLAUDE.md consistently produces better adherence than a longer one — the docs cap it at 200 lines and recommend pushing content into imported files instead. AGENTS.md is the cross-tool standard (Sourcegraph + OpenAI + Google + Cursor + Linux Foundation, supported by Claude Code, Cursor, Copilot, Gemini CLI, Windsurf, Aider, Zed, Warp). The right pattern is **one canonical file (AGENTS.md)**, with CLAUDE.md doing nothing more than `@AGENTS.md` plus genuinely Claude-Code-specific notes (if any).
+
+Measure: count non-blank, non-comment lines in `CLAUDE.md`.
+
+- **≤ 10 lines and contains `@AGENTS.md`** — ideal. No finding.
+- **11–50 lines and contains `@AGENTS.md`** — acceptable, no finding unless the extra content duplicates AGENTS.md. If duplication is detected (same headings, near-identical wording), flag as **minor** finding.
+- **51–150 lines** — **minor** finding (recommendation only, not auto-fixable). CLAUDE.md is doing work AGENTS.md should be doing. Move shared content to AGENTS.md; keep CLAUDE.md as the import + Claude-specific bits.
+- **> 150 lines** — **major** finding. Approaching Anthropic's 200-line cap. Almost certainly contains content duplicated from elsewhere or that should be in AGENTS.md.
+
+**Not auto-fixable.** Migrating content from CLAUDE.md to AGENTS.md is judgment-heavy — what's "Claude-specific" vs. "generic"? Raise as a GitHub issue if the user opts in, with the line count and a recommendation to refactor toward the minimal form.
+
+**Exception:** if AGENTS.md is missing **and** CLAUDE.md has substantial content, the right move is "create AGENTS.md from CLAUDE.md's content; replace CLAUDE.md with `@AGENTS.md`". This is a borderline auto-fix — recommend it as a GitHub issue rather than auto-applying, because it changes the file the user has been editing for months.
 
 **A3. Dev commands are documented somewhere a CLAUDE.md-loaded agent can find them.**
 
@@ -407,10 +422,33 @@ Consider running `/issue-prioritise` on them.
 - **The repo has `.aider*`, `.cursor*`, `.continue*`, or other AI-tool-specific config.** Note their presence but don't audit them — `/ai-ready-repo` is agnostic to which agent the user runs.
 - **A finding's auto-fix would conflict with an open PR.** Detect open PRs touching the affected files (`gh pr list --state open`). If conflict likely, skip the auto-fix and raise as an issue instead with a note about the conflicting PR.
 
-## Why `@AGENTS.md` matters (the import-syntax citation)
+## Why `@AGENTS.md` matters, and why CLAUDE.md should stay lean
 
-Claude Code supports an `@<path>` import directive inside `CLAUDE.md` (and other markdown files in the project context). When the agent loads `CLAUDE.md`, any `@<path>` line is replaced with the content of `<path>` — the imported file becomes part of the active context window, not a "go look at this file" hint the agent might or might not follow.
+Two related facts ground checks A2 and A2-lean.
 
-Reference: Anthropic's Claude Code documentation describes this import behaviour. The practical implication for AI-readiness: a prose link ("see AGENTS.md") leaves the agent guessing whether to look; `@AGENTS.md` ensures the content is loaded.
+### Imports are inlined, not hints
 
-This is why `/ai-ready-repo` flags a CLAUDE.md that mentions AGENTS.md only in prose, even if the prose is otherwise complete. The structural difference is real, not stylistic.
+Claude Code supports an `@<path>` import directive inside `CLAUDE.md` (and other markdown files in the project context). When the agent loads `CLAUDE.md`, any `@<path>` line is replaced with the content of `<path>` — the imported file becomes part of the active context window, not a "go look at this file" hint the agent might or might not follow. Imports resolve up to 5 hops of recursion.
+
+The practical implication for AI-readiness: a prose link ("see AGENTS.md") leaves the agent guessing whether to look; `@AGENTS.md` ensures the content is loaded.
+
+### Shorter CLAUDE.md, better adherence
+
+Anthropic's Claude Code best-practices documentation explicitly recommends keeping `CLAUDE.md` under ~200 lines, and observes that a shorter CLAUDE.md produces better adherence than a longer one. Longer files consume context tokens and dilute the agent's attention across them. The mechanism is the same as any prompt: lower signal-to-noise ratio reduces follow-through.
+
+The recommended shape, once `AGENTS.md` exists:
+
+```markdown
+@AGENTS.md
+```
+
+That's it — one line. Add a small Claude-specific section only if there are genuinely Claude-Code-specific instructions (not just generic dev guidance, which belongs in AGENTS.md).
+
+### Why AGENTS.md is the canonical file
+
+AGENTS.md emerged in mid-2025 as a cross-tool standard backed by Sourcegraph, OpenAI, Google, and Cursor, now maintained by the Agentic AI Foundation under the Linux Foundation. It is supported by Claude Code, Cursor, GitHub Copilot, Gemini CLI, Windsurf, Aider, Zed, Warp, RooCode, and others. Writing your rules into AGENTS.md once — and importing into CLAUDE.md, copilot-instructions.md, and any other tool-specific files — avoids the drift problem of maintaining multiple sources of truth.
+
+This is why `/ai-ready-repo` flags both:
+
+- a CLAUDE.md that mentions AGENTS.md only in prose (the import is structural, not stylistic), and
+- a CLAUDE.md that is *too long* (the content belongs in AGENTS.md, imported).

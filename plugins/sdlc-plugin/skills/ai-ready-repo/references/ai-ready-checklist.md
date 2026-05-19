@@ -38,6 +38,25 @@ How to check: read the file. Look for a line matching `^@[\.\/]*AGENTS\.md\s*$` 
 
 Auto-fix: prepend the import directive at the top of the file (after any frontmatter / title heading), with a blank line below for readability.
 
+### A2-lean — CLAUDE.md is lean
+
+Per Anthropic's Claude Code best-practices guidance, CLAUDE.md should stay under ~200 lines; a shorter CLAUDE.md produces better adherence. AGENTS.md is the cross-tool canonical file (backed by Sourcegraph, OpenAI, Google, Cursor; supported by Claude Code, Cursor, Copilot, Gemini CLI, Windsurf, Aider, Zed, Warp). The ideal shape of CLAUDE.md once AGENTS.md exists is `@AGENTS.md` plus optional small Claude-specific section.
+
+Measure: count non-blank, non-comment lines.
+
+| CLAUDE.md size | Has `@AGENTS.md`? | Finding | Severity |
+|---------------|---------|---------|----------|
+| ≤ 10 lines | yes | None — ideal. | — |
+| 11–50 lines | yes | None unless content duplicates AGENTS.md. If duplication: **minor**. | minor |
+| 51–150 lines | yes or no | CLAUDE.md is doing AGENTS.md's job. Move shared content to AGENTS.md. | **minor** |
+| > 150 lines | any | Approaching the 200-line cap. Substantial migration likely needed. | **major** |
+
+**Auto-fix:** **no.** Migrating content from CLAUDE.md to AGENTS.md is judgment-heavy — what counts as "Claude-specific" vs. "generic" varies per repo. Raise as a GitHub issue if the user opts in.
+
+**Exception:** if **AGENTS.md is missing** and CLAUDE.md has substantial content, the right move is "create AGENTS.md from the generic content; reduce CLAUDE.md to `@AGENTS.md` + Claude-specific". Borderline auto-fix — recommend it as a GitHub issue rather than auto-applying.
+
+**Duplication detection (lightweight):** if both files have headings with very similar text (e.g. both have `## Dev commands`, `## Conventions`, `## Structure`), that's a strong duplication signal. Flag the duplicated headings in the finding.
+
 ### A3 — Dev commands documented somewhere agent-loaded
 
 The commands an agent needs to verify its work. The canonical list (rename per language):

@@ -64,26 +64,42 @@ fill <pm> with the detected package manager>
 e.g. docs/architecture/, an ADR folder, a Notion workspace>
 ```
 
-## `CLAUDE.md` skeleton
+## `CLAUDE.md` skeleton — minimal form (recommended)
+
+The recommended shape, once `AGENTS.md` exists, is **as short as possible**:
+
+```markdown
+@AGENTS.md
+```
+
+That's it. One line. Anthropic's Claude Code best-practices documentation recommends keeping CLAUDE.md under 200 lines and notes that a shorter CLAUDE.md produces better adherence than a longer one. Putting generic project rules in AGENTS.md and importing them into CLAUDE.md is the documented best practice.
+
+## `CLAUDE.md` skeleton — extended form (use only if Claude-Code-specific guidance is genuinely needed)
 
 ```markdown
 @AGENTS.md
 
-# CLAUDE.md
+## Claude-specific notes
 
-<Any Claude Code-specific instructions go here. The line above imports
-AGENTS.md's content into the loaded context.>
-
-## Claude-specific conventions
-
-<leave blank — user fills in if needed. Examples:>
-
-- Prefer `pnpm` over `npm` (the project uses pnpm).
-- Use `gh pr create` rather than the web UI for PRs.
-- When making changes, always run `pnpm verify` before claiming done.
+- <one bullet per genuinely Claude-Code-specific instruction>
+- <e.g. "Always use `gh pr view` rather than fetching the PR via WebFetch — auth is wired through `gh`">
 ```
 
-The `@AGENTS.md` line at the top is the key thing. Claude Code's import syntax loads the imported file's content. Without it, AGENTS.md is just a file the agent might or might not read.
+**What does NOT belong in CLAUDE.md:**
+
+- Generic dev commands (build / test / lint) — those go in AGENTS.md.
+- Project conventions (commit format, branch naming, file organisation) — AGENTS.md.
+- Stack description, architecture overview, "what is this project" — AGENTS.md.
+- "Read this first" guides for new contributors — AGENTS.md.
+- Anything that another AI tool (Copilot, Cursor) would equally benefit from — AGENTS.md.
+
+**What does belong in CLAUDE.md (when applicable):**
+
+- Specific instructions tied to Claude Code features (using a particular slash-command or sub-agent).
+- Notes that only apply because the user is in Claude Code (e.g. "the `gh` MCP is configured here, prefer it over WebFetch for GitHub data").
+- Project-specific workflow preferences that Claude Code uniquely supports.
+
+If you find yourself writing more than ~5–10 lines of Claude-specific notes, ask whether they're actually Claude-specific or just generic guidance you should move into AGENTS.md.
 
 ## `.github/copilot-instructions.md` skeleton
 

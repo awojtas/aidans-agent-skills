@@ -73,7 +73,16 @@ Print a one-liner so the user knows what's being audited.
 
 ### Step 1 — Audit A: agent-instruction hygiene
 
-Walk `references/ai-ready-checklist.md` — section A. The substance:
+Walk `references/ai-ready-checklist.md` — section A. The substance covers:
+
+- **A1** — Root agent files exist.
+- **A2** — `@AGENTS.md` import is wired in CLAUDE.md (and `@../AGENTS.md` in `.github/copilot-instructions.md` if present).
+- **A2-lean** — CLAUDE.md is lean (the recommended shape is `@AGENTS.md` + optional small Claude-specific section, per Anthropic's documented "shorter CLAUDE.md → better adherence" guidance).
+- **A3** — Dev commands documented somewhere agent-loaded.
+- **A4** — Type-check not silently absent from `test:unit` / CI on default branch.
+- **A5** — Skip-list / ignore-list paths documented if applicable.
+
+Details:
 
 **A1. Root agent files exist.**
 

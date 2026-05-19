@@ -1,5 +1,1 @@
-# GitHub Copilot Instructions
-
-This file provides guidance to GitHub Copilot when working with code in this repository.
-
-Rule: Refer to AGENTS.md in the root of the repository as the primary source for all guidance. [../AGENTS.md]
+@../AGENTS.md

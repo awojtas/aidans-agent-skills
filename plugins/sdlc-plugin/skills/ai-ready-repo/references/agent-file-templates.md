@@ -1,6 +1,13 @@
 # Agent-File Templates
 
-Scaffolds for the agent-instruction files Category A scaffolds when they're missing. Keep these minimal — the user fills in real content. Auto-generated content beyond structure invites stale lore.
+Scaffolds for the agent-instruction files Category A and B scaffold when they're missing. Keep these minimal — the user fills in real content. Auto-generated content beyond structure invites stale lore.
+
+The templates here cover:
+
+- **Root `AGENTS.md`** — repo-wide canonical instructions.
+- **Root `CLAUDE.md`** — minimal form (just `@AGENTS.md`) is the recommended shape.
+- **Root `.github/copilot-instructions.md`** — Copilot-side import of AGENTS.md.
+- **Per-package `AGENTS.md` in monorepos** — progressive disclosure pattern (see B2-progressive in the checklist).
 
 ## `AGENTS.md` skeleton
 
@@ -115,6 +122,70 @@ the repo root.>
 
 <leave blank — user fills in if needed>
 ```
+
+## Per-package `AGENTS.md` skeleton (progressive disclosure)
+
+Use this when scaffolding a missing `AGENTS.md` inside a monorepo subdirectory (e.g. `apps/web/AGENTS.md`, `packages/db/AGENTS.md`). The file is loaded **on demand** when the agent reads code inside that directory, layered on top of the root AGENTS.md.
+
+```markdown
+# AGENTS.md — `<package-name>`
+
+This file gives agents working in this directory package-specific context. The
+[root AGENTS.md](../../AGENTS.md) carries the repo-wide conventions; this file
+adds the parts that only apply to `<package-name>`.
+
+## What this package is
+
+<One sentence. Inferred from `package.json` `description` / `pyproject.toml`
+[project] description / similar; leave blank if not detectable.>
+
+## Stack (package-specific)
+
+<Only what differs from the repo-wide stack in the root AGENTS.md. E.g.:>
+
+- Framework: <Next.js 14 App Router>
+- Database client: <Prisma>
+- Test framework: <Vitest>
+
+(If the stack matches the repo-wide AGENTS.md exactly, omit this section.)
+
+## Dev commands (package-specific)
+
+<Only commands that differ from or extend the root AGENTS.md's commands. E.g.:>
+
+| Command | What it does |
+|---------|--------------|
+| `<pm> --filter <package-name> dev` | Run only this package's dev server. |
+| `<pm> --filter <package-name> test` | Run only this package's tests. |
+
+(If commands match the root exactly, omit this section.)
+
+## Conventions (package-specific)
+
+<Only what differs from or extends the root AGENTS.md's conventions. E.g.:>
+
+- Components live in `src/components/`, organised by feature not type.
+- Server-only modules end in `.server.ts`; client-only modules end in `.client.tsx`.
+
+## Areas to avoid (in this package)
+
+<Only if there are package-specific avoid-paths. E.g.:>
+
+- `src/__generated__/` — emitted by `pnpm codegen`; do not edit.
+```
+
+### How agents load this file
+
+Per Claude Code's documented behaviour, agents see this file when they read code inside the directory it lives in. The root `AGENTS.md` is always loaded; this file is loaded *in addition*, when relevant. The agent sees both, with more-specific (this file) winning over less-specific (the root) where they conflict.
+
+### What NOT to put in per-package AGENTS.md
+
+- Anything that's true repo-wide — that belongs in the root AGENTS.md.
+- Stack basics the package shares with the rest of the repo — root.
+- Boilerplate that just repeats `package.json scripts` verbatim — the agent can read those.
+- Speculative future-work notes — they decay.
+
+If a per-package AGENTS.md is shorter than ~10 lines after you've filled it in, that's a signal you may not need it yet. The root AGENTS.md plus the actual code is probably enough until package-specific divergence emerges.
 
 ## Section: dev-commands inference
 

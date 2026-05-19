@@ -1,6 +1,6 @@
 ---
 name: ai-ready-repo
-description: Audits an existing mature codebase for AI-readiness — can an AI agent (Claude Code, Copilot, Cursor) actually be effective in this repo, or will it stumble on layout / convention / landmine issues that aren't obvious to humans? Walks three categories — (A) agent-instruction hygiene (AGENTS.md as the cross-tool standard canonical file, CLAUDE.md kept *lean* with just `@AGENTS.md` + optional Claude-specific notes per Anthropic's <200-line guidance, `.github/copilot-instructions.md` with matching `@../AGENTS.md` import, dev commands documented), (B) layout + stack legibility (root README signposting, monorepo structure, type info, tech-stack red flags AI struggles with), (C) confusion landmines via deep file sampling (stale comments contradicting code, misleading names, hidden re-exports, shadow conventions, lint config that disables type safety, test names that don't match assertions). Reports findings tiered by severity (blocker / major / minor / nit), prompts the user to pick what to fix, applies the approved fixes in a single PR (split if very different areas), and offers to raise GitHub issues for the things it can't auto-fix (renames, convention consolidations, CLAUDE.md leanness migrations). For mature / pre-existing repos that never went through `/repo-bootstrap`. Use when the user says "is this repo AI-ready", "AI readiness check", "make this repo AI-friendly", "agent-readiness audit", "AI tooling audit", "can Claude work in this repo", "agent-onboarding", "AI confusion check", or wants a focused assessment of an existing codebase's friction for AI agents. Companion to `/repo-bootstrap` (greenfield day-0 scaffolding) and `/repo-release-ready` (release-readiness scaffolding) — `/ai-ready-repo` is the *retrofit* for repos that already exist.
+description: Audits an existing mature codebase for AI-readiness — can an AI agent (Claude Code, Copilot, Cursor) actually be effective in this repo, or will it stumble on layout / convention / landmine issues that aren't obvious to humans? Walks three categories — (A) agent-instruction hygiene (AGENTS.md as the cross-tool standard canonical file, CLAUDE.md kept *lean* with just `@AGENTS.md` + optional Claude-specific notes per Anthropic's <200-line guidance, `.github/copilot-instructions.md` with matching `@../AGENTS.md` import, dev commands documented), (B) layout + stack legibility (root README signposting, monorepo structure, per-package `AGENTS.md` files in `apps/*/`, `packages/*/`, `services/*/` for progressive-disclosure context loading, type info, tech-stack red flags AI struggles with), (C) confusion landmines via deep file sampling (stale comments contradicting code, misleading names, hidden re-exports, shadow conventions, lint config that disables type safety, test names that don't match assertions). Reports findings tiered by severity (blocker / major / minor / nit), prompts the user to pick what to fix, applies the approved fixes in a single PR (split if very different areas), and offers to raise GitHub issues for the things it can't auto-fix (renames, convention consolidations, CLAUDE.md leanness migrations). For mature / pre-existing repos that never went through `/repo-bootstrap`. Use when the user says "is this repo AI-ready", "AI readiness check", "make this repo AI-friendly", "agent-readiness audit", "AI tooling audit", "can Claude work in this repo", "agent-onboarding", "AI confusion check", "progressive disclosure", or wants a focused assessment of an existing codebase's friction for AI agents. Companion to `/repo-bootstrap` (greenfield day-0 scaffolding) and `/repo-release-ready` (release-readiness scaffolding) — `/ai-ready-repo` is the *retrofit* for repos that already exist.
 ---
 
 # AI-readiness audit for an existing repo
@@ -140,7 +140,17 @@ If type-check is missing from both: **major** finding (cannot auto-fix without p
 
 ### Step 2 — Audit B: layout + stack legibility
 
-Walk `references/ai-ready-checklist.md` — section B.
+Walk `references/ai-ready-checklist.md` — section B. The substance covers:
+
+- **B1** — Root README explains the layout.
+- **B2** — Multi-app / monorepo structure is signposted (per-dir READMEs).
+- **B2-progressive** — Per-package `AGENTS.md` files for monorepos (progressive disclosure pattern).
+- **B3** — Type information is present.
+- **B4** — Tech-stack red flags from `references/tech-stack-redflags.md`.
+- **B5** — `.gitignore` covers the obvious for the detected stack.
+- **B6** — README has a "Getting Started" section.
+
+Details:
 
 **B1. Root README explains the layout.**
 
@@ -160,6 +170,28 @@ ls -d apps/* packages/* services/* 2>/dev/null
 ```
 
 - Multiple apps but no `apps/README.md` explaining which is which → **minor** (auto-fixable: scaffold a per-directory README listing what each subdirectory contains).
+
+**B2-progressive. Per-package AGENTS.md for monorepos (progressive disclosure).**
+
+Claude Code (and the AGENTS.md cross-tool standard) supports **nested** instruction files. The root `AGENTS.md` loads at session start; subdirectory `AGENTS.md` files load **on demand** when the agent reads files in that directory. This is the documented "progressive disclosure" pattern — keep the root lean with repo-wide conventions, push package-specific rules into the packages that need them. Specificity wins: closer-to-the-file context overrides broader context.
+
+When this check applies:
+
+- Repo has `apps/<name>/`, `packages/<name>/`, `services/<name>/`, `cmd/<name>/`, or similar with **≥ 2 children** that have meaningfully different stacks / conventions / responsibilities.
+- Detection signal: ≥ 2 sibling directories each with their own `package.json` / `pyproject.toml` / `Cargo.toml` / `go.mod` / etc., or distinct framework signatures.
+
+Findings:
+
+- **Single-app repo (no monorepo structure)** → N/A. Skip this check.
+- **Multi-app monorepo with no per-package `AGENTS.md` files** → **minor** finding (auto-fixable: scaffold minimal subfolder `AGENTS.md` files, one per app/package).
+- **Multi-app monorepo with some per-package `AGENTS.md` files but not all** → **minor** finding for each missing one (auto-fixable: scaffold the missing ones).
+- **Multi-app monorepo with all per-package `AGENTS.md` files** → ✓ no finding.
+
+Auto-fix: scaffold per-package `AGENTS.md` using the subfolder template in `references/agent-file-templates.md`. Each contains a one-line description, a "see root [AGENTS.md](../../AGENTS.md) for repo-wide conventions" pointer, and empty sections (Stack / Dev commands / Conventions specific to this package) for the user to fill in.
+
+**Don't over-apply.** A four-line root-level repo with `src/foo` and `src/bar` doesn't need per-directory `AGENTS.md` files. The check triggers only on real monorepo structures where the children differ meaningfully.
+
+When the root `AGENTS.md` should also be slimmed down: if per-package `AGENTS.md` files are recommended and the root file currently has stack-specific or per-package content that duplicates what would land in the child files, flag the duplication as part of A2-lean's duplication-detection branch. The goal is *progressive disclosure*: root carries the cross-cutting story; children carry the specifics.
 
 **B3. Type information is present.**
 
@@ -457,7 +489,23 @@ That's it — one line. Add a small Claude-specific section only if there are ge
 
 AGENTS.md emerged in mid-2025 as a cross-tool standard backed by Sourcegraph, OpenAI, Google, and Cursor, now maintained by the Agentic AI Foundation under the Linux Foundation. It is supported by Claude Code, Cursor, GitHub Copilot, Gemini CLI, Windsurf, Aider, Zed, Warp, RooCode, and others. Writing your rules into AGENTS.md once — and importing into CLAUDE.md, copilot-instructions.md, and any other tool-specific files — avoids the drift problem of maintaining multiple sources of truth.
 
-This is why `/ai-ready-repo` flags both:
+### Progressive disclosure for monorepos
 
-- a CLAUDE.md that mentions AGENTS.md only in prose (the import is structural, not stylistic), and
-- a CLAUDE.md that is *too long* (the content belongs in AGENTS.md, imported).
+Both `CLAUDE.md` and `AGENTS.md` can be placed in subdirectories. The root file loads at session start; subdirectory files load **on demand** when the agent reads files in that directory. More specific locations override broader ones — the agent gets the right context for the work it's doing, when it's doing it.
+
+This is the **progressive disclosure** pattern that Anthropic's docs and the AGENTS.md spec both recommend for monorepos:
+
+```
+AGENTS.md                    # repo-wide conventions (always loaded)
+apps/web/AGENTS.md           # web-app-specific rules (loaded when working in apps/web/)
+apps/mobile/AGENTS.md        # mobile-specific rules (loaded when working in apps/mobile/)
+packages/db/AGENTS.md        # db-specific rules (loaded when working in packages/db/)
+```
+
+The root file stays lean by carrying only what's true everywhere. Per-package files carry the per-package specifics. Agents working in `apps/web/` see the root rules + the web-specific rules; agents working in `packages/db/` see the root rules + the db-specific rules; neither pollutes the other.
+
+This is why `/ai-ready-repo` flags:
+
+- a CLAUDE.md that mentions AGENTS.md only in prose (the import is structural, not stylistic),
+- a CLAUDE.md that is *too long* (the content belongs in AGENTS.md, imported), **and**
+- a monorepo without per-package AGENTS.md files (the root is doing work that should be progressively disclosed).

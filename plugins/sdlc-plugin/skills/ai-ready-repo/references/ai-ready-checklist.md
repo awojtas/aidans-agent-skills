@@ -136,6 +136,54 @@ If `apps/` / `packages/` / `services/` / `cmd/` has multiple children:
 - **Minor** if no `apps/README.md` (or equivalent) explaining which child is which.
 - Auto-fix: scaffold a `README.md` in each detected parent directory listing the children. Don't go deeper than one level — the user can add per-child READMEs if they want.
 
+### B2-progressive — Per-package `AGENTS.md` for progressive disclosure
+
+Both Claude Code and the AGENTS.md cross-tool spec support nested instruction files. The root file loads at session start; subdirectory files load **on demand** when the agent reads files in that directory. More specific locations override broader ones. This is documented as the **progressive disclosure** pattern for monorepos in Anthropic's Claude Code best-practices guidance.
+
+#### When the check applies
+
+This check fires only when the repo has a real monorepo structure:
+
+- ≥ 2 sibling directories under `apps/`, `packages/`, `services/`, or `cmd/` (or equivalent for the detected stack).
+- Each sibling has its **own** stack signal — a `package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, etc. — indicating it's a real package, not just a code-organisation subdir.
+- *Or* the siblings have meaningfully different technical surfaces (e.g. `apps/web` Next.js + `apps/mobile` React Native + `apps/admin` Django — each has different conventions even within the same monorepo).
+
+A repo with `src/handlers/` + `src/services/` + `src/utils/` is **not** a monorepo — those are code-organisation directories within a single app. Don't trigger this check on those.
+
+#### Findings
+
+| Monorepo state | Finding | Severity |
+|---|---|---|
+| Single-app repo, no monorepo structure | N/A — skip | — |
+| Multi-app monorepo, **no** per-package AGENTS.md anywhere | One **minor** finding per missing file (one per detected app/package) | minor |
+| Multi-app monorepo, **some** packages have AGENTS.md, others don't | One **minor** finding per missing file | minor |
+| Multi-app monorepo, **all** packages have AGENTS.md | ✓ no finding | — |
+
+#### Auto-fix
+
+**Yes — scaffold the missing per-package `AGENTS.md` files** using the subfolder template in `agent-file-templates.md`. Each scaffolded file:
+
+- Has a short header naming the package and what it is (inferred from `package.json` `name`/`description`, `pyproject.toml` `[project]` metadata, etc.).
+- Has a `"See [root AGENTS.md](../../AGENTS.md) for repo-wide conventions"` pointer.
+- Has empty sections (Stack / Dev commands specific to this package / Conventions specific to this package) for the user to fill in.
+
+Don't over-scaffold. If a "package" has zero `package.json` / equivalent and isn't actually a self-contained unit, it doesn't get an AGENTS.md.
+
+#### Interaction with A2-lean (root CLAUDE.md / AGENTS.md size)
+
+If per-package AGENTS.md files are scaffolded **and** the root AGENTS.md has content that's actually per-package (stack details for one specific app, dev commands that only apply to one package), that's a duplication signal. Flag it as part of A2-lean's duplication-detection branch. Recommend (don't auto-migrate) moving the per-package content from root into the relevant subfolder file.
+
+The end state should look like:
+
+```
+AGENTS.md            # cross-cutting: commit style, branch naming, repo-wide policies
+apps/web/AGENTS.md   # Next.js stuff, web-specific dev commands, web component conventions
+apps/api/AGENTS.md   # Python stuff, API endpoint conventions, OpenAPI generation
+packages/db/AGENTS.md  # Prisma stuff, migration conventions
+```
+
+Root stays small; each leaf is loaded only when relevant.
+
 ### B3 — Type information is present
 
 - TypeScript: `tsconfig.json` with `"strict": true`.

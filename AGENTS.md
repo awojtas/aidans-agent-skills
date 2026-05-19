@@ -142,3 +142,22 @@ Use semver:
 - **Major** (`1.0.0` → `2.0.0`) — removing a skill, renaming a skill, or any change that breaks how users invoke the plugin.
 
 Bump the version in the same change as the edit — don't defer it.
+
+## Background tooling — `scripts/git-auto-commit.ps1`
+
+The repo ships with a PowerShell script at `scripts/git-auto-commit.ps1` that automates the common `pull → stage → commit → push` loop using AI-generated commit messages (via the GitHub Copilot CLI, defaulting to a small OpenAI model).
+
+What it does:
+
+- `git pull` (stashing local changes first if needed).
+- `git add -A`.
+- Generates a commit message from the staged diff using the Copilot CLI (or accepts one via `-Message`).
+- `git commit && git push`.
+
+Why this matters for AI agents working in this repo:
+
+- If you observe commits in `git log` that you don't remember making — for example, a commit message that summarises a SKILL.md edit you just wrote — it may have been produced by this script running from another shell or session. **Run `git fetch` and inspect; don't assume the repo is corrupted.**
+- Don't `git reset --hard` or otherwise destroy work in response to unexpected commits without first inspecting. The commits are usually real and intentional.
+- The script is opt-in (a human runs it). It is not wired into a hook and does not run automatically as part of any Claude Code skill in this repo.
+
+If you're working in this repo through a Claude Code session, you don't need to invoke this script — just commit normally. The script exists for the maintainer's convenience when working from a Windows shell.

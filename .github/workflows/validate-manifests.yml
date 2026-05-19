@@ -1,0 +1,60 @@
+name: Validate manifests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate marketplace.json
+        run: python3 -c "import json, sys; json.load(open('.claude-plugin/marketplace.json')); print('marketplace.json OK')"
+
+      - name: Validate every plugin.json
+        run: |
+          set -e
+          shopt -s globstar nullglob
+          fail=0
+          for f in plugins/*/.claude-plugin/plugin.json; do
+            if python3 -c "import json, sys; json.load(open('$f'))"; then
+              echo "OK $f"
+            else
+              echo "FAIL $f"
+              fail=1
+            fi
+          done
+          exit $fail
+
+      - name: Confirm each plugin's `name` matches its directory
+        run: |
+          set -e
+          fail=0
+          for f in plugins/*/.claude-plugin/plugin.json; do
+            dir=$(basename "$(dirname "$(dirname "$f")")")
+            name=$(python3 -c "import json; print(json.load(open('$f'))['name'])")
+            if [ "$dir" != "$name" ]; then
+              echo "FAIL directory '$dir' has plugin.json name '$name'"
+              fail=1
+            else
+              echo "OK $dir"
+            fi
+          done
+          exit $fail
+
+      - name: Confirm marketplace.json lists every plugin directory
+        run: |
+          set -e
+          listed=$(python3 -c "import json; print('\n'.join(p['name'] for p in json.load(open('.claude-plugin/marketplace.json'))['plugins']))" | sort)
+          present=$(ls -d plugins/*/ | xargs -n1 basename | sort)
+          if [ "$listed" != "$present" ]; then
+            echo "Mismatch between marketplace.json and plugins/ directory:"
+            diff <(echo "$listed") <(echo "$present") || true
+            exit 1
+          fi
+          echo "marketplace.json plugins match plugins/ directory"

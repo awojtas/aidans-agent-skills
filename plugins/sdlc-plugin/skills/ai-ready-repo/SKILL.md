@@ -348,6 +348,7 @@ By category:
 - **B1/B2 (missing structure section / multi-app signposting):** scaffold from `ls -d */` output.
 - **B4 (mixed package managers / mixed lockfiles):** confirm the *active* package manager (look at which lockfile is recent + matches `packageManager` field), then delete the stale ones.
 - **Category C (confusion landmines):** apply the auto-fixable subset — adding "// Generated — do not edit" headers, consolidating env-var usage into a `lib/env.ts` central registry if minor, adding clarifying comments where stale comments contradicted code. Heavier C findings (renames, convention consolidation) skip auto-fix and become issues.
+- **AI-readiness marker:** stamp the README.md marker per Step 8 — always, even if no other finding was auto-fixed.
 
 Group commits by category for review clarity:
 
@@ -357,6 +358,7 @@ chore(ai-readiness): add @AGENTS.md import to agent files
 docs(ai-readiness): document dev commands
 chore(ai-readiness): consolidate env-var usage into lib/env.ts
 docs(ai-readiness): label generated files
+docs(ai-readiness): stamp readiness marker
 ```
 
 **C. Offer GitHub issues for the rest.**
@@ -392,6 +394,7 @@ labelled `ai-readiness`.
 - B1/B2 — added structure section to README; per-app READMEs
 - B4 — removed stale lockfiles (kept pnpm-lock.yaml as the active one)
 - C — added "Generated" headers to <N> files; consolidated env-var usage
+- Marker — stamped the README.md AI-readiness marker (status + date)
 
 ## Findings raised as issues (not in this PR)
 
@@ -409,6 +412,7 @@ documentation/scaffolding/cleanup; no logic changes.
 - [ ] Verify the README structure section matches the actual directory layout.
 - [ ] Verify the stale lockfile removal didn't break CI.
 - [ ] Verify the env-var consolidation kept behaviour identical.
+- [ ] Verify the README AI-readiness marker shows the expected status and date.
 
 🤖 Generated with /ai-ready-repo (Claude Code)
 EOF
@@ -436,11 +440,58 @@ Print to the user:
 - Raised as issues: <N> findings (<issue links>)
 - PR: <URL>
 - Skipped (user opted not to fix or raise): <N>
+- AI-readiness marker: <Ready / Not ready> (since <date>) — written to README.md
 
 Next: review the PR, merge when happy. The labelled issues (`ai-readiness`)
 are a backlog of judgement-heavy refactors AI agents would benefit from.
 Consider running `/issue-prioritise` on them.
 ```
+
+### Step 8 — Stamp the AI-readiness marker
+
+Every audit run records its own result as a small marker block in **`README.md`**. The marker carries two things: the AI-readiness **status** and the **date that status was reached**. This step runs on every path — including just-report.
+
+**Why README.md, not AGENTS.md.** `AGENTS.md` is for context an agent needs *while working in the repo*, and is kept deliberately lean (see "Why `@AGENTS.md` matters" below). An AI-readiness flag and timestamp are repo *meta-status* — useful to a human scanning the README, but noise to an agent mid-task. So the marker goes in `README.md`.
+
+**The marker block.** A find-and-replace-safe block delimited by HTML comments (invisible in rendered markdown), with a blockquote line that renders as a callout:
+
+```markdown
+<!-- ai-readiness:start -->
+> **AI-readiness:** Ready (since 2026-05-21) — audited with `/ai-ready-repo`.
+<!-- ai-readiness:end -->
+```
+
+For a repo that isn't ready, name the open findings:
+
+```markdown
+<!-- ai-readiness:start -->
+> **AI-readiness:** Not ready (since 2026-05-21) — 2 blockers, 3 major findings open. Audited with `/ai-ready-repo`.
+<!-- ai-readiness:end -->
+```
+
+**Placement.** If no marker exists, insert the block immediately after the repo title and its one-line description, before the first `##` heading. If the delimiters are already present, replace only the content between them — leave the block where it is.
+
+**Status (binary).** Computed from the findings that *remain unresolved at the end of this run*:
+
+- **Ready** — zero blocker and zero major findings remain. A finding counts as resolved only if it was auto-fixed in this run's PR; a finding raised as a GitHub issue is **not** resolved (the friction is still in the repo).
+- **Not ready** — one or more blocker or major findings remain.
+- Minor and nit findings never affect the status.
+
+On the just-report path nothing is fixed, so the status reflects the raw audit.
+
+**Date — "since" semantics.** The date is when the repo *reached* the current status, not when it was last audited:
+
+1. Read the existing marker from `README.md`, if any. Parse the old status word(s) after `**AI-readiness:**` (check `Not ready` before `Ready`) and the old date inside `(since …)`.
+2. No existing marker, **or** old status ≠ new status → `since` is today (`date +%F`).
+3. Old status == new status → keep the old `since` date.
+
+So a repo that's been Ready since January and is re-audited today still reads `since 2026-01-…`; a repo that just crossed Not ready → Ready gets today's date.
+
+**Writing it — by path:**
+
+- **Fix path (Step 7 ran).** Edit `README.md` on the `ai-readiness-pass` branch and commit as `docs(ai-readiness): stamp readiness marker`. Pushing it updates the already-open PR automatically. The marker always ships in the remediation PR — even if every other finding was opted out.
+- **Just-report path (Step 6 ended the run).** The skill has made no writes. Show the computed marker block in the report, then ask once: *"Stamp this AI-readiness marker into README.md? It's a single-commit, marker-only change."* On yes, write it and commit `docs(ai-readiness): stamp readiness marker` on the current branch. On no, skip — the report still states the status in chat.
+- **No `README.md`, and B1 isn't scaffolding one this run.** There's nowhere to put the marker. Skip it and note in the summary: *"No README.md — AI-readiness marker not written. Re-run with the B1 fix selected to scaffold a README first."*
 
 ## Strict non-goals
 
@@ -463,6 +514,7 @@ Consider running `/issue-prioritise` on them.
 - **The repo is a fork of another repo.** Note this in the Step 0 detection. The upstream may have the agent files; the fork should keep them in sync or override consciously.
 - **The repo has `.aider*`, `.cursor*`, `.continue*`, or other AI-tool-specific config.** Note their presence but don't audit them — `/ai-ready-repo` is agnostic to which agent the user runs.
 - **A finding's auto-fix would conflict with an open PR.** Detect open PRs touching the affected files (`gh pr list --state open`). If conflict likely, skip the auto-fix and raise as an issue instead with a note about the conflicting PR.
+- **No `README.md` exists and B1's scaffold isn't selected this run.** Step 8 has nowhere to write the AI-readiness marker. Skip the marker, state the computed status in the report anyway, and tell the user to re-run with the B1 fix (or run `/repo-bootstrap`) to get a README first.
 
 ## Why `@AGENTS.md` matters, and why CLAUDE.md should stay lean
 

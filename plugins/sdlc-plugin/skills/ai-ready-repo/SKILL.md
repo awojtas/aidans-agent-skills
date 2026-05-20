@@ -1,6 +1,6 @@
 ---
 name: ai-ready-repo
-description: Audits an existing mature codebase for AI-readiness — whether an AI agent (Claude Code, Copilot, Cursor) can work effectively in the repo, or will trip on layout/convention/landmine issues that aren't obvious to humans. Checks agent-instruction hygiene (AGENTS.md, lean CLAUDE.md, copilot-instructions), layout & stack legibility (README signposting, per-package AGENTS.md, progressive disclosure), and confusion landmines (stale comments, misleading names, hidden re-exports, type-unsafe lint config). Reports findings tiered by severity, applies approved fixes in a PR, and raises issues for what it can't auto-fix. For mature repos that never went through /repo-bootstrap. Use when the user says "is this repo AI-ready", "AI readiness check", "make this repo AI-friendly", "agent-readiness audit", "can Claude work in this repo", "agent-onboarding", or wants an audit of an existing codebase's friction for AI agents.
+description: Audits an existing mature codebase for AI-readiness — whether an AI agent (Claude Code, Copilot, Cursor) can work effectively in the repo, or will trip on layout/convention/landmine issues that aren't obvious to humans. Checks agent-instruction hygiene (AGENTS.md, lean CLAUDE.md, copilot-instructions), layout & stack legibility (README signposting, per-package AGENTS.md, progressive disclosure), and confusion landmines (stale comments, misleading names, hidden re-exports, type-unsafe lint config). Reports findings tiered by severity, applies approved fixes in a PR, raises issues for what it can't auto-fix, and stamps a dated AI-readiness marker (status + the date that status was reached) into README.md on every run. For mature repos that never went through /repo-bootstrap. Use when the user says "is this repo AI-ready", "AI readiness check", "make this repo AI-friendly", "agent-readiness audit", "can Claude work in this repo", "agent-onboarding", or wants an audit of an existing codebase's friction for AI agents.
 ---
 
 # AI-readiness audit for an existing repo
@@ -35,6 +35,7 @@ ai-ready-repo progress:
 - [ ] Step 5: Present findings tiered (blocker / major / minor / nit)
 - [ ] Step 6: User picks remediation scope (all / selected / none)
 - [ ] Step 7: Apply approved fixes; offer GitHub issues for the rest; produce summary
+- [ ] Step 8: Stamp the AI-readiness marker in README.md (every run)
 ```
 
 ### Step 0 — Stack + size + age detection
@@ -325,7 +326,7 @@ The skill waits for the user's reply. Three branches:
 
 - **All auto-fixable + issues for the rest** → proceed to Step 7 with all auto-fix findings + all non-auto findings flagged for issue creation.
 - **Selected** → user lists finding numbers; proceed with that subset.
-- **Just report** → stop. The report is the artefact.
+- **Just report** → skip Step 7, but still run Step 8 — the AI-readiness marker is stamped on every path. The report is the artefact.
 
 Confirm the scope back to the user before any writes.
 

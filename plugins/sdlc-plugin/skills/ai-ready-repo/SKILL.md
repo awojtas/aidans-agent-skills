@@ -1,6 +1,6 @@
 ---
 name: ai-ready-repo
-description: Audits an existing mature codebase for AI-readiness — whether an AI agent (Claude Code, Copilot, Cursor) can work effectively in the repo, or will trip on layout/convention/landmine issues that aren't obvious to humans. Checks agent-instruction hygiene (AGENTS.md, lean CLAUDE.md, copilot-instructions), layout & stack legibility (README signposting, per-package AGENTS.md, progressive disclosure), and confusion landmines (stale comments, misleading names, hidden re-exports, type-unsafe lint config). Reports findings tiered by severity, applies approved fixes in a PR, raises issues for what it can't auto-fix, and stamps a dated AI-readiness marker (status + the date that status was reached) into README.md on every run. For mature repos that never went through /repo-bootstrap. Use when the user says "is this repo AI-ready", "AI readiness check", "make this repo AI-friendly", "agent-readiness audit", "can Claude work in this repo", "agent-onboarding", or wants an audit of an existing codebase's friction for AI agents.
+description: Audits an existing mature codebase for AI-readiness — whether an AI agent (Claude Code, Copilot, Cursor) can work effectively in the repo, or will trip on layout/convention/landmine issues that aren't obvious to humans. Checks agent-instruction hygiene (AGENTS.md, lean CLAUDE.md, copilot-instructions), layout & stack legibility (README signposting, per-package AGENTS.md, progressive disclosure), and confusion landmines (stale comments, misleading names, hidden re-exports, type-unsafe lint config). Reports findings tiered by severity, applies approved fixes in a PR, raises issues for what it can't auto-fix, and stamps a dated AI-readiness marker (status + last-audited date) into README.md on every run. For mature repos that never went through /repo-bootstrap. Use when the user says "is this repo AI-ready", "AI readiness check", "make this repo AI-friendly", "agent-readiness audit", "can Claude work in this repo", "agent-onboarding", or wants an audit of an existing codebase's friction for AI agents.
 ---
 
 # AI-readiness audit for an existing repo
@@ -440,7 +440,7 @@ Print to the user:
 - Raised as issues: <N> findings (<issue links>)
 - PR: <URL>
 - Skipped (user opted not to fix or raise): <N>
-- AI-readiness marker: <Ready / Not ready> (since <date>) — written to README.md
+- AI-readiness marker: <Ready / Not ready>, last audited <date> — written to README.md
 
 Next: review the PR, merge when happy. The labelled issues (`ai-readiness`)
 are a backlog of judgement-heavy refactors AI agents would benefit from.
@@ -449,7 +449,7 @@ Consider running `/issue-prioritise` on them.
 
 ### Step 8 — Stamp the AI-readiness marker
 
-Every audit run records its own result as a small marker block in **`README.md`**. The marker carries two things: the AI-readiness **status** and the **date that status was reached**. This step runs on every path — including just-report.
+Every audit run records its own result as a small marker block in **`README.md`**. The marker carries two things: the AI-readiness **status** and the **date it was last audited**. This step runs on every path — including just-report.
 
 **Why README.md, not AGENTS.md.** `AGENTS.md` is for context an agent needs *while working in the repo*, and is kept deliberately lean (see "Why `@AGENTS.md` matters" below). An AI-readiness flag and timestamp are repo *meta-status* — useful to a human scanning the README, but noise to an agent mid-task. So the marker goes in `README.md`.
 
@@ -457,7 +457,7 @@ Every audit run records its own result as a small marker block in **`README.md`*
 
 ```markdown
 <!-- ai-readiness:start -->
-> **AI-readiness:** Ready (since 2026-05-21) — audited with `/ai-ready-repo`.
+> **AI-readiness:** Ready — last audited 2026-05-21 with `/ai-ready-repo`.
 <!-- ai-readiness:end -->
 ```
 
@@ -465,7 +465,7 @@ For a repo that isn't ready, name the open findings:
 
 ```markdown
 <!-- ai-readiness:start -->
-> **AI-readiness:** Not ready (since 2026-05-21) — 2 blockers, 3 major findings open. Audited with `/ai-ready-repo`.
+> **AI-readiness:** Not ready — last audited 2026-05-21 with `/ai-ready-repo`; 2 blockers, 3 major findings open.
 <!-- ai-readiness:end -->
 ```
 
@@ -479,13 +479,7 @@ For a repo that isn't ready, name the open findings:
 
 On the just-report path nothing is fixed, so the status reflects the raw audit.
 
-**Date — "since" semantics.** The date is when the repo *reached* the current status, not when it was last audited:
-
-1. Read the existing marker from `README.md`, if any. Parse the old status word(s) after `**AI-readiness:**` (check `Not ready` before `Ready`) and the old date inside `(since …)`.
-2. No existing marker, **or** old status ≠ new status → `since` is today (`date +%F`).
-3. Old status == new status → keep the old `since` date.
-
-So a repo that's been Ready since January and is re-audited today still reads `since 2026-01-…`; a repo that just crossed Not ready → Ready gets today's date.
+**Date — last audited.** The date is always today (`date +%F`) — it records when this audit ran. Every run bumps it to the current date; there's no carry-over from a previous marker. (Locating an existing marker still matters, but only to replace it in place — see **Placement** above.)
 
 **Writing it — by path:**
 

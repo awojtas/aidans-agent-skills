@@ -1,6 +1,6 @@
 ---
 name: idea-initial-sketch
-description: Turns a vague app idea line item into an initial product sketch with research grounding. Use when the user gives a rough app idea and wants it fleshed out before formal requirements. Forms an initial interpretation, asks concise clarification questions including target platform unless already clear, researches competitors and substitutes, searches for real user complaints/pain signals, asks any follow-up questions created by the research, then produces a 1-2 page markdown sketch, a 2-3 sentence restart summary, and a candidate app name that does not obviously conflict with an existing product.
+description: Turns a vague app idea line item into an initial product sketch with research grounding. Use when the user gives a rough app idea and wants it fleshed out before formal requirements. Forms an initial interpretation, asks concise clarification questions including target platform unless already clear, uses background agents for competitor/substitute research, real user complaint and pain-signal research, and app-name conflict checks, asks any follow-up questions created by the research, then produces a 1-2 page markdown sketch, a 2-3 sentence restart summary, and a candidate app name that does not obviously conflict with an existing product.
 ---
 
 Creates a lightweight, research-informed product sketch from a vague app idea. This is **pre-requirements**: enough to decide whether the idea has a credible wedge and to seed a later requirements brief, not enough to specify the product.
@@ -30,21 +30,31 @@ Creates a lightweight, research-informed product sketch from a vague app idea. T
    - whether this is a standalone app, plugin, website, or companion tool
    - whether the user expects paid, free, internal, or open-source use
 
-4. **Research the market.** Use web research. Look for:
+4. **Launch background research agents.** If background/sub-agents are available, run research in parallel instead of doing it all in the main thread. Keep the main thread responsible for synthesis and user interaction. Use three bounded research tasks:
+
+   - **Market researcher** — direct competitors, adjacent substitutes, manual workarounds, platform-native features, pricing, reviews, positioning, and feature gaps.
+   - **Pain researcher** — complaints, forum threads, Reddit posts, app-store reviews, support communities, workflow discussions, and evidence that people pay or spend time to solve the problem.
+   - **Naming researcher** — exact and close-variant name conflicts across app stores, web search, domains, GitHub, and close competitors.
+
+   Give each agent the raw idea, the current interpretation, any clarified platform/user constraints, and a request for concise findings with links. Do not ask agents to write the final sketch.
+
+5. **Research the market.** Use the market research agent's output, plus any quick main-thread checks needed to resolve contradictions. Look for:
    - direct competitors
    - adjacent substitutes and manual workarounds
    - platform-native features that already solve part of it
    - pricing, reviews, positioning, and feature gaps
    - whether the proposed name or close variants already exist
 
-5. **Research pain signals.** Search for complaints, forum threads, reviews, Reddit posts, app-store reviews, support tickets, blog posts, and workflow discussions. The goal is to decide whether the idea solves a real pain or is just a nice-to-have. Look for:
+6. **Research pain signals.** Use the pain research agent's output, plus any quick main-thread checks needed to resolve contradictions. Search for complaints, forum threads, reviews, Reddit posts, app-store reviews, support tickets, blog posts, and workflow discussions. The goal is to decide whether the idea solves a real pain or is just a nice-to-have. Look for:
    - repeated frustration
    - paid workaround behaviour
    - time-consuming manual workflows
    - risk, money loss, missed outcomes, or professional pain
    - users explicitly asking for the capability
 
-6. **Synthesize the wedge.** Identify:
+7. **Check naming conflicts.** Use the naming research agent's findings before proposing a candidate name. If the initial best name is already used by a close competitor or a confusing adjacent product, choose another name and mention the conflict briefly.
+
+8. **Synthesize the wedge.** Identify:
    - what existing options do well
    - what they do poorly or omit
    - the strongest unique selling proposition
@@ -52,13 +62,13 @@ Creates a lightweight, research-informed product sketch from a vague app idea. T
    - why someone would switch, pay, or adopt it
    - any reason the idea may not be worth building
 
-7. **Ask second clarification questions.** Research often changes the shape of the idea. Ask concise follow-ups only for decisions that materially affect the sketch, such as:
+9. **Ask second clarification questions.** Research often changes the shape of the idea. Ask concise follow-ups only for decisions that materially affect the sketch, such as:
    - choosing between two viable product shapes
    - narrowing the target segment
    - deciding whether to compete directly or become a companion/workflow layer
    - confirming monetisation or distribution constraints
 
-8. **Generate the outputs.**
+10. **Generate the outputs.**
 
 ## Output format
 
@@ -119,6 +129,8 @@ Suggest one app name and briefly explain why it fits. Before naming, search the 
 - Cite sources with links in the final sketch.
 - Do not overclaim from thin evidence. Label inferences clearly.
 - For naming, search exact name plus category terms. Avoid names already used by a close competitor in the same space.
+- Treat background-agent findings as inputs, not final truth. The main agent must reconcile conflicts, discard weak evidence, and cite only sources it is comfortable standing behind.
+- If background agents are not available, do the same research sequentially in the main thread and state that limitation if relevant.
 
 ## Guardrails
 

@@ -1,6 +1,6 @@
 ---
 name: task-implement
-description: Implements a single GitHub issue end-to-end through a multi-persona orchestration — ten role personas (Principal Engineer, QA, Cloud Architect, UX/UI Designer, Security Engineer, Test Automation Engineer, SRE, Project Manager, Product Manager, Work Checker) run as sub-agents across a 16-phase workflow, each posting an audit-trail comment on the issue and handing off to the next. The Work Checker audits every phase (~80% defect catch rate); the Project Manager and Product Manager bounce back phases with process or outcome gaps. Heavyweight by design: expect hours on a non-trivial task. Use when the user says "implement task #X", "do issue #X properly", "fully implement issue #X", "take this through to PR", "comprehensive implementation", or wants a thorough multi-role pass on a ticket. Companion to the lighter /issue-work skill.
+description: 'Implements a single GitHub issue end-to-end through a heavyweight, multi-persona SDLC workflow. Use for important or complex tickets where the user wants implementation, testing, review, PR creation, and audit-trail comments handled thoroughly rather than as a quick single-agent pass.'
 ---
 
 # Implementing a task end-to-end with role-based orchestration

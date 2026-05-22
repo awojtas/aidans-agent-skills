@@ -202,3 +202,12 @@ If the user asks for any of these during level-up, acknowledge and tell them the
 - **`AGENTS.md` already has a "Deployment & Branching Strategy" section.** Don't double-append. Detect the heading and skip, mentioning it in the PR description.
 - **Repo is public.** Everything still works, but warn the user that secrets in failing workflows produce visible failure noise — recommend they add the secrets quickly.
 - **The PR doesn't merge cleanly** (e.g. the user already has a different PR template). Don't try to auto-resolve. Surface the conflict and let the user pick a side.
+
+## Lifecycle tracker
+
+This skill owns the **Release-ready** stage of the SDLC lifecycle tracker kept at the bottom of the acted-on repo's `README.md`. See [`../../shared/lifecycle-tracker.md`](../../shared/lifecycle-tracker.md) for the block format, emoji legend, and create-or-update algorithm.
+
+- **When this skill begins its substantive work** (after prerequisites pass), set the `Release-ready` line in the tracker to ⏳ (in progress). Create `README.md` and/or the tracker block first if either is missing.
+- **When this skill completes successfully**, set the `Release-ready` line to ✅ (done).
+
+Touch only the `Release-ready` line — leave every other stage exactly as found.

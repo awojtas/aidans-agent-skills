@@ -249,3 +249,12 @@ Also commit the `docs/implementation-plan.md` file so the plan is preserved in g
 - **The plan ends up with >50 issues.** This is a smell — either the requirements doc is too big for one plan, or decomposition is too granular. Stop and ask the user: is this really one release, or should we scope down?
 - **A human-required task lands in Phase 5.** Push it earlier unless there's a hard dependency on Phase 4 output. Front-loading is the default; deviations need explicit reason.
 - **User wants to "just do Phase 1 first, replan later".** Excellent default — create only Phase 1 issues, leave the rest of the plan markdown for the next session.
+
+## Lifecycle tracker
+
+This skill owns the **Tasks planned** stage of the SDLC lifecycle tracker kept at the bottom of the acted-on repo's `README.md`. See [`../../shared/lifecycle-tracker.md`](../../shared/lifecycle-tracker.md) for the block format, emoji legend, and create-or-update algorithm.
+
+- **When this skill begins its substantive work** (after prerequisites pass), set the `Tasks planned` line in the tracker to ⏳ (in progress). Create `README.md` and/or the tracker block first if either is missing.
+- **When this skill completes successfully**, set the `Tasks planned` line to ✅ (done).
+
+Touch only the `Tasks planned` line — leave every other stage exactly as found.

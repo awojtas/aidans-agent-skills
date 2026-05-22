@@ -19,6 +19,8 @@ plugins/
       <skill-name-2>/        # Plugins typically contain multiple skills.
         SKILL.md
       ...
+    shared/                  # Optional — reference docs shared by several of the plugin's skills
+      *.md
 ```
 
 That's it. There is no build step, no dependencies, no config beyond these files.
@@ -120,6 +122,8 @@ The full instructions Claude follows when the skill is invoked. Write this as a 
 ### Optional: reference documents
 
 If your skill needs supplementary material (design tokens, API specs, worked examples, lookup tables), put them in a `references/` subdirectory next to `SKILL.md`. Reference them from the skill body. See `design-system-aurora-plugin` or any of the larger `sdlc-plugin` skills (e.g., `requirements-create-from-design/references/`) for examples.
+
+If a reference doc is shared by **several skills in the same plugin**, put it in a plugin-level `shared/` directory instead (e.g. `plugins/sdlc-plugin/shared/lifecycle-tracker.md`) and reference it from each skill as `../../shared/<doc>.md`. This keeps one source of truth instead of duplicating the same content across skills.
 
 ## Key conventions
 

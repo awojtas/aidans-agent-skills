@@ -61,3 +61,12 @@ Reads the architecture, works out what cloud platforms / SaaS products / observa
 - GitHub Actions secrets set for every value the deployed system will need.
 - `.env.example` updated with the variable names (no values).
 - A final report to the user: what was provisioned, what's still pending and why, and any access / billing questions still open.
+
+## Lifecycle tracker
+
+This skill owns the **Platform provisioned** stage of the SDLC lifecycle tracker kept at the bottom of the acted-on repo's `README.md`. See [`../../shared/lifecycle-tracker.md`](../../shared/lifecycle-tracker.md) for the block format, emoji legend, and create-or-update algorithm.
+
+- **When this skill begins its substantive work** (after prerequisites pass), set the `Platform provisioned` line in the tracker to ⏳ (in progress). Create `README.md` and/or the tracker block first if either is missing.
+- **When this skill completes successfully**, set the `Platform provisioned` line to ✅ (done).
+
+Touch only the `Platform provisioned` line — leave every other stage exactly as found.

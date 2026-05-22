@@ -1,6 +1,6 @@
 ---
 name: status-help
-description: Analyses the current state of the repo (docs/design/, docs/architecture/, docs/requirements/, open issues, git state) and recommends the next concrete step in the SDLC bundle workflow. Recognises which skills have already run, which have incomplete or messy output, and which one is next. Can also recommend re-running a prior skill if its output looks unfinished or incongruous. Designed for the "I'm not sure where I am or what to do next" moment in a multi-step SDLC project. Trigger phrases include "what's next", "what should I do next", "status help", "where am I in the workflow", "what step am I on", "recommend next step", "navigate the SDLC", "what now".
+description: Analyses the current state of the repo (docs/design/, docs/architecture/, docs/requirements/, open issues, git state) and recommends the next concrete step in the SDLC bundle workflow. Recognises which skills have already run, which have incomplete or messy output, and which one is next. Can also recommend re-running a prior skill if its output looks unfinished or incongruous. Also rebuilds the SDLC progress tracker at the bottom of README.md from the scan and commits/pushes it. Designed for the "I'm not sure where I am or what to do next" moment in a multi-step SDLC project. Trigger phrases include "what's next", "what should I do next", "status help", "where am I in the workflow", "what step am I on", "recommend next step", "navigate the SDLC", "update the progress tracker", "what now".
 ---
 
 Surveys the current state of the project and recommends a single concrete next action in the SDLC bundle workflow.
@@ -15,7 +15,7 @@ repo-bootstrap → solution-design → platform-design → platform-provision �
   → tasks-create-from-requirements → task-implement
 ```
 
-Recommends a single concrete next action, or a small ranked list if multiple paths are reasonable. Can also flag a *rewind* if a prior step produced unfinished or incongruous output.
+Recommends a single concrete next action, or a small ranked list if multiple paths are reasonable. Can also flag a *rewind* if a prior step produced unfinished or incongruous output. As a side effect, it rebuilds the SDLC progress tracker in the repo's `README.md` so the current state is visible at a glance.
 
 ## Workflow
 
@@ -62,7 +62,9 @@ Recommends a single concrete next action, or a small ranked list if multiple pat
 6. **Flag rewinds explicitly.** If a prior step looks like it ran but produced messy output, surface it:
    > Note: `docs/design/solution-design.md` looks like a first-draft skeleton — consider re-running `/solution-design` in evolve-mode before proceeding.
 
-7. **Report concisely.** No file written. The output is the recommendation in chat, ~10 lines.
+7. **Report concisely.** The output is the recommendation in chat, ~10 lines.
+
+8. **Rebuild and push the lifecycle tracker.** Update the SDLC progress tracker at the bottom of the repo's `README.md` from this scan, then commit and push it. See the [Lifecycle tracker](#lifecycle-tracker) section below.
 
 ## Guardrails
 
@@ -87,3 +89,18 @@ A short markdown summary in chat, roughly:
 
 [Optional: **Alternatives** — other reasonable paths]
 ```
+
+## Lifecycle tracker
+
+After scanning, `/status-help` rebuilds the **entire** SDLC progress tracker at the bottom of the acted-on repo's `README.md` — every one of the ten lifecycle stages gets ✅ / ⏳ / ❓ based on what the scan found — then commits and pushes that one file. This makes `/status-help` the way to see, at a glance in the README, exactly how far a repo has progressed.
+
+Follow [`../../shared/lifecycle-tracker.md`](../../shared/lifecycle-tracker.md) for the block format, emoji legend, stage list, and create-or-update algorithm. Specifically:
+
+1. **Map each stage to an emoji** from the Step 2 evidence table and the Step 4 incompleteness heuristics:
+   - Evidence present and complete → ✅
+   - Evidence present but partial / messy / mid-session → ⏳
+   - No evidence → ❓
+2. **Write the block** at the very bottom of `README.md`. Create the file if it's missing; append the block if the file exists without it; replace it in place if it's already there.
+3. **Commit and push.** Stage **only** `README.md`, commit `docs: update SDLC lifecycle tracker`, and push to the current branch. If the block already matches the scan, skip the commit — don't make an empty one. If there's no remote or the push fails, keep the local commit and tell the user.
+
+This is the one file `/status-help` writes. It still doesn't run any other skill or modify any SDLC artefact.

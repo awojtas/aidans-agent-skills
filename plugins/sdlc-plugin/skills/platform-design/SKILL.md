@@ -176,3 +176,12 @@ If the architectural change is large enough that the existing structure is wrong
 - **User wants an architecture for an already-coded project.** This is *reverse engineering*, not initial design. The skill can run, but tell the user that the goal is *capturing* the architecture that exists (read the code, infer the structure) rather than *deciding* it.
 - **`docs/architecture/` already exists** — see *Re-design mode* above.
 - **Project has multiple sub-projects** (monorepo with separate apps). Run the skill once per sub-project, producing `apps/<name>/docs/architecture/` for each, OR a single top-level `docs/architecture/` that has sub-sections. Ask the user.
+
+## Lifecycle tracker
+
+This skill owns the **Architecture designed** stage of the SDLC lifecycle tracker kept at the bottom of the acted-on repo's `README.md`. See [`../../shared/lifecycle-tracker.md`](../../shared/lifecycle-tracker.md) for the block format, emoji legend, and create-or-update algorithm.
+
+- **When this skill begins its substantive work** (after prerequisites pass), set the `Architecture designed` line in the tracker to ⏳ (in progress). Create `README.md` and/or the tracker block first if either is missing.
+- **When this skill completes successfully**, set the `Architecture designed` line to ✅ (done).
+
+Touch only the `Architecture designed` line — leave every other stage exactly as found.

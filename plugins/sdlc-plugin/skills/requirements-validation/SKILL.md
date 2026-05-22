@@ -207,3 +207,12 @@ Show the diff (`git status` + a summary of what changed) and let the user commit
 - **Stale Drafts older than 90 days.** Surface them but don't auto-archive. Ask the user: "still relevant, or should we mark them Out-of-scope and move to `01-goals-and-non-goals.md`?"
 - **User pushes back on a quality issue Pass 5 surfaces** ("that's a nit, leave it"). Respect it — but log the unresolved smell in the session log so the next reviewer sees it. The session log is the place for "we knew about this and decided to leave it".
 - **No session-log.md yet.** Create it. First entry is the first session.
+
+## Lifecycle tracker
+
+This skill owns the **Requirements validated** stage of the SDLC lifecycle tracker kept at the bottom of the acted-on repo's `README.md`. See [`../../shared/lifecycle-tracker.md`](../../shared/lifecycle-tracker.md) for the block format, emoji legend, and create-or-update algorithm.
+
+- **When this skill begins its substantive work** (after prerequisites pass), set the `Requirements validated` line in the tracker to ⏳ (in progress). Create `README.md` and/or the tracker block first if either is missing.
+- **When this skill completes successfully**, set the `Requirements validated` line to ✅ (done).
+
+Touch only the `Requirements validated` line — leave every other stage exactly as found.

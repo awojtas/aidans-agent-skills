@@ -299,3 +299,12 @@ If `docs/requirements/` already exists when the skill is invoked:
 - **The project is a hard fork or rewrite of an existing system.** Ask for the original system's docs; use `references/elicitation-playbook.md`'s "document analysis" technique. Capture differences from the original explicitly.
 - **Multi-stakeholder review (rare for solo founders).** Each stakeholder gets a turn at the relevant sections; conflicts go to `08-open-questions.md` with both viewpoints captured.
 - **The user pushes back on capturing an assumption** ("that's obvious"). Capture it anyway, briefly. Buried-obvious assumptions are exactly the ones that fail.
+
+## Lifecycle tracker
+
+This skill owns the **Requirements drafted** stage of the SDLC lifecycle tracker kept at the bottom of the acted-on repo's `README.md`. See [`../../shared/lifecycle-tracker.md`](../../shared/lifecycle-tracker.md) for the block format, emoji legend, and create-or-update algorithm.
+
+- **When this skill begins its substantive work** (after prerequisites pass), set the `Requirements drafted` line in the tracker to ⏳ (in progress). Create `README.md` and/or the tracker block first if either is missing.
+- **When this skill completes successfully**, set the `Requirements drafted` line to ✅ (done).
+
+Touch only the `Requirements drafted` line — leave every other stage exactly as found.

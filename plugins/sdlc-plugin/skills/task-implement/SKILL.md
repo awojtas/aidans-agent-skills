@@ -482,3 +482,12 @@ Stored in memory across the session; printed in the final summary.
 - **CI is red on main when we start.** Stop. Don't add work to a broken main. Tell the user to fix main first.
 - **User aborts mid-session.** The branch + any commits remain. The orchestrator's last GitHub comment indicates which phase was in flight. Re-invoking resumes from there.
 - **Long-running session timeout.** Claude Code's context compresses automatically; the skill is resumable from the GitHub comment trail. Each persona's comment is the durable state.
+
+## Lifecycle tracker
+
+This skill owns the **Implementation** stage of the SDLC lifecycle tracker kept at the bottom of the acted-on repo's `README.md`. See [`../../shared/lifecycle-tracker.md`](../../shared/lifecycle-tracker.md) for the block format, emoji legend, and create-or-update algorithm.
+
+- **When this skill begins its substantive work** (after prerequisites pass), set the `Implementation` line in the tracker to ⏳ (in progress). Create `README.md` and/or the tracker block first if either is missing.
+- **When this skill completes successfully**, set the `Implementation` line to ✅ (done).
+
+Touch only the `Implementation` line — leave every other stage exactly as found.

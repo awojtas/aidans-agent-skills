@@ -155,3 +155,12 @@ If the user asks for any of these during the bootstrap, acknowledge the request 
 - **User aborts mid-flow.** Don't leave a half-scaffolded GitHub repo. If the local scaffold fails after `gh repo create` succeeded, offer to delete the remote with `gh repo delete <owner>/<slug> --yes` (ask first — destructive).
 - **User wants the repo public.** This skill is private-by-default by design. Tell them to flip visibility with `gh repo edit --visibility public` after bootstrap, or to do it manually in the GitHub UI.
 - **Project name contains characters that don't slug cleanly** (e.g. all-emoji, all-punctuation). Show the derived slug and confirm before creating anything.
+
+## Lifecycle tracker
+
+This skill owns the **Repo bootstrapped** stage of the SDLC lifecycle tracker kept at the bottom of the acted-on repo's `README.md`. See [`../../shared/lifecycle-tracker.md`](../../shared/lifecycle-tracker.md) for the block format, emoji legend, and create-or-update algorithm.
+
+- **When this skill begins its substantive work** (after prerequisites pass), set the `Repo bootstrapped` line in the tracker to ⏳ (in progress). Create `README.md` and/or the tracker block first if either is missing.
+- **When this skill completes successfully**, set the `Repo bootstrapped` line to ✅ (done).
+
+Touch only the `Repo bootstrapped` line — leave every other stage exactly as found.

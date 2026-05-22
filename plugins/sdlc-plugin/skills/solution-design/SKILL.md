@@ -63,3 +63,12 @@ Writes a single high-level solution design markdown document covering **business
 
 - `docs/design/solution-design.md` — created (or appended with Superseded entries).
 - A short report to the user: what got captured, what went into open questions, what's next (typically: `/platform-design`).
+
+## Lifecycle tracker
+
+This skill owns the **Solution designed** stage of the SDLC lifecycle tracker kept at the bottom of the acted-on repo's `README.md`. See [`../../shared/lifecycle-tracker.md`](../../shared/lifecycle-tracker.md) for the block format, emoji legend, and create-or-update algorithm.
+
+- **When this skill begins its substantive work** (after prerequisites pass), set the `Solution designed` line in the tracker to ⏳ (in progress). Create `README.md` and/or the tracker block first if either is missing.
+- **When this skill completes successfully**, set the `Solution designed` line to ✅ (done).
+
+Touch only the `Solution designed` line — leave every other stage exactly as found.

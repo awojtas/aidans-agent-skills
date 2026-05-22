@@ -59,3 +59,12 @@ Verifies the platform stood up by `/platform-provision` is actually wired correc
 
 - `docs/architecture/provisioning-log.md` (or `platform-verification.md`) updated with a fresh verification block.
 - A short summary to the user: overall verdict, top reds, what's next (typically: address reds, then `/repo-release-ready` if not yet done; otherwise `/requirements-create-from-design`).
+
+## Lifecycle tracker
+
+This skill owns the **Platform verified** stage of the SDLC lifecycle tracker kept at the bottom of the acted-on repo's `README.md`. See [`../../shared/lifecycle-tracker.md`](../../shared/lifecycle-tracker.md) for the block format, emoji legend, and create-or-update algorithm.
+
+- **When this skill begins its substantive work** (after prerequisites pass), set the `Platform verified` line in the tracker to ⏳ (in progress). Create `README.md` and/or the tracker block first if either is missing.
+- **When this skill completes successfully**, set the `Platform verified` line to ✅ (done).
+
+Touch only the `Platform verified` line — leave every other stage exactly as found.

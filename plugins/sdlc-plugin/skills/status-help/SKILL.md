@@ -13,6 +13,7 @@ Reads the repo (and any connected systems it can reach — GitHub, MCPs) to figu
 repo-bootstrap → solution-design → platform-design → platform-provision → platform-verify
   → repo-release-ready → requirements-create-from-design → requirements-validation
   → tasks-create-from-requirements → task-implement
+  → requirements-verify-post-implementation
 ```
 
 Recommends a single concrete next action, or a small ranked list if multiple paths are reasonable. Can also flag a *rewind* if a prior step produced unfinished or incongruous output. As a side effect, it rebuilds the SDLC progress tracker in the repo's `README.md` so the current state is visible at a glance.
@@ -39,6 +40,7 @@ Recommends a single concrete next action, or a small ranked list if multiple pat
    | `/requirements-validation` | Requirements with `Status: Reviewed`+ or session-log entries showing validation runs |
    | `/tasks-create-from-requirements` | `docs/implementation-plan.md` + GitHub issues organised into phase milestones |
    | `/task-implement` | Closed issues, merged PRs |
+   | `/requirements-verify-post-implementation` | `docs/requirements/verification-report.md` present |
 
 3. **If Step 2 lands on `/task-implement` (closed issues + merged PRs, no in-flight forward artefacts), run quick repo-health probes before recommending.** Artifact-presence is blind to common silent-rot modes in mature repos; these `gh` + `git` calls catch them in seconds:
    - `gh run list --workflow ci.yml --branch <default> --limit 10` — if recent runs are mostly failing, recommend `/test-fix` or `/build-fix` first.
@@ -92,7 +94,7 @@ A short markdown summary in chat, roughly:
 
 ## Lifecycle tracker
 
-After scanning, `/status-help` rebuilds the **entire** SDLC progress tracker at the bottom of the acted-on repo's `README.md` — every one of the ten lifecycle stages gets ✅ / ⏳ / ❓ based on what the scan found — then commits and pushes that one file. This makes `/status-help` the way to see, at a glance in the README, exactly how far a repo has progressed.
+After scanning, `/status-help` rebuilds the **entire** SDLC progress tracker at the bottom of the acted-on repo's `README.md` — every one of the eleven lifecycle stages gets ✅ / ⏳ / ❓ based on what the scan found — then commits and pushes that one file. This makes `/status-help` the way to see, at a glance in the README, exactly how far a repo has progressed.
 
 Follow [`../../shared/lifecycle-tracker.md`](../../shared/lifecycle-tracker.md) for the block format, emoji legend, stage list, and create-or-update algorithm. Specifically:
 

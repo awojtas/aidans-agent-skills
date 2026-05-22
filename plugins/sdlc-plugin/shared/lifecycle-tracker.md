@@ -4,7 +4,7 @@ The `sdlc-plugin` lifecycle skills maintain a progress tracker at the **very bot
 
 ## The stages
 
-Ten stages, in lifecycle order. The label is exactly what appears in the README; the skill is what advances that stage.
+Eleven stages, in lifecycle order. The label is exactly what appears in the README; the skill is what advances that stage.
 
 | # | Stage label | Owning skill |
 |---|---|---|
@@ -18,6 +18,7 @@ Ten stages, in lifecycle order. The label is exactly what appears in the README;
 | 8 | Requirements validated | `/requirements-validation` |
 | 9 | Tasks planned | `/tasks-create-from-requirements` |
 | 10 | Implementation | `/task-implement` |
+| 11 | Implementation verified | `/requirements-verify-post-implementation` |
 
 ## The emoji legend
 
@@ -43,19 +44,20 @@ A find-and-replace-safe block delimited by HTML comments, living at the **very b
 - ❓ Requirements validated — `/requirements-validation`
 - ❓ Tasks planned — `/tasks-create-from-requirements`
 - ❓ Implementation — `/task-implement`
+- ❓ Implementation verified — `/requirements-verify-post-implementation`
 
 ✅ done · ⏳ in progress · ❓ not started — maintained by the sdlc-plugin skills.
 <!-- sdlc-lifecycle:end -->
 ```
 
-The two `<!-- sdlc-lifecycle:… -->` comment lines are the anchors. Never remove them — they are how every skill finds the block on the next run. Always keep all ten stage lines and the legend line.
+The two `<!-- sdlc-lifecycle:… -->` comment lines are the anchors. Never remove them — they are how every skill finds the block on the next run. Always keep all eleven stage lines and the legend line.
 
 ## Create-or-update algorithm
 
 Target: `README.md` in the **root of the repo being acted on** (not the plugin repo).
 
-1. **No `README.md`** → create it: an H1 with the repo/project name (from the git remote or the directory name), a blank line, then the block — all ten stages, each ❓ except any this run sets otherwise.
-2. **`README.md` exists, no `<!-- sdlc-lifecycle:start -->`** → append the block at the very bottom, preceded by one blank line. All ten stages ❓ except any this run sets.
+1. **No `README.md`** → create it: an H1 with the repo/project name (from the git remote or the directory name), a blank line, then the block — all eleven stages, each ❓ except any this run sets otherwise.
+2. **`README.md` exists, no `<!-- sdlc-lifecycle:start -->`** → append the block at the very bottom, preceded by one blank line. All eleven stages ❓ except any this run sets.
 3. **Block already present** → replace the content between `<!-- sdlc-lifecycle:start -->` and `<!-- sdlc-lifecycle:end -->` in place; leave the block where it sits.
 
 ### A staged skill updates one line
@@ -70,7 +72,7 @@ Writing the file is the requirement. Committing follows the skill's normal behav
 
 ### `/status-help` rebuilds every line
 
-`/status-help` already scans the repo to locate its position, so it has evidence for every stage. It writes **all ten** lines from that scan (✅ / ⏳ / ❓ per stage), then stages **only** `README.md`, commits `docs: update SDLC lifecycle tracker`, and pushes. If the block already matches the scan, it skips the commit. This makes `/status-help` the way to reconcile the tracker on a repo whose skills ran before the tracker existed, or out of order.
+`/status-help` already scans the repo to locate its position, so it has evidence for every stage. It writes **all eleven** lines from that scan (✅ / ⏳ / ❓ per stage), then stages **only** `README.md`, commits `docs: update SDLC lifecycle tracker`, and pushes. If the block already matches the scan, it skips the commit. This makes `/status-help` the way to reconcile the tracker on a repo whose skills ran before the tracker existed, or out of order.
 
 ## Guardrails
 

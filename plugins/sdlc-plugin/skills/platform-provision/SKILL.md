@@ -53,7 +53,7 @@ Reads the architecture, works out what cloud platforms / SaaS products / observa
 - **Don't invent integrations.** If the architecture doesn't name observability, don't add Sentry just because it's popular. Ask the user first.
 - **Ask for tokens up front, not on first failure.** If you'll need tokens for several platforms, enumerate them and ask in one go.
 - **One or two tries per channel, then move on.** Don't loop on a 4xx — surface it. The human can debug auth faster than you can.
-- **If the architecture is vague** ("we need a database") **pause and ask the human to pick a specific service** before provisioning. You don't get to choose the architecture.
+- **If the architecture is vague** ("we need a database") **pause and ask the human to pick a specific service** before provisioning. You don't get to choose the architecture — but when you ask, offer the [`../../shared/default-stack.md`](../../shared/default-stack.md) pick as the suggested option so the human has an easy default to accept.
 
 ## Output
 

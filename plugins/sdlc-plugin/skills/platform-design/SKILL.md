@@ -154,11 +154,17 @@ If the folder exists with real content, the skill switches to re-design mode:
 
 1. Read every existing file.
 2. Show the user a summary of what's there — count of ADRs (by status), count of open questions (by status), the pattern named.
-3. Ask: *"What's prompting the re-design? Is this a refinement (firming up open questions), a pivot (changing decisions), or an expansion (adding scope)?"*
-4. Walk only the affected topics, not all seven.
-5. **Supersede ADRs, don't delete them.** Mark the old one Superseded by ADR-NNN; add the new one with the same template.
-6. **Move resolved open questions** to the Resolved section of `05-open-questions.md`.
-7. **Same summary + handoff at Step 12.**
+3. **Run a drift-and-recommendations scan and present it.** The architecture was a deliberate first stab; on a re-run the skill earns its keep by spotting what's gone out of date — don't just wait for the user to tell you. Check:
+   - **Doc vs code drift** — if application code exists, does it match the recorded architecture? Flag components, integrations, or data stores that are in the code but not the doc (and vice versa).
+   - **Stale decisions** — ADRs whose re-decide trigger has been hit, or whose decision the current code now contradicts.
+   - **Answered open questions** — entries in `05-open-questions.md` that the codebase or a later decision has since resolved.
+   - **Stack gaps** — capabilities the project clearly needs now but the architecture never named, or generic entries ("analytics", "a queue") that could adopt a default from [`../../shared/default-stack.md`](../../shared/default-stack.md).
+   Present these as a short numbered list of *recommended changes*, each with a one-line rationale. It's a recommendation list — nothing is applied without the user's say-so.
+4. Ask: *"What's prompting the re-design — a refinement (firming up open questions), a pivot (changing decisions), or an expansion (adding scope)? And which of the recommended changes above do you want to act on?"*
+5. Walk only the affected topics, not all seven.
+6. **Supersede ADRs, don't delete them.** Mark the old one Superseded by ADR-NNN; add the new one with the same template.
+7. **Move resolved open questions** to the Resolved section of `05-open-questions.md`.
+8. **Same summary + handoff at Step 12.**
 
 If the architectural change is large enough that the existing structure is wrong (e.g. the project pivots from a serverless monolith to an event-driven microservices system), this isn't a re-design — it's a fresh design. Tell the user: *"This is a big enough change that we should regenerate the architecture folder from scratch. The git history preserves the old version; I'll archive it under `docs/architecture/archive/`."*
 

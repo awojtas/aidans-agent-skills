@@ -16,7 +16,7 @@ If you're not sure, default to `/issue-work` for tasks under ~half a day of work
 
 ## The personas
 
-Ten personas. Each is a sub-agent the orchestrator spawns with a focused brief.
+Each persona is a sub-agent the orchestrator spawns with a focused brief.
 
 | Persona | Mandate | Reference doc | Posts comment as |
 |---------|---------|----------------|------------------|
@@ -31,7 +31,7 @@ Ten personas. Each is a sub-agent the orchestrator spawns with a focused brief.
 | **Product Manager (PdM)** | Outcome audit against the originating requirement — does the user-facing result match the intent? Actually tries the feature. | `references/role-product-manager.md` | `[Product Manager]` |
 | **Work Checker (WC)** | Audit every phase before handoff. Catches the ~80% of self-audit defects. | `references/role-work-checker.md` | `[Work Checker]` |
 
-The orchestrator is the eleventh actor — the conductor. It tracks state (current phase, branch, PR number, bounce-back counts) and dispatches each persona.
+The orchestrator is the conductor. It tracks state (current phase, branch, PR number, bounce-back counts) and dispatches each persona.
 
 ## The reference material
 
@@ -48,12 +48,12 @@ The orchestrator and each spawned sub-agent should consult these as needed:
 | `references/role-sre.md` | SRE charter, production-readiness checklist (observability / alerting / runbook / rollback / capacity / failure modes / deploy safety), severity classification. |
 | `references/role-project-manager.md` | PrjM charter (process audit), audit checklist, bounce-back protocol. |
 | `references/role-product-manager.md` | PdM charter (outcome audit), originating-requirement check, walk-the-feature discipline, bounce destinations. |
-| `references/role-work-checker.md` | WC charter, universal + role-specific audit lists (all ten roles), "check your work" prompt. |
-| `references/sdlc-pitfalls.md` | 15 named pitfalls + lazy-AI failure modes. |
+| `references/role-work-checker.md` | WC charter, universal + role-specific audit lists (every role), "check your work" prompt. |
+| `references/sdlc-pitfalls.md` | Named pitfalls + lazy-AI failure modes. |
 | `references/solid-applied.md` | SOLID with smell+fix per principle; when not to apply. |
 | `references/test-strategy.md` | Test pyramid, coverage philosophy, determinism rules. |
 | `references/code-review-checklist.md` | The PE's self-review checklist; same one a human reviewer uses. |
-| `references/example-implementation-session.md` | A worked end-to-end run showing all 16 phases. |
+| `references/example-implementation-session.md` | A worked end-to-end run showing every phase. |
 
 ## Prerequisites
 
@@ -67,7 +67,7 @@ The orchestrator and each spawned sub-agent should consult these as needed:
 
 ## Workflow
 
-The full 16-phase sequence:
+The full phase sequence:
 
 ```text
 task-implement progress:
@@ -458,7 +458,7 @@ Stored in memory across the session; printed in the final summary.
 
 ## Strict non-goals
 
-- **No skipping phases.** The 16-phase sequence is intentional. If the user wants a lighter pass, use `/issue-work`.
+- **No skipping phases.** The phase sequence is intentional. If the user wants a lighter pass, use `/issue-work`.
 - **No silent merging.** This skill never merges the PR. That's a human decision.
 - **No auto-fixing across roles.** The Work Checker reports; it doesn't fix. The role fixes.
 - **No infinite bounce-back.** 3 strikes per role per session, then escalate to the user.

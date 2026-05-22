@@ -17,7 +17,7 @@ The skill is **deliberately light**. "Initial design" means **first stab** — n
 
 ## Operating mode
 
-- **Conversational.** 7 content topics walked in order (system type → hosting → components → stack → data → integrations → pattern fit), then a short review sweep ("Topic 8 — Decisions vs unknowns"). 3-5 questions per topic.
+- **Conversational.** The content topics are walked in order (system type → hosting → components → stack → data → integrations → pattern fit), then a short review sweep ("Topic 8 — Decisions vs unknowns"). 3-5 questions per topic.
 - **30-90 minutes** is a typical session. Don't try to make this exhaustive.
 - **Default-assume sensibly.** If the user doesn't know, propose a sensible default and capture it as an ADR with a re-decide trigger. For hosting / stack / integration choices, the defaults to propose live in [`../../shared/default-stack.md`](../../shared/default-stack.md).
 - **Push back on premature complexity.** Microservices, Kubernetes, multi-region, real-time-everywhere are all worth questioning at this stage.
@@ -29,7 +29,7 @@ The orchestrator and the agent should consult:
 
 | File                                            | Purpose                                                                      |
 |-------------------------------------------------|------------------------------------------------------------------------------|
-| `references/interview-playbook.md`              | The 7-topic question bank with conversational principles.                    |
+| `references/interview-playbook.md`              | The topic-by-topic question bank with conversational principles.                    |
 | `references/architecture-patterns.md`           | Catalogue of patterns (monolith, microservices, serverless, JAMstack, event-driven, hexagonal, real-time hub) — when each fits. |
 | `references/adr-format.md`                      | Lightweight ADR style (Michael Nygard's format, abbreviated).                |
 | `references/example-initial-design.md`          | Worked example: a 30-minute session producing a complete architecture folder.|
@@ -71,7 +71,7 @@ If `AGENTS.md`, `CLAUDE.md`, or `docs/` already exist with relevant content, ski
 
 Tell the user:
 
-- *This will take 30-90 minutes. We'll walk 7 content topics + a short review sweep at the end.*
+- *This will take 30-90 minutes. We'll walk the content topics + a short review sweep at the end.*
 - *The goal is a **first stab**, not a perfect design. We'll capture decisions where you have them and open questions where you don't.*
 - *Anything you're unsure about goes into `05-open-questions.md` — it's not wrong to say "I don't know yet", we just record it as a known unknown.*
 
@@ -101,7 +101,7 @@ Other placeholders inside templates (`{{ONE_PARAGRAPH_SYSTEM_DESCRIPTION}}`, `{{
 
 After scaffolding, show the user the structure and confirm before starting the interview.
 
-### Steps 4-10: The seven topics
+### Steps 4-10: The content topics
 
 Walk the topics in order, per `references/interview-playbook.md`. Per topic:
 
@@ -128,7 +128,7 @@ The topics map to files like this:
 
 ### Step 11: Topic 8 — Decisions vs unknowns review
 
-Once the seven content topics are walked, do a sweep:
+Once the content topics are walked, do a sweep:
 
 - Show the user the ADRs captured (read aloud the title + status + decision line of each).
 - Show the user the open questions captured (read each title).
@@ -140,7 +140,7 @@ This catches the cases where the user said "yeah, let's go with X" during the co
 
 Print a tight summary:
 
-- `docs/architecture/` exists with 6 files + README.
+- `docs/architecture/` exists with its files + README.
 - N decisions captured (ADRs).
 - M open questions captured.
 - Pattern: {{the named pattern from Topic 7}}.
@@ -161,7 +161,7 @@ If the folder exists with real content, the skill switches to re-design mode:
    - **Stack gaps** — capabilities the project clearly needs now but the architecture never named, or generic entries ("analytics", "a queue") that could adopt a default from [`../../shared/default-stack.md`](../../shared/default-stack.md).
    Present these as a short numbered list of *recommended changes*, each with a one-line rationale. It's a recommendation list — nothing is applied without the user's say-so.
 4. Ask: *"What's prompting the re-design — a refinement (firming up open questions), a pivot (changing decisions), or an expansion (adding scope)? And which of the recommended changes above do you want to act on?"*
-5. Walk only the affected topics, not all seven.
+5. Walk only the affected topics, not all of them.
 6. **Supersede ADRs, don't delete them.** Mark the old one Superseded by ADR-NNN; add the new one with the same template.
 7. **Move resolved open questions** to the Resolved section of `05-open-questions.md`.
 8. **Same summary + handoff at Step 12.**

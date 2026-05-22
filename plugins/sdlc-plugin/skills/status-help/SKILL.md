@@ -94,7 +94,7 @@ A short markdown summary in chat, roughly:
 
 ## Lifecycle tracker
 
-After scanning, `/status-help` rebuilds the **entire** SDLC progress tracker at the bottom of the acted-on repo's `README.md` — every one of the eleven lifecycle stages gets ✅ / ⏳ / ❓ based on what the scan found — then commits and pushes that one file. This makes `/status-help` the way to see, at a glance in the README, exactly how far a repo has progressed.
+After scanning, `/status-help` rebuilds the **entire** SDLC progress tracker at the bottom of the acted-on repo's `README.md` — every lifecycle stage gets ✅ / ⏳ / ❓ based on what the scan found — then commits and pushes that one file. This makes `/status-help` the way to see, at a glance in the README, exactly how far a repo has progressed.
 
 Follow [`../../shared/lifecycle-tracker.md`](../../shared/lifecycle-tracker.md) for the block format, emoji legend, stage list, and create-or-update algorithm. Specifically:
 

@@ -34,7 +34,7 @@ The orchestrator and the agent should consult:
 | `references/adr-format.md`                      | Lightweight ADR style (Michael Nygard's format, abbreviated).                |
 | `references/example-initial-design.md`          | Worked example: a 30-minute session producing a complete architecture folder.|
 | `references/templates/*`                        | The markdown templates the skill writes into `docs/architecture/`.           |
-| `../../shared/default-stack.md`                 | Default modern stack — sensible vendor picks to steer toward when the user has no preference. |
+| `../../shared/default-stack.md`                 | Default platform stack — sensible vendor picks to steer toward when the user has no preference. |
 
 ## Prerequisites
 

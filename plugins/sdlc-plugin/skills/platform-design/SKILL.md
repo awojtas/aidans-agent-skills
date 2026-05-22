@@ -19,7 +19,7 @@ The skill is **deliberately light**. "Initial design" means **first stab** — n
 
 - **Conversational.** 7 content topics walked in order (system type → hosting → components → stack → data → integrations → pattern fit), then a short review sweep ("Topic 8 — Decisions vs unknowns"). 3-5 questions per topic.
 - **30-90 minutes** is a typical session. Don't try to make this exhaustive.
-- **Default-assume sensibly.** If the user doesn't know, propose a sensible default and capture it as an ADR with a re-decide trigger.
+- **Default-assume sensibly.** If the user doesn't know, propose a sensible default and capture it as an ADR with a re-decide trigger. For hosting / stack / integration choices, the defaults to propose live in [`../../shared/default-stack.md`](../../shared/default-stack.md).
 - **Push back on premature complexity.** Microservices, Kubernetes, multi-region, real-time-everywhere are all worth questioning at this stage.
 - **Open questions are first-class.** When the user says "I'm not sure" or "let's figure that out later", add an entry to `05-open-questions.md` immediately.
 
@@ -34,6 +34,7 @@ The orchestrator and the agent should consult:
 | `references/adr-format.md`                      | Lightweight ADR style (Michael Nygard's format, abbreviated).                |
 | `references/example-initial-design.md`          | Worked example: a 30-minute session producing a complete architecture folder.|
 | `references/templates/*`                        | The markdown templates the skill writes into `docs/architecture/`.           |
+| `../../shared/default-stack.md`                 | Default modern stack — sensible vendor picks to steer toward when the user has no preference. |
 
 ## Prerequisites
 
@@ -122,6 +123,8 @@ The topics map to files like this:
 | 5 — Data        | `02-data-and-storage.md`          | `04-decisions.md` (data store ADRs)        |
 | 6 — Integrations| `03-external-integrations.md`     | `04-decisions.md` (integration choice ADRs)|
 | 7 — Pattern fit | `00-system-overview.md` ("Why this shape?") | `04-decisions.md` (pattern ADR)  |
+
+**During Topics 2, 4, 5, and 6** (hosting, stack, data, integrations), also walk the capability checklist in [`../../shared/default-stack.md`](../../shared/default-stack.md). It does two jobs: it makes the user *consider* each capability — analytics, error tracking, background jobs, and SMS are easy to forget — and it supplies a default vendor to propose wherever the user has a need but no preference. Push on the Core and Common tiers; raise the Situational tier only where the project's nature calls for it. It is a **steer, not a mandate** — an explicit user choice, an org standard, or a tool the repo already uses always wins. Record each accepted default as an ADR like any other decision.
 
 ### Step 11: Topic 8 — Decisions vs unknowns review
 

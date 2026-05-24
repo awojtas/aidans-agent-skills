@@ -226,7 +226,7 @@ Print:
   - Start Phase 1 by working through the human-required issues — these are batch-friendly (knock out in one focused session).
   - The AI can take Phase 1 non-human issues in parallel.
 
-Also commit the `docs/implementation-plan.md` file so the plan is preserved in git history. Show the diff; let the user commit.
+**Commit and push.** Stage `docs/implementation-plan.md` and `README.md` (lifecycle tracker), commit with `docs(plan): create implementation plan and issues`, then follow [`../../shared/commit-push-policy.md`](../../shared/commit-push-policy.md). The GitHub milestones and issues themselves are already pushed via `gh` in Steps 7-9 — no further action needed for them.
 
 ## Strict non-goals
 

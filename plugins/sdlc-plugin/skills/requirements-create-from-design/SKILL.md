@@ -269,7 +269,7 @@ Print a tight summary:
 - Assumption count, with falsified/validated breakdown.
 - **Next-step pointer:** *"This requirements set is ready as input to an architecture-design phase. The architecture doc should trace every architectural decision back to a requirement ID here."*
 
-Commit the changes (do **not** commit automatically — show the diff and let the user commit).
+**Commit and push.** Stage `docs/requirements/` and `README.md` (lifecycle tracker), commit with `docs(requirements): initial requirements elicitation`, then follow [`../../shared/commit-push-policy.md`](../../shared/commit-push-policy.md).
 
 ## Resume mode
 

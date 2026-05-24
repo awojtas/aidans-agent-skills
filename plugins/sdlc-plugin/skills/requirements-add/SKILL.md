@@ -64,3 +64,7 @@ Adds **one** new requirement to an established `docs/requirements/` tree, with a
 - Any updated traces-to lines on related requirements.
 - A session-log entry.
 - A short summary to the user: ID assigned, where it lives, status (`Draft`), what to do next (typically: `/requirements-validation` later to advance the status).
+
+## Commit and push
+
+Stage the touched files under `docs/requirements/` (the requirement's domain file, any updated `07-assumptions.md` / `08-open-questions.md`, and `session-log.md`), commit with `docs(requirements): add <REQ-ID>`, then follow [`../../shared/commit-push-policy.md`](../../shared/commit-push-policy.md). This skill does not own a lifecycle-tracker stage — adding one requirement after the bulk elicitation does not change the stage status.

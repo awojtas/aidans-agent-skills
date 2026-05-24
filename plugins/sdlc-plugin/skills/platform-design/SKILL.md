@@ -146,7 +146,7 @@ Print a tight summary:
 - Pattern: {{the named pattern from Topic 7}}.
 - **Next step:** run `/requirements-create-from-design` next. That skill will read `docs/architecture/` and use it as context — so requirements work will be informed by the technical shape, not done in a vacuum.
 
-Show the diff (`git status` + summary of what was added). Don't auto-commit — let the user review and commit.
+**Commit and push.** Stage `docs/architecture/` and `README.md` (lifecycle tracker), commit with `docs(architecture): capture initial architecture design`, then follow [`../../shared/commit-push-policy.md`](../../shared/commit-push-policy.md).
 
 ## Re-design mode (when `docs/architecture/` already exists)
 

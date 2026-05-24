@@ -64,6 +64,10 @@ Writes a single high-level solution design markdown document covering **business
 - `docs/design/solution-design.md` — created (or appended with Superseded entries).
 - A short report to the user: what got captured, what went into open questions, what's next (typically: `/platform-design`).
 
+## Commit and push
+
+Stage `docs/design/solution-design.md` and `README.md` (lifecycle tracker), commit with `docs(design): create solution design` (or `docs(design): evolve solution design` in evolve mode), then follow [`../../shared/commit-push-policy.md`](../../shared/commit-push-policy.md).
+
 ## Lifecycle tracker
 
 This skill owns the **Solution designed** stage of the SDLC lifecycle tracker kept at the bottom of the acted-on repo's `README.md`. See [`../../shared/lifecycle-tracker.md`](../../shared/lifecycle-tracker.md) for the block format, emoji legend, and create-or-update algorithm.

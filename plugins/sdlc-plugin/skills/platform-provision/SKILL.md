@@ -62,6 +62,10 @@ Reads the architecture, works out what cloud platforms / SaaS products / observa
 - `.env.example` updated with the variable names (no values).
 - A final report to the user: what was provisioned, what's still pending and why, and any access / billing questions still open.
 
+## Commit and push
+
+Stage `docs/architecture/provisioning-log.md`, `.env.example`, and `README.md` (lifecycle tracker), commit with `chore(platform): provision <list of platforms>`, then follow [`../../shared/commit-push-policy.md`](../../shared/commit-push-policy.md). The provisioning-checklist GitHub issue raised in Step 5 is already pushed via `gh issue create` — no further git action needed for it.
+
 ## Lifecycle tracker
 
 This skill owns the **Platform provisioned** stage of the SDLC lifecycle tracker kept at the bottom of the acted-on repo's `README.md`. See [`../../shared/lifecycle-tracker.md`](../../shared/lifecycle-tracker.md) for the block format, emoji legend, and create-or-update algorithm.

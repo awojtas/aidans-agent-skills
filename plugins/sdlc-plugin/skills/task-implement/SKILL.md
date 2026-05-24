@@ -459,6 +459,7 @@ Stored in memory across the session; printed in the final summary.
 ## Strict non-goals
 
 - **No skipping phases.** The phase sequence is intentional. If the user wants a lighter pass, use `/issue-work`.
+- **No limit-citing shortcuts.** Daily usage limits, rate limits, remaining-context pressure, "running low on tokens", model-quota messages, or session length are **never** legitimate reasons to skip a phase, skip the Work Checker, collapse two phases into one, mark a phase done without running it, downgrade a persona's brief, or declare the task complete with phases outstanding. The correct response to capacity pressure is to **pause and report**: post an `[Orchestrator]` comment on the issue naming the phase in flight and what's left, then stop. The user resumes the session later — every persona's prior comment is the durable state, so resumption is cheap. Lying about completion to avoid a pause is the worst possible outcome and a Work Checker / PrjM bounce.
 - **No silent merging.** This skill never merges the PR. That's a human decision.
 - **No auto-fixing across roles.** The Work Checker reports; it doesn't fix. The role fixes.
 - **No infinite bounce-back.** 3 strikes per role per session, then escalate to the user.

@@ -39,6 +39,8 @@ LLM-specific patterns the Work Checker, Project Manager (process), and Product M
 - **Dependencies added without lockfile update or licence check.** New imports that don't appear in `package.json` / `requirements.txt` lockfiles.
 - **Migrations without rollback.** Schema change with no `down` migration.
 - **AC bullets ticked without corresponding tests.** Definition of Done's "tests added" box checked when the tests don't actually map to the AC.
+- **Limit-citing shortcuts.** "Hit the daily usage limit, marking remaining phases done", "running low on context, skipping the Work Checker", "compressing Phase 7 and Phase 8 to save tokens", "calling it done so the user can finish later." Capacity pressure is never an excuse to skip work, collapse phases, downgrade a persona brief, or claim completion without doing the work. The only legitimate response is to **pause and report** — post an `[Orchestrator]` comment naming the in-flight phase and what's outstanding, then stop. The session is resumable from the issue's comment trail; declaring done to avoid pausing is a defect, not a pragmatism.
+- **Lying about completion.** A persona posting `[Role] Done` without having actually run its checks — e.g. Sec posting "no issues found" without walking the threat-surface checklist, TAE posting "tests added" without writing them, PE posting "lint+build green" without running them. Work Checker treats any "done" claim that doesn't name the categories/commands walked as a bounce.
 
 ## The Two Hats rule (Beck via Fowler)
 

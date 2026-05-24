@@ -28,6 +28,8 @@ Independent of role:
 - [ ] Were any large binary files committed? (Almost always a smell.)
 - [ ] Were any commits made with `--no-verify` (skipping pre-commit hooks)?
 - [ ] Does the latest commit message describe what was actually done?
+- [ ] Did the role cite usage limits, daily quotas, rate limits, remaining context, or token pressure as a reason to skip, shorten, or collapse work? If yes → bounce. The only legitimate response to capacity pressure is `[Orchestrator]` posting a pause-and-resume note, *not* a persona declaring done without doing the work.
+- [ ] Does the role's "done" claim name the specific checks/commands/categories actually walked? A bare "looks good" / "no issues" / "all checks passed" without naming what was inspected is a bounce — it's how lying-about-completion presents.
 
 ## Role-specific Work Checker checklists
 

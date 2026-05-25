@@ -251,7 +251,7 @@ Print a tight summary to the user:
   - `/tasks-create-from-requirements` if the rework created new requirements that need staging into issues (only if Pass 4 added many new requirements — typically not needed).
   - `/requirements-validation` if the rework left several requirements still Draft.
 
-Show the diff (`git status`, `git diff`). Don't auto-commit — let the user review and commit.
+**Commit and push.** Stage the changed files under `docs/requirements/` and `README.md` (lifecycle tracker), commit with `docs(requirements): rework session`, then follow [`../../shared/commit-push-policy.md`](../../shared/commit-push-policy.md).
 
 ## Strict non-goals
 
@@ -261,7 +261,7 @@ Show the diff (`git status`, `git diff`). Don't auto-commit — let the user rev
 - **No new requirement elicitation from scratch.** If the rework triggers a need for wholesale new requirements, finish the rework narrowly and point the user at `/requirements-create-from-design` for the bigger conversation.
 - **No code changes.** Rework is about docs and issues. Code changes are a downstream consequence — they happen in implementation sessions against the updated issues.
 - **No `gh issue delete`.** Closure is the destructive operation; delete loses the audit trail.
-- **No partial commits during execution.** Run the full execution batch; let the user commit the whole rework as one logical change in git.
+- **No partial commits during execution.** Run the full execution batch, then commit the whole rework as one logical change in git per [`../../shared/commit-push-policy.md`](../../shared/commit-push-policy.md).
 
 ## Edge cases
 

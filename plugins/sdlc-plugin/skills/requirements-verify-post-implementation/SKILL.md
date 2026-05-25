@@ -32,6 +32,7 @@ verify progress:
 - [ ] Step 4: Write the traceability report
 - [ ] Step 5: Offer to raise issues for the gaps
 - [ ] Step 6: Update the lifecycle tracker + summarise
+- [ ] Step 7: Commit + push the report
 ```
 
 ### Step 1 — Inventory the requirements
@@ -103,6 +104,10 @@ Ask once whether to create the `verification-gap` label if it does not exist. Ba
 ### Step 6 — Update the tracker + summarise
 
 Update the lifecycle tracker (see below), then print a short summary: the four counts, the issue numbers raised, and a one-line verdict — e.g. *"38 of 44 requirements Met; 4 Partial and 2 Not met raised as issues."*
+
+### Step 7 — Commit and push
+
+Stage `docs/requirements/verification-report.md` and `README.md` (lifecycle tracker), commit with `docs(requirements): verification report YYYY-MM-DD`, then follow [`../../shared/commit-push-policy.md`](../../shared/commit-push-policy.md). The `verification-gap` issues raised in Step 5 are already pushed via `gh issue create` — no further git action needed for them.
 
 ## Guardrails
 

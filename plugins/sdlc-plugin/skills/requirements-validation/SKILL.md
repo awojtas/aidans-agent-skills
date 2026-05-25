@@ -187,13 +187,12 @@ Print a tight summary:
   - If the set is mostly Reviewed with stakeholder sign-off, the user might want to **baseline** — see `status-lifecycle.md`.
   - If the set is mostly Reviewed, the user can move to **architecture design** — the requirements set is the input.
 
-Show the diff (`git status` + a summary of what changed) and let the user commit. Do not auto-commit.
+**Commit and push.** Stage the changed files under `docs/requirements/` and `README.md` (lifecycle tracker), commit with `docs(requirements): validation session`, then follow [`../../shared/commit-push-policy.md`](../../shared/commit-push-policy.md).
 
 ## Strict non-goals for this skill
 
 - **No new feature elicitation.** If the user wants to add features, point them at `/requirements-create-from-design`. This skill confirms what exists; eliciting is the other skill's job.
 - **No silent edits.** Every requirement change is echoed back to the user; every status advancement is explicitly confirmed.
-- **No auto-commit.** Show the diff; let the user commit.
 - **No deletion of content.** Falsified assumptions stay (as learning record). Resolved open questions move within the file. Reworked requirement text is preserved in git history.
 - **No bulk auto-promotion.** A confirmation pass surfaces *candidates* for promotion; the user advances them.
 

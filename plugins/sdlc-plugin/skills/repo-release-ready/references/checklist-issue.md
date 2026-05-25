@@ -77,18 +77,11 @@ These are free on public repos and on private repos with GitHub Advanced Securit
 
 <!-- code-security-plan-gated:start -->
 
-### 5. Code security features — Skipped (requires GitHub Advanced Security)
+### 5. Code security features — Skipped
 
-This is a **private repo on a plan without GitHub Advanced Security** (Free plan; or Team/Enterprise without the GHAS license; or no Code Security add-on). The following features are **plan-gated** and cannot be enabled until the repo's plan changes:
+GitHub Advanced Security isn't available on this repo's plan, so Secret scanning, Push protection, Dependabot security updates, and Code scanning can't be enabled. Nothing actionable here.
 
-- Secret scanning
-- Push protection
-- Dependabot **security** updates (auto-PR'd vulnerability fixes — version updates in Section 4 still work)
-- Code scanning / SARIF visibility in the Security tab
-
-`vibe-guard-scan.yml` still runs and posts findings to the PR; they just won't appear under the Security tab without code scanning enabled.
-
-If the repo later moves to a plan with GHAS (Team/Enterprise + GHAS, or the standalone Code Security plan): come back to **Settings → Code security** and enable these toggles. They'll work the same as on a public repo.
+(`vibe-guard-scan.yml` still runs and posts findings on PRs — they just won't appear under the Security tab.)
 
 <!-- code-security-plan-gated:end -->
 

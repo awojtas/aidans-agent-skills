@@ -1,7 +1,11 @@
 name: GitGuardian Security Scan
 
-# Run on pushes and pull requests to detect committed secrets and credentials
+# Run on pushes and pull requests to detect committed secrets and credentials.
+# workflow_dispatch lets the human admin trigger one run after repo setup so
+# the "Require status checks" picker in branch-protection rulesets becomes
+# populated without waiting for an organic PR.
 on:
+  workflow_dispatch:
   push:
     branches:
       - main

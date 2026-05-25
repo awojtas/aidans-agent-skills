@@ -25,18 +25,17 @@ Do **not** rename `Production {{REPO_NAME_TITLE}}` — the promote-to-production
 
 GitHub's "Require status checks" picker only shows checks it has *actually observed running* in the repo. On a freshly-scaffolded repo, the picker is **empty** — there's nothing to require yet. Three ways to populate it:
 
-- **Easiest:** merge this level-up PR. The on-push workflows (`gitguardian-scan`, `vibe-guard-scan`) fire when the merge lands on `main`; their contexts appear in the picker shortly after.
-- **Faster:** trigger the scan workflows manually — both have `workflow_dispatch:`. Either click **Actions → (workflow) → Run workflow**, or:
+- **Easiest:** merge this level-up PR. The on-push `gitguardian-scan` workflow fires when the merge lands on `main`; its context appears in the picker shortly after.
+- **Faster:** trigger the scan workflow manually — it has `workflow_dispatch:`. Either click **Actions → GitGuardian Security Scan → Run workflow**, or:
   ```bash
   gh workflow run gitguardian-scan.yml
-  gh workflow run vibe-guard-scan.yml
   ```
 - **Vercel check** (`Vercel – {{REPO_NAME}}`): comes from the Vercel-GitHub integration, not a GitHub Actions workflow. It appears after the first Vercel deploy (after Step 3 below).
 
 Once contexts are visible, edit each ruleset under **Settings → Rules → Rulesets → (ruleset) → Edit rules → Require status checks** and tick the ones you want required.
 
-- [ ] Required status checks added to `Main {{REPO_NAME_TITLE}}` (typically: GitGuardian, Vibe-Guard).
-- [ ] Required status checks added to `UAT {{REPO_NAME_TITLE}}` (typically: Vercel deployment, GitGuardian, Vibe-Guard).
+- [ ] Required status checks added to `Main {{REPO_NAME_TITLE}}` (typically: GitGuardian).
+- [ ] Required status checks added to `UAT {{REPO_NAME_TITLE}}` (typically: Vercel deployment, GitGuardian).
 - [ ] Required status checks added to `Production {{REPO_NAME_TITLE}}` (same as UAT).
 
 ### 3. Vercel project (hosting)
@@ -61,31 +60,7 @@ The promote workflows include a Vercel deployment-status gate (context: `Vercel 
 - [ ] Add the matching ecosystem block (`npm`, `pip`, `cargo`, `gomod`, `nuget`, `gradle`, ...) in `.github/dependabot.yml`.
 - [ ] Confirm **Dependabot version updates** is on under **Settings → Code security** (usually auto-on once `dependabot.yml` is committed).
 
-<!-- code-security:start -->
-
-### 5. Code security features
-
-These are free on public repos and on private repos with GitHub Advanced Security. The skill attempted to enable them via API in Step 7.5; any that succeeded are already on. Confirm or enable the rest under **Settings → Code security**:
-
-- [ ] **Secret scanning** — alerts on committed secrets.
-- [ ] **Push protection** — blocks pushes that contain detected secrets.
-- [ ] **Dependabot security updates** — auto-PR'd vulnerability fixes (distinct from version updates in Section 4).
-- [ ] **Code scanning** — so SARIF output from `Vibe-Guard Security Scan` becomes visible in the Security tab.
-- [ ] If you switch away from Node/TS as the stack, either delete `vibe-guard-scan.yml` or swap it for an equivalent SARIF scanner.
-
-<!-- code-security:end -->
-
-<!-- code-security-plan-gated:start -->
-
-### 5. Code security features — Skipped
-
-GitHub Advanced Security isn't available on this repo's plan, so Secret scanning, Push protection, Dependabot security updates, and Code scanning can't be enabled. Nothing actionable here.
-
-(`vibe-guard-scan.yml` still runs and posts findings on PRs — they just won't appear under the Security tab.)
-
-<!-- code-security-plan-gated:end -->
-
-### 6. Promote workflow trial run
+### 5. Promote workflow trial run
 
 After secrets are in, do a smoke run of the promote workflows to prove the wiring is correct:
 
@@ -93,14 +68,14 @@ After secrets are in, do a smoke run of the promote workflows to prove the wirin
 - [ ] Once Vercel is up, repeat. Expect success and a clean fast-forward of `release/uat`.
 - [ ] Same drill for `Promote "main" branch to Production` once UAT is happy.
 
-### 7. PR template + version labels (if using the label-driven version bump)
+### 6. PR template + version labels (if using the label-driven version bump)
 
 The new `.github/pull_request_template.md` references `version:major / minor / patch / skip` labels. Create them once so they're pickable on PRs:
 
 - [ ] In **Issues → Labels**, add `version:major`, `version:minor`, `version:patch`, `version:skip` (any colours).
 - [ ] If you don't actually use semver-driven bumping, simplify the template — delete the "Version Bump" section.
 
-### 8. Claude On-Demand smoke test
+### 7. Claude On-Demand smoke test
 
 - [ ] Open or comment on any issue/PR with `@claude hello` and confirm the workflow triggers and Claude replies. If it doesn't, double-check the `CLAUDE_CODE_OAUTH_TOKEN` secret and the workflow run logs.
 

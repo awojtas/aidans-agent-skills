@@ -19,7 +19,6 @@
 ### CI / Security
 
 - `GitGuardian Security Scan` — runs on every push and PR. Requires the `GITGUARDIAN_API_KEY` secret.
-- `Vibe-Guard Security Scan` — Node-based SARIF scan, results visible under repo Security tab.
 - `Claude On-Demand` — mention `@claude` in any issue or PR comment to invoke. Requires `CLAUDE_CODE_OAUTH_TOKEN`.
 - `Copilot Setup Steps` — keeps the GitHub Copilot agent environment aligned with local build. Update when build setup changes.
 - `Dependabot` — weekly updates for `github-actions`. Add ecosystems (npm/pip/etc.) when the stack is chosen.

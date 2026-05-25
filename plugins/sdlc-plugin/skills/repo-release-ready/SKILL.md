@@ -52,7 +52,8 @@ Level-up progress:
 - [ ] Step 4: Replace PR template, append deployment section to AGENTS.md
 - [ ] Step 5: Commit and open a PR
 - [ ] Step 6: Create release/uat and release/prod branches
-- [ ] Step 7: Install branch-protection rulesets
+- [ ] Step 7: Install branch-protection rulesets (Phase A — basic, no required checks)
+- [ ] Step 7.5: Auto-enable Code Security features where the plan allows
 - [ ] Step 8: Open the "Checklist for Human Admin" issue
 - [ ] Step 9: Report and hand off
 ```
@@ -136,7 +137,9 @@ git push origin origin/main:refs/heads/release/prod
 
 If either branch already exists, skip without error (`git push` will fail with "already exists" — catch and continue).
 
-### Step 7: Install branch-protection rulesets
+### Step 7: Install branch-protection rulesets (Phase A — basic protection)
+
+These rulesets establish **Phase A** basic branch protection (require PR, no force-push, no deletion). They install cleanly on a fresh repo because they require no check history. **Required status checks come later** — the human-admin checklist (Step 8) walks the user through **Phase B**, which they do once CI has run at least once and the picker is populated. This split avoids the trap of installing a ruleset that references checks GitHub has never observed.
 
 For each of the three ruleset templates (`rulesets/main.json`, `rulesets/uat.json`, `rulesets/production.json`):
 
@@ -154,9 +157,67 @@ gh api repos/<owner>/<name>/rulesets --jq '.[] | {name, enforcement, target}'
 
 Expect three entries: `Main <Title>`, `UAT <Title>`, `Production <Title>`, all `active`, all targeting `branch`.
 
+### Step 7.5: Auto-enable Code Security features where the plan allows
+
+Some Code Security features (Secret scanning, Push protection, Dependabot security updates, Code scanning) are free on public repos and on private repos with **GitHub Advanced Security**, but **plan-gated** on private repos without GHAS (Free plan; Team/Enterprise without the GHAS license; no Code Security add-on). On a plan-gated repo the toggles are visible-but-disabled with an upsell — listing them as actionable in the checklist would be cruel.
+
+Detect visibility, then try to enable. Capture which calls succeed and set `IS_PLAN_GATED` for Step 8.
+
+```bash
+VISIBILITY=$(gh api repos/<owner>/<name> --jq '.visibility')
+```
+
+**For private repos**, GHAS must be turned on first (this is the plan-gated knob):
+
+```bash
+gh api -X PATCH repos/<owner>/<name> \
+  --field security_and_analysis='{
+    "advanced_security": {"status": "enabled"},
+    "secret_scanning": {"status": "enabled"},
+    "secret_scanning_push_protection": {"status": "enabled"},
+    "dependabot_security_updates": {"status": "enabled"}
+  }'
+```
+
+**For public repos**, GHAS is permanently on; omit `advanced_security`:
+
+```bash
+gh api -X PATCH repos/<owner>/<name> \
+  --field security_and_analysis='{
+    "secret_scanning": {"status": "enabled"},
+    "secret_scanning_push_protection": {"status": "enabled"},
+    "dependabot_security_updates": {"status": "enabled"}
+  }'
+```
+
+**Code scanning default setup** (separate endpoint, both visibilities):
+
+```bash
+gh api -X PATCH repos/<owner>/<name>/code-scanning/default-setup \
+  --field state=configured \
+  --field query_suite=default
+```
+
+Classify each response:
+
+- **HTTP 200/204** → enabled. Add to the success list.
+- **HTTP 422 / 403** with an error mentioning `Advanced security`, `advanced_security`, `GitHub Advanced Security`, or `not available` → **plan-gated**. Set `IS_PLAN_GATED=true` and stop attempting further enables on this repo.
+- **Other 4xx/5xx** → surface in the summary as an unknown failure. Do not set `IS_PLAN_GATED`. Possible causes: missing admin scope, repo not found, transient API error.
+
+Public repos: every call should succeed (or be a no-op if already on). `IS_PLAN_GATED=false`.
+
+This step never aborts the skill. If every call fails for an unexpected reason, the checklist in Step 8 still goes out — `IS_PLAN_GATED` defaults to `false` (treat the features as user-addressable) so the user can troubleshoot in the UI.
+
 ### Step 8: Open the "Checklist for Human Admin" issue
 
-Read `references/checklist-issue.md`, substitute `{{REPO_NAME}}` and `{{REPO_NAME_TITLE}}`, then create the issue:
+Read `references/checklist-issue.md`, substitute `{{REPO_NAME}}` and `{{REPO_NAME_TITLE}}`. Then resolve the conditional Code Security block using the `IS_PLAN_GATED` value from Step 7.5:
+
+- **If `IS_PLAN_GATED=false`** (features enabled, or user can enable them via the UI): delete the block bounded by `<!-- code-security-plan-gated:start -->` and `<!-- code-security-plan-gated:end -->` (inclusive of those marker lines). Strip just the `<!-- code-security:start -->` / `<!-- code-security:end -->` marker lines themselves, keeping their content.
+- **If `IS_PLAN_GATED=true`**: delete the block bounded by `<!-- code-security:start -->` and `<!-- code-security:end -->` (inclusive). Strip just the `<!-- code-security-plan-gated:start -->` / `<!-- code-security-plan-gated:end -->` marker lines, keeping their content.
+
+Either way the resulting body should not contain any `<!-- code-security…-->` HTML comments.
+
+Then create the issue:
 
 ```bash
 gh issue create \
@@ -202,6 +263,8 @@ If the user asks for any of these during level-up, acknowledge and tell them the
 - **`AGENTS.md` already has a "Deployment & Branching Strategy" section.** Don't double-append. Detect the heading and skip, mentioning it in the PR description.
 - **Repo is public.** Everything still works, but warn the user that secrets in failing workflows produce visible failure noise — recommend they add the secrets quickly.
 - **The PR doesn't merge cleanly** (e.g. the user already has a different PR template). Don't try to auto-resolve. Surface the conflict and let the user pick a side.
+- **Private repo on a plan without GHAS.** Step 7.5 will detect this (PATCH to `security_and_analysis` returns 403/422 with an Advanced Security error). Don't treat it as a failure — set `IS_PLAN_GATED=true`, continue to Step 8, and the checklist will route the affected toggles into the "Skipped — requires GitHub Advanced Security" section. The user has work that's literally not possible on their current plan; the skill must not present those items as actionable.
+- **Empty "Require status checks" picker after Phase A ruleset install.** Expected on a fresh repo — checks GitHub has never observed cannot be required. The Phase B section of the checklist (Step 8 output, Section 2) explains the three ways to populate the picker: merge this PR, manually trigger the scan workflows via `gh workflow run` (both have `workflow_dispatch:`), or wait for the Vercel integration to produce its first deploy status. Do not bake required checks into the Phase A ruleset templates — that's the trap this split avoids.
 
 ## Lifecycle tracker
 

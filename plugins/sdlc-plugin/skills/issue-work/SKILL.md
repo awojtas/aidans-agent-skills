@@ -31,6 +31,17 @@ Issue Progress:
 - [ ] Step 8: Summarize changes
 ```
 
+### Concurrency and rate limits
+
+Default agent behaviour fans out 10+ tool calls in a single batch — enough to trip Anthropic's **shared-capacity** rate limit (*"Server is temporarily limiting requests (not your usage limit)"*), which is a transient platform condition distinct from your account's daily quota.
+
+Two knobs:
+
+- **Cap parallel tool calls at 3 at a time.** Sequence further calls in subsequent turns. This is a hard cap — not "try to be modest".
+- **Back-off on rate-limited responses.** On a `Rate limited` / `429` / `temporarily limiting requests` response, wait and retry the same call. Three retries with doubling waits: **60s → 120s → 240s**. After the third retry, bounce to the user with the failing call and a "pause for ~10 minutes then re-invoke" note.
+
+The shared-capacity case is the **only** one where retry-the-same-call is correct. Daily / monthly account limits and "running low on context" are different conditions: pause-and-report, never claim done with steps outstanding.
+
 ### Step 1: Read and understand the issue
 
 Use the GitHub MCP tool to fetch the full issue from the repo. Identify:

@@ -126,6 +126,26 @@ Agent({
 
 The orchestrator collects the sub-agent's return value, runs the Work Checker on the result, and either proceeds to the next phase or returns control to the same phase with WC's defect list.
 
+## Concurrency and rate limits
+
+This skill runs phases **strictly sequentially** — never parallel personas. But even single-persona runs fan out enough tool calls (and stack persona + Work Checker per phase) to trip Anthropic's **shared-capacity** rate limit: *"Server is temporarily limiting requests (not your usage limit) · Rate limited"*. That's a transient platform condition, distinct from your account's daily quota.
+
+**Three knobs, applied to every spawned persona and to the orchestrator itself:**
+
+- **Per-agent tool-call cap.** Each persona's brief includes the instruction: *"Cap parallel tool calls at 3 at a time. Sequence further calls in subsequent turns. This is a hard cap — not 'try to be modest'."* Default agent behaviour is to fan out 10+ Reads in a single batch, which is the primary cause of the rate limit trip.
+- **Back-off on rate-limited responses.** On a `Rate limited` / `429` / `temporarily limiting requests` response, wait, then retry the same call. Three retries with doubling waits: **60s → 120s → 240s**. After the third retry still fails, bounce to the orchestrator, which posts an `[Orchestrator]` "Hit shared-capacity rate limit; pausing the session — resume in 10 minutes" comment on the issue and stops. The session is resumable from the comment trail (see Edge cases).
+- **Inter-phase pause.** The orchestrator waits **5 seconds** between handing control from one phase to the next, and between a persona finishing and its Work Checker starting. Smooths the cumulative request rate without materially extending a multi-hour session.
+
+**Distinguish from the existing no-shortcut rules:**
+
+| Condition | Response |
+|---|---|
+| **Shared-capacity rate limit** (transient — "Server is temporarily limiting requests") | Wait + retry per the back-off above. Never skip work. |
+| **Daily / monthly account usage limit** (persistent until next billing window) | Pause-and-resume per *Strict non-goals: No limit-citing shortcuts*. Post an `[Orchestrator]` comment, stop. |
+| **Context pressure / "running low on tokens"** | Never a legitimate excuse. Pause-and-resume; do not collapse phases. |
+
+The shared-capacity case is the only one where retry-the-same-call is correct. The other two cases require pausing the session, never declaring done.
+
 ### Phase 0 — PE: Branch setup
 
 Spawn PE with phase context: *"Set up a new branch for issue #N off the latest main. Confirm clean working tree. Push the branch to origin."*

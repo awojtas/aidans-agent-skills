@@ -49,7 +49,14 @@ If the user gave no intro, use this placeholder in scaffolded files:
 
 ### Step 2: Derive repo slug + check it's free
 
-- **Slug** = the project name, lowercased, with non-alphanumeric runs collapsed to single hyphens, leading/trailing hyphens stripped. Example: `My Cool Project!` → `my-cool-project`.
+- **Slug** = the project name processed as follows, in order:
+  1. Insert a hyphen at every lowercase→uppercase letter transition (e.g. `yA` → `y-A`).
+  2. Insert a hyphen between any run of uppercase letters and a following lowercase letter, immediately before the last uppercase in the run (e.g. `MLParser` → `ML-Parser`).
+  3. Lowercase the whole string.
+  4. Collapse every run of non-alphanumeric characters to a single hyphen.
+  5. Strip leading/trailing hyphens.
+
+  Examples: `MobileDevBrowser` → `mobile-dev-browser`, `MyApp` → `my-app`, `My Cool Project!` → `my-cool-project`.
 - **Target path** = `~/src/<slug>`.
 
 Verify both are free **before** creating anything:

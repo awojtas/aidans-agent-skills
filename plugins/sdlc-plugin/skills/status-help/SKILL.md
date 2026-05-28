@@ -24,7 +24,14 @@ Recommends a single concrete next action, or a small ranked list if multiple pat
    - Top-level structure: `README.md`, `AGENTS.md`, `CLAUDE.md`, `.git/`, `.github/workflows/`
    - SDLC artefacts: `docs/design/solution-design.md`, `docs/architecture/*`, `docs/architecture/provisioning-log.md`, `docs/architecture/platform-verification.md`, `docs/requirements/*`, `docs/implementation-plan.md`
    - Git state: branches (especially `release/uat`, `release/prod`), recent commits, open PRs
-   - GitHub issues: count, milestones, labels (especially `human-required`, `blocked`)
+   - GitHub issues: counts, milestones, labels. Run these once and reuse the results for both the analysis and the tracker:
+     ```bash
+     gh issue list --state all --json number --jq 'length'            # total
+     gh issue list --state closed --json number --jq 'length'         # closed
+     gh api repos/{owner}/{repo}/milestones \
+       --jq '.[] | {title: .title, open: .open_issues, closed: .closed_issues}'
+     ```
+     Note open `human-required` and `blocked` labels for the recommendation.
 
 2. **Map state to phase.** Use the artefact presence + git state to identify the furthest phase reached:
 
@@ -102,7 +109,10 @@ Follow [`../../shared/lifecycle-tracker.md`](../../shared/lifecycle-tracker.md) 
    - Evidence present and complete → ✅
    - Evidence present but partial / messy / mid-session → ⏳
    - No evidence → ❓
-2. **Write the block** at the very bottom of `README.md`. Create the file if it's missing; append the block if the file exists without it; replace it in place if it's already there.
-3. **Commit and push.** Stage **only** `README.md`, commit `docs: update SDLC lifecycle tracker`, and push to the current branch. If the block already matches the scan, skip the commit — don't make an empty one. If there's no remote or the push fails, keep the local commit and tell the user.
+2. **Enrich the two detail stages** using the issue counts from Step 1. Follow the format in `lifecycle-tracker.md` exactly:
+   - **Tasks planned** line: append ` — N tasks` (total issue count) if issues exist.
+   - **Implementation** line: compute a 10-emoji progress bar (`🟩` × filled, `⬜` × remainder, where filled = `round(closed/total × 10)`), then append the bar and `X of Y closed`. If milestones exist (more than one), add a sub-bullet per milestone, each with its own bar. Append ` ✅` after any fully-closed milestone title.
+3. **Write the block** at the very bottom of `README.md`. Create the file if it's missing; append the block if the file exists without it; replace it in place if it's already there.
+4. **Commit and push.** Stage **only** `README.md`, commit `docs: update SDLC lifecycle tracker`, and push to the current branch. If the block already matches the scan, skip the commit — don't make an empty one. If there's no remote or the push fails, keep the local commit and tell the user.
 
 This is the one file `/status-help` writes. It still doesn't run any other skill or modify any SDLC artefact.

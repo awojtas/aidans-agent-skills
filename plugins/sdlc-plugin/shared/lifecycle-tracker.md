@@ -42,8 +42,8 @@ A find-and-replace-safe block delimited by HTML comments, living at the **very b
 - ❓ Release-ready — `/repo-release-ready`
 - ❓ Requirements drafted — `/requirements-create-from-design`
 - ❓ Requirements validated — `/requirements-validation`
-- ❓ Tasks planned — `/tasks-create-from-requirements`
-- ❓ Implementation — `/task-implement`
+- ✅ Tasks planned — `/tasks-create-from-requirements` — 56 tasks
+- ⏳ Implementation — `/task-implement` — 🟩🟩🟩🟩🟩⬜⬜⬜⬜⬜ 30 of 56 closed
 - ❓ Implementation verified — `/requirements-verify-post-implementation`
 
 ✅ done · ⏳ in progress · ❓ not started — maintained by the sdlc-plugin skills.
@@ -51,6 +51,47 @@ A find-and-replace-safe block delimited by HTML comments, living at the **very b
 ```
 
 The two `<!-- sdlc-lifecycle:… -->` comment lines are the anchors. Never remove them — they are how every skill finds the block on the next run. Always keep every stage line and the legend line.
+
+## Stage-specific detail
+
+Two stages carry extra inline detail appended after a ` — ` separator. Other stages have no trailing detail.
+
+**Tasks planned** (once `/tasks-create-from-requirements` has run):
+```
+- ✅ Tasks planned — `/tasks-create-from-requirements` — 56 tasks
+```
+The number is the total GitHub issue count (open + closed) at the time of the scan. Queried as:
+```bash
+gh issue list --state all --json number --jq 'length'
+```
+
+**Implementation** (once `/tasks-create-from-requirements` has run and there are issues):
+
+Single milestone (or no milestones — all issues in one pool):
+```
+- ⏳ Implementation — `/task-implement` — 🟩🟩🟩🟩🟩⬜⬜⬜⬜⬜ 30 of 56 closed
+```
+
+Multiple milestones — show a per-milestone bar as sub-bullets under the stage line:
+```
+- ⏳ Implementation — `/task-implement` — 30 of 56 closed
+  - 🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩 Phase 1 – Core ✅
+  - 🟩🟩🟩🟩🟩⬜⬜⬜⬜⬜ Phase 2 – Extended
+  - ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ Phase 3 – Polish
+```
+
+The progress bar is exactly 10 emoji: `🟩` for each completed tenth (rounded), `⬜` for the rest. Append ` ✅` after the milestone title when that milestone is fully closed. The counts use `gh` queries:
+```bash
+# Overall totals
+total=$(gh issue list --state all --json number --jq 'length')
+closed=$(gh issue list --state closed --json number --jq 'length')
+# filled = round(closed / total * 10); bar = 🟩×filled + ⬜×(10-filled)
+
+# Per-milestone breakdown (when > 1 milestone exists)
+gh api repos/{owner}/{repo}/milestones --jq '.[] | {title: .title, open: .open_issues, closed: .closed_issues}'
+```
+If `total` is 0 (no issues yet), omit the bar and counts — just the emoji and stage label.
+When implementation is ✅ (all closed), the overall bar and every milestone bar are all `🟩`.
 
 ## Create-or-update algorithm
 

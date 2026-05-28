@@ -33,10 +33,9 @@ Good debugging is systematic elimination, not clever solutions.
 
 To preserve tokens for actual problem-solving:
 
-1. **Don't make git commits or push** unless explicitly asked. Show diffs; let the user commit.
-2. **Don't run builds** unless explicitly asked, or unless required to validate a change.
-3. **Don't run `npm install` / `pnpm install`** unless explicitly asked. Assume deps are installed.
-4. **Don't create new GitHub issue labels** — only use what already exists. Surface the gap instead.
+1. **Don't run builds** unless explicitly asked, or unless required to validate a change.
+2. **Don't run `npm install` / `pnpm install`** unless explicitly asked. Assume deps are installed.
+3. **Don't create new GitHub issue labels** — only use what already exists. Surface the gap instead.
 
 ### Scope discipline
 

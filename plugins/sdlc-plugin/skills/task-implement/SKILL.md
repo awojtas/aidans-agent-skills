@@ -5,7 +5,7 @@ description: 'Implements a single GitHub issue end-to-end through a heavyweight,
 
 # Implementing a task end-to-end with role-based orchestration
 
-This skill takes one GitHub issue from "picked up" to "PR ready for human merge". It is **deliberately heavyweight**. Each phase is run by a focused sub-agent under a clear persona; each persona posts an audit-trail comment on the issue; the Work Checker audits every phase; the Project Manager does a process-diligence pass and the Product Manager does an outcome pass before PR. Expect it to run for **hours** on a non-trivial task — that's the point.
+This skill takes one GitHub issue from "picked up" to **merged and closed**. It is **deliberately heavyweight**. Each phase is run by a focused sub-agent under a clear persona; each persona posts an audit-trail comment on the issue; the Work Checker audits every phase; the Project Manager does a process-diligence pass and the Product Manager does an outcome pass before PR. Expect it to run for **hours** on a non-trivial task — that's the point.
 
 ## When to use this vs the lighter alternatives
 
@@ -84,9 +84,9 @@ task-implement progress:
 - [ ] Phase 10 — SRE:  Production-readiness review
 - [ ] Phase 11 — PrjM: Process-diligence audit (can bounce back to any earlier phase)
 - [ ] Phase 12 — PdM:  Outcome review (can bounce or recommend /requirements-rework)
-- [ ] Phase 13 — PE:   PR + self-review
-- [ ] Phase 14 — PE:   Review feedback addressed
-- [ ] Phase 15 — Summary + handoff to human
+- [ ] Phase 13 — PE:   PR + self-review + merge
+- [ ] Phase 14 — PE:   Review feedback addressed (opt-in; only if user requested human review before merge)
+- [ ] Phase 15 — Summary
 ```
 
 **After every phase except 0 and 15**, the Work Checker runs. If WC finds defects, the phase re-runs with the defect list as input. (See "Work Checker pattern" below.)
@@ -358,9 +358,9 @@ PdM does:
 
 Work Checker runs after PdM's audit (checks: requirement actually read, feature actually tried not just diff-read, fit-criterion measurability addressed, no taste-pedantry passed off as defect).
 
-### Phase 13 — PE: PR + self-review
+### Phase 13 — PE: PR + self-review + merge
 
-Spawn PE with phase context: *"PrjM + PdM both approved. Push final commits. Raise the PR following the template in `role-principal-engineer.md`. Self-review the diff line-by-line per `code-review-checklist.md`. Fix anything the self-review surfaces."*
+Spawn PE with phase context: *"PrjM + PdM both approved. Push final commits. Raise the PR following the template in `role-principal-engineer.md`. Self-review the diff line-by-line per `code-review-checklist.md`. Fix anything the self-review surfaces. Then merge the PR."*
 
 PE does:
 - Pushes any final commits.
@@ -370,14 +370,16 @@ PE does:
 - For each "hmm" — fixes, commits, pushes.
 - Adds the **Self-review** section to the PR body listing what the pass found and fixed.
 - Posts `[Principal Engineer]` comment with the PR URL.
+- **Merges the PR**: `gh pr merge <num> --squash --delete-branch`. If the repo has branch-protection CI requirements, use `gh pr merge <num> --squash --delete-branch --auto` instead (merges automatically once checks pass).
+- Closes the issue if it isn't auto-closed by the merge: `gh issue close <N>`.
 
-Work Checker runs (PR description complete, Self-review section present, Closes #N link, CI is green).
+Work Checker runs (PR description complete, Self-review section present, Closes #N link, PR merged).
 
-### Phase 14 — PE: Review feedback
+### Phase 14 — PE: Review feedback (opt-in)
 
-This phase is **conditional**. It only runs if a human reviewer has commented on the PR.
+This phase is **opt-in only**. It runs when the user explicitly asked for human review before merge (e.g. invoked the skill with `--review` or said "I want a human to review first"). In the default flow Phase 14 is skipped entirely.
 
-If no human review yet, skill moves to Phase 15. The user can re-invoke `/task-implement <issue>` later after human review lands to run Phase 14 (the orchestrator detects this state).
+If the user did request human review: the skill pauses after Phase 13 PR creation (without merging) and waits. The user re-invokes `/task-implement <issue>` after review lands; the orchestrator detects the existing PR and open review comments and runs Phase 14.
 
 When invoked for Phase 14:
 
@@ -394,30 +396,29 @@ PE does:
 
 Work Checker runs (every legitimate comment addressed, no comments silently dismissed, merge conflicts cleanly resolved).
 
-### Phase 15 — Summary + handoff
+### Phase 15 — Summary
 
 Final summary post by the orchestrator (not a persona) to the GitHub issue, plus a final terminal summary to the user:
 
 ```markdown
 **[Orchestrator]** Implementation session complete.
 
-- Branch: `<branch-name>`
-- PR: <URL>
+- Branch: `<branch-name>` (deleted)
+- PR: <URL> (merged)
 - Commits: <N>
 - Tests added: <unit-count> unit / <int-count> integration / <e2e-count> E2E
 - Bounce-backs during session: <count> (see PrjM / PdM comments)
 - Human-required infra checklist items: <count> (see CA comment)
 
-PR is ready for human review and merge.
+Issue closed. Done.
 ```
 
 The terminal summary:
 
-- PR link.
+- PR link (merged).
 - Time elapsed.
 - Bounce-back count (visible signal of quality friction).
 - Number of WC findings caught and fixed (visible signal of self-audit value).
-- Pointer: *"Next: human reviewer assignment. After review, re-invoke `/task-implement <issue-number>` for Phase 14 to address feedback."*
 
 ## Work Checker pattern (the audit gate after every phase)
 
@@ -480,7 +481,7 @@ Stored in memory across the session; printed in the final summary.
 
 - **No skipping phases.** The phase sequence is intentional. If the user wants a lighter pass, use `/issue-work`.
 - **No limit-citing shortcuts.** Daily usage limits, rate limits, remaining-context pressure, "running low on tokens", model-quota messages, or session length are **never** legitimate reasons to skip a phase, skip the Work Checker, collapse two phases into one, mark a phase done without running it, downgrade a persona's brief, or declare the task complete with phases outstanding. The correct response to capacity pressure is to **pause and report**: post an `[Orchestrator]` comment on the issue naming the phase in flight and what's left, then stop. The user resumes the session later — every persona's prior comment is the durable state, so resumption is cheap. Lying about completion to avoid a pause is the worst possible outcome and a Work Checker / PrjM bounce.
-- **No silent merging.** This skill never merges the PR. That's a human decision.
+- **No skipping the merge.** In the default flow the skill merges the PR at the end of Phase 13. If the user asked for human review (`--review` or equivalent), the skill pauses before merging — but it never silently drops the merge step in the default flow.
 - **No auto-fixing across roles.** The Work Checker reports; it doesn't fix. The role fixes.
 - **No infinite bounce-back.** 3 strikes per role per session, then escalate to the user.
 - **No multi-issue batching.** One issue per session. If the user wants multiple, run the skill multiple times.

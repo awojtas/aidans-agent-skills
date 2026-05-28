@@ -14,6 +14,7 @@ Keep documentation concise and focused.
 - Markdown files in the **repo root** are limited to `README.md`, `AGENTS.md`, and `CLAUDE.md`. Everything else lives under `/docs`.
 - Filenames are kebab-case and descriptive (e.g. `docs/testing-architecture.md`, `docs/oauth-setup.md`).
 - Don't create new docs unless explicitly asked, or when documenting architectural decisions, security/deployment guides, or troubleshooting procedures.
+- **Never embed counts in prose or docs.** "Four peer projects studied" → "peer projects studied"; "21 functional domains" → "functional domains". Counts go stale the moment a list changes; anyone who wants the number can count. Exception: numbered steps are fine — order matters there.
 
 ## Debugging and Troubleshooting Principles
 

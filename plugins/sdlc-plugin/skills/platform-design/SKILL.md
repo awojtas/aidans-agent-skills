@@ -170,7 +170,7 @@ If the architectural change is large enough that the existing structure is wrong
 
 ## Strict non-goals
 
-- **No code generation.** This is a design phase. Implementation belongs in `/task-implement`.
+- **No code generation.** This is a design phase. Implementation belongs in `/issue-work` (routine tasks) or `/task-implement` (complex or production-critical work).
 - **No exhaustive design.** The point is a first stab, not a finished design doc. If the conversation runs past 90 minutes, stop and put what's outstanding in `05-open-questions.md`.
 - **No microservices proposals at this stage** unless the user is explicit about why. Default to modular monolith; capture the split as an open question.
 - **No premature optimisation in the design.** No CDN-cache layers proposed before the project has CDN-cacheable content; no separate read/write replicas proposed before the project has measurable read pressure.

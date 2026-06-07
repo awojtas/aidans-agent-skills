@@ -1,6 +1,6 @@
 ---
 name: task-implement
-description: 'Implements a single GitHub issue end-to-end through a heavyweight, multi-persona SDLC workflow. Use for important or complex tickets where the user wants implementation, testing, review, PR creation, and audit-trail comments handled thoroughly rather than as a quick single-agent pass.'
+description: 'Heavyweight, multi-persona SDLC workflow for a single GitHub issue — specialist personas (Principal Engineer, QA, Cloud Architect, UX, Security, Test Automation, SRE, Project Manager, Product Manager, Work Checker) run across phases, each posting audit-trail comments on the issue, culminating in a reviewed, merged PR. Expect hours of runtime. Use when the user says "task-implement", "thoroughly implement", "careful implementation", "production-critical", "complex feature", "risky change", "full SDLC workflow", or explicitly wants multi-persona review and an audit trail. For routine tasks use /issue-work instead — it is faster and sufficient for most issues.'
 ---
 
 # Implementing a task end-to-end with role-based orchestration

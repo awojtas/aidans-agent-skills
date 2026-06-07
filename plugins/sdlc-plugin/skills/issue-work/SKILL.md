@@ -1,6 +1,6 @@
 ---
 name: issue-work
-description: Implements a GitHub issue end-to-end in any codebase — reads the issue, explores the project, writes code, adds tests, and verifies everything passes. Use when the user says "work on issue", "implement issue #", "pick up issue", "fix issue", "start on this ticket", or provides a GitHub issue link or number to implement.
+description: "Lightweight, fast, single-agent implementation of a GitHub issue — reads the issue, explores the codebase, writes code, adds tests, verifies, opens a PR, and closes the issue. The default path for routine work: bug fixes, small features, refactors, doc changes where the quality bar is 'merges cleanly and works'. Use when the user says 'work on issue', 'implement issue #', 'fix issue #', 'pick up this ticket', 'quick fix', 'simple change', 'start on this', or provides a GitHub issue link or number without asking for a thorough or multi-persona pass. Prefer /task-implement when the task is complex, production-critical, or needs audited multi-persona review and audit-trail comments."
 ---
 
 # Implementing a GitHub Issue
@@ -28,7 +28,7 @@ Issue Progress:
 - [ ] Step 5: Add tests
 - [ ] Step 6: Verify (lint, type-check, build, tests)
 - [ ] Step 7: Self-check against acceptance criteria
-- [ ] Step 8: Summarize changes
+- [ ] Step 8: Open PR and close issue
 ```
 
 ### Concurrency and rate limits
@@ -115,10 +115,34 @@ Re-read the original issue and confirm:
 - [ ] No regressions in existing functionality
 - [ ] No security issues introduced (input validation, auth, secrets)
 
-### Step 8: Summarize
+### Step 8: Open PR and close issue
 
-Provide a concise summary:
+Create a pull request. The body becomes the review surface and closes the issue on merge:
 
-- **What changed** — files modified, features added/fixed
-- **Tests added** — what's covered
-- **Open questions** — anything unresolved or worth discussing in PR review
+```bash
+gh pr create \
+  --title "<type>: <one-line summary> (closes #<issue-number>)" \
+  --body "$(cat <<'EOF'
+## Summary
+
+<what changed and why — files modified, features added/fixed>
+
+## Tests
+
+<what's covered by the new/changed tests>
+
+## Open questions
+
+<anything unresolved worth discussing in review, or "None">
+
+Closes #<issue-number>
+EOF
+)"
+```
+
+If the repo has CI and auto-merge enabled:
+```bash
+gh pr merge --auto --squash --delete-branch
+```
+
+If CI fails, invoke `/build-fix` or `/test-fix` as appropriate, push the fix on the same branch, then re-watch.

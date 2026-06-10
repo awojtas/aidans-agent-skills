@@ -210,6 +210,21 @@ The highest-leverage next action is almost always: **write down who the customer
 
 ---
 
+## Maturity dashboard
+
+This skill owns **two** dimensions. See [`../../shared/business-maturity-tracker.md`](../../shared/business-maturity-tracker.md).
+
+| Dimension | When to set ✅ | When to leave ❓ |
+|-----------|---------------|----------------|
+| **Customer defined** | Audit completes with a clear, documented customer definition | No written customer definition found |
+| **Feedback loop active** | Audit finds systematic customer signals shaping the backlog | No customer input visible in issues/PRs |
+
+- Begin → set **both** owned lines to ⏳.
+- Complete → set each line independently based on the Step 4 scores for "Customer clarity" and "Feedback loop".
+- Leave every other dimension line exactly as found.
+
+---
+
 ## Guardrails
 
 - **Don't moralize about overhead.** Overhead is necessary. The goal is right-sizing it relative to customer-facing work, not eliminating it.

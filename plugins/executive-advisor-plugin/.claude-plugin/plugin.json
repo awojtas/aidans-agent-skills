@@ -1,7 +1,7 @@
 {
 	"name": "executive-advisor-plugin",
 	"description": "Business advisory skills for agents acting as executives and advisors — strategic audits, business-purpose alignment, and decision-making frameworks drawn from foundational management thinking.",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"author": {
 		"name": "Aidan Wojtas",
 		"url": "https://github.com/awojtas/aidans-agent-skills"

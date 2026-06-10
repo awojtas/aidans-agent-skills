@@ -18,6 +18,11 @@
       "name": "design-system-aurora-plugin",
       "source": "./plugins/design-system-aurora-plugin",
       "description": "Glass Aurora design system — ethereal glassmorphism, aurora gradients, neon glows, and a purple-cyan color scheme for consistent UI components."
+    },
+    {
+      "name": "executive-advisor-plugin",
+      "source": "./plugins/executive-advisor-plugin",
+      "description": "Business advisory skills for agents acting as executives and advisors — strategic audits, business-purpose alignment, and decision-making frameworks drawn from foundational management thinking."
     }
   ]
 }

@@ -21,7 +21,7 @@ The skills in this plugin form chains, not islands:
 
 - **Design / requirements chain:** `solution-design` → `platform-design` → `requirements-create-from-design` → `requirements-validation` → `tasks-create-from-requirements` → `task-implement`.
 - **Surgical requirement edits:** `requirements-add`, `requirements-delete`, `requirements-rework` for one-off changes to an existing tree.
-- **Issue lifecycle:** `issue-prioritise` → `issue-work` (lightweight) or `task-implement` (heavyweight) → `pr-review` → `release-readiness` → `issue-close`.
+- **Issue lifecycle:** `issue-prioritise` → `issue-architect-review` (optional pre-implementation quality pass) → `issue-work` (lightweight) or `task-implement` (heavyweight) → `pr-review` → `release-readiness` → `issue-close`.
 - **Maturity / audit:** `repo-bootstrap` → `repo-release-ready`; `ai-ready-repo` is the retrofit for repos that didn't go through that chain.
 
 Skills that consume `docs/architecture/`, `docs/requirements/`, or `docs/design/` should fail gracefully when those folders are absent. Most fall back to README.md or to asking the user — match that pattern when adding new consumers.

@@ -1,6 +1,6 @@
 ---
 name: issue-architect-review
-description: "Reviews one or more GitHub issues from a Chief Architect perspective — improves issue bodies and comments with architectural guardrails, SOLID/scalability concerns, implementation landmines, testing strategy, acceptance-criteria sharpness, and overlap detection. Optionally suggests follow-up issues (with confirmation before creating). Use when the user says 'architect review', 'review issues', 'check my issues', 'architecture review', 'issue quality pass', 'review issue #N', 'pre-implementation review', or wants a senior technical review of the backlog before implementation starts."
+description: "Reviews one or more GitHub issues from a Chief Architect perspective — improves issue bodies with architectural guardrails, SOLID/scalability concerns, implementation landmines, testing strategy, acceptance-criteria sharpness, and overlap detection. Optionally suggests follow-up issues (with confirmation before creating). Use when the user says 'architect review', 'review issues', 'check my issues', 'architecture review', 'issue quality pass', 'review issue #N', 'pre-implementation review', or wants a senior technical review of the backlog before implementation starts."
 ---
 
 # Issue architect review
@@ -104,10 +104,11 @@ For each issue, run through the review checklist, then decide the action.
 | Issue is clear and well-structured | No change |
 | Missing architectural guardrails or landmines | Add a section to the body |
 | ACs are vague or untestable | Edit the ACs section or add a DoD section |
-| Overlaps another issue | Add a cross-link comment |
+| Overlaps another issue | Add a cross-link in the body |
 | Labels/priority look wrong | Note in summary; suggest correction using existing labels only |
 | Issue is too broad | Flag for splitting; suggest sub-issue titles for confirmation |
-| Duplicate | Comment pointing to the original; suggest closing |
+| Duplicate | Add a cross-link in the body pointing to the original; suggest closing |
+| Question for the issue author | Post a comment (the only case where a comment is appropriate) |
 
 ### Step 4: Apply safe refinements
 
@@ -149,8 +150,8 @@ gh issue create \
 
 Issues reviewed:   N
 Issues edited:     N
-Comments added:    N
 Issues skipped:    N (reason)
+Author questions:  N (comment posted — awaiting response)
 New issues proposed: N (awaiting confirmation / created)
 
 Changes made:
@@ -167,6 +168,8 @@ New issue suggestions (pending confirmation):
 
 ## Editing style
 
+- **Edit the body for all substantive content.** Agents implementing the issue read the body first; comments are treated as supplementary context and may be skipped. Guardrails, landmines, ACs, DoD, cross-links — all go in the body.
+- **Post a comment only when asking the issue author a question** that requires a human answer before review can continue.
 - Prefer **adding sections** (`Architecture Guardrails`, `Implementation Landmines`, `Definition of Done`) over rewriting existing content.
 - Keep additions concise — bullet points over paragraphs.
 - Name **specific files, interfaces, or patterns** where relevant so developers know exactly where to look.
@@ -176,6 +179,6 @@ New issue suggestions (pending confirmation):
 
 - **No open issues**: Report and stop.
 - **Single issue is already in progress**: Note that it's in flight; review anyway unless the user asked to skip in-progress.
-- **Issue has no body**: Comment asking for a description before reviewing, and flag in the summary.
+- **Issue has no body**: Post a comment asking the author for a description (one of the few legitimate comment cases), and flag in the summary. Don't attempt a body edit on a blank issue.
 - **Issue references an external system the skill can't inspect**: Note the dependency; don't speculate about its internals.
 - **Label gaps found**: Surface them in the summary with suggested label names; never create labels.

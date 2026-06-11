@@ -65,9 +65,10 @@ Do not start coding until you understand the conventions.
 
 ### Step 3: Create a working branch
 
-Create and check out a descriptive branch:
+Pull the latest main, then create and check out a descriptive branch:
 
 ```bash
+git fetch origin && git checkout main && git pull --ff-only
 git checkout -b <issue-number>-<short-description>
 ```
 

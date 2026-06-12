@@ -36,9 +36,10 @@ dist/
 build/
 out/
 
-# Claude Code temp files
+# Claude Code temp files and worktrees
 tmpclaude-*-cwd
 tmpclaude*
+.claude/worktrees/
 
 # Screenshots dumped at repo root (Playwright MCP, ad-hoc debugging)
 /*.png

@@ -207,7 +207,8 @@ Apply the catalogue in `tech-stack-redflags.md`. Severity per pattern (the catal
 ### B5 — `.gitignore` covers the obvious
 
 - **Nit** if `.gitignore` is missing entries for the detected stack (`node_modules`, `__pycache__`, `target/`, `.env`, `.DS_Store`, IDE folders).
-- Auto-fix: append the missing standard entries for the detected stack.
+- **Nit** if `.gitignore` is missing `.claude/worktrees/` — Claude Code creates worktrees inside the repo directory and they must not be accidentally committed.
+- Auto-fix: append the missing standard entries for the detected stack, plus `.claude/worktrees/`.
 
 ### B6 — README has a "Getting Started" section
 

@@ -26,6 +26,7 @@ Verifies the platform stood up by `/platform-provision` is actually wired correc
    - `.env.example` lists the names but no values.
    - `git log -p` doesn't show any secret values committed in the recent history (best-effort scan — last ~50 commits).
    - No secret values appear in PR comments, issue bodies, or `docs/`.
+   - **Supabase key type (if Supabase is in the stack):** check whether the project uses legacy keys (`SUPABASE_ANON_KEY` / `SUPABASE_SERVICE_ROLE_KEY`, or any value starting with `eyJ`) or the new opaque keys (`sb_publishable_…` / `sb_secret_…`). Legacy keys still work until end of 2026 — flag as **amber** (not red) with a migration note pointing to `docs/architecture/04-decisions.md` ADR-002 and the [Supabase migration guide](https://supabase.com/docs/guides/getting-started/migrating-to-new-api-keys). For new builds, legacy keys are **red** — new projects should use the new key types from day one. Also verify JWT signing: user tokens should be verified via the JWKS endpoint (`https://<ref>.supabase.co/auth/v1/.well-known/jwks.json`) with asymmetric signing, not the shared JWT secret.
 
 4. **Wiring checks:**
    - CI workflows referenced by `/repo-release-ready` (or planned to be) can actually read the secrets they need — at least lint-check the workflow YAML for env-var references against the secret list.

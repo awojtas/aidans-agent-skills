@@ -64,6 +64,8 @@ When `human-required` applies, **prepend** this block before the standard `## Wh
 
 - <e.g. "Add the generated token to GitHub Actions secrets as `<NAME>`">
 - <e.g. "Record the chosen primary brand colour in `docs/design/brand-tokens.md`">
+
+**Agent-verifiable:** <yes — agent confirms via: `<exact command or check, e.g. gh secret list | grep VERCEL_TOKEN>`> | <no — operator self-certifies on close>
 ```
 
 The DoD for human-required tasks is simpler — typically just "the human-step outputs exist in the place they're supposed to be":
@@ -161,9 +163,11 @@ A human-required task:
 - Add the API token to GitHub Actions secrets as `VERCEL_TOKEN`.
 - Add the Vercel team ID and project ID as `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` (visible in the Vercel project Settings → General).
 
+**Agent-verifiable:** yes — agent confirms via: `gh secret list | grep -E 'VERCEL_TOKEN|VERCEL_ORG_ID|VERCEL_PROJECT_ID'` (all three names should appear).
+
 ## Why now
 
-Phase 1 — everything in Phase 2+ that deploys depends on these secrets being in place.
+Phase 0 — everything in Phase 1+ that deploys depends on these secrets being in place.
 
 ## Definition of Done
 
@@ -173,7 +177,7 @@ Phase 1 — everything in Phase 2+ that deploys depends on these secrets being i
 
 ## Context
 
-- **Phase / milestone:** Phase 1 — Foundation
+- **Phase / milestone:** Phase 0 — Operator Setup
 - **Estimated effort:** 20 min click-time
 - **Blocks:** #5 (1.8 Configure Vercel preview deploys in CI), #12 (2.1 Implement Edge middleware)
 - **Requirement source:** [docs/requirements/06-constraints.md](../docs/requirements/06-constraints.md) (C-T-001 mandates Vercel hosting)

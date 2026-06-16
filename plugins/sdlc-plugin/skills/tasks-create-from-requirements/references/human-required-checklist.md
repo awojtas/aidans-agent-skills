@@ -122,31 +122,37 @@ Use this skeleton in the issue body (over the standard template):
 - [ ] Test workflow run against the new secret succeeds.
 ```
 
-## Front-loading guidance
+## Phase 0 — Operator Setup: the isolation principle
 
-Phase 1 of every plan should:
+**All human-required tasks go into Phase 0 — Operator Setup.** No exceptions, and no AI tasks in Phase 0. This is the structural rule that keeps delivery phases agent-completable.
 
-- Contain **most or all** `human-required` tasks.
-- Have a minimum of AI-implementable feature work — the AI will sit waiting for the human anyway, so don't queue feature work behind the human-required gates.
+Why isolation matters: if human tasks are mixed into a delivery phase, an agent assigned to "implement Phase 1" finishes all the AI tasks but can't close or verify the human ones, and loops. A dedicated Phase 0 milestone makes it clear that Phase 0 is the human's domain and Phase 1+ are the AI's.
+
+Phase 0 rules:
+- Contains **all and only** `human-required` tasks.
 - Mark each human task with the time estimate so the human can batch them ("I'll knock these out Tuesday morning").
+- AI delivery tasks that depend on a Phase 0 output carry `Blocked by: #<Phase 0 issue>` — the dependency is recorded on the delivery task, not by moving the human task into a delivery phase.
 
-If a human-required task can't be done in Phase 1 because it depends on an earlier phase's output (rare but happens — e.g., domain verification requires production code to be deployed first), still mark it `human-required` and call out the dependency clearly in the issue.
+If a human-required task depends on a delivery-phase output (rare — e.g., domain verification requires the production deploy to exist first), it still lives in Phase 0, but carries `Blocked by: #<delivery issue>`. It is never placed inside a delivery phase.
 
-## Common Phase 1 pattern
+## Common Phase 0 + Phase 1 pattern
 
-A typical Phase 1 for a SaaS-like project:
+A typical setup for a SaaS-like project:
 
 ```
-1.1  [HUMAN] Register domain
-1.2  [HUMAN] Create hosting provider account (Vercel / Cloudflare)
-1.3  [HUMAN] Create error-tracking account (Sentry)
-1.4  [HUMAN] Create analytics account (PostHog / Plausible)
-1.5  [HUMAN] Decide on visual identity (colours, typography)
-1.6  [HUMAN] Draft / approve privacy policy + terms (or commission)
-1.7  [HUMAN] Generate + add all third-party API keys to GitHub secrets
-1.8         Bootstrap project structure (AI can do once secrets are in)
-1.9         Wire up baseline CI (AI can do)
-1.10        Set up basic monitoring (AI can do)
+Phase 0 — Operator Setup (human-only)
+0.1  [HUMAN] Register domain
+0.2  [HUMAN] Create hosting provider account (Vercel / Cloudflare)
+0.3  [HUMAN] Create error-tracking account (Sentry)
+0.4  [HUMAN] Create analytics account (PostHog / Plausible)
+0.5  [HUMAN] Decide on visual identity (colours, typography)
+0.6  [HUMAN] Draft / approve privacy policy + terms (or commission)
+0.7  [HUMAN] Generate + add all third-party API keys to GitHub secrets
+
+Phase 1 — Foundation (AI-only)
+1.1         Bootstrap project structure
+1.2         Wire up baseline CI
+1.3         Set up basic monitoring
 ```
 
-The human can knock 1.1 through 1.7 out in a focused half-day. The AI does 1.8-1.10 while waiting. Phase 2 starts with everything in place.
+The human works through Phase 0 in a focused half-day. The AI starts Phase 1 tasks that aren't blocked by Phase 0 outputs immediately; Phase 1 tasks that need secrets carry `Blocked by: #0.7`.

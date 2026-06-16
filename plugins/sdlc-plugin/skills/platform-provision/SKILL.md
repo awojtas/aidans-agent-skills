@@ -9,11 +9,21 @@ Provisions the external platforms and services described in `docs/architecture/`
 
 Reads the architecture, works out what cloud platforms / SaaS products / observability tools / DBs / etc. need to exist, then uses whatever channels are available to create them. Anything a human has to do personally (sign up, pay, click through OAuth, copy a secret out of a UI) is batched into one checklist instead of dripped out one prompt at a time.
 
+## Standing principles
+
+Before writing any provider-specific step, key name, config value, region code, redirect URL, or checklist instruction, consult [`../../shared/platform-standing-principles.md`](../../shared/platform-standing-principles.md). Critical rules:
+
+- **Fetch current official docs before writing any detail** — never rely on training memory. Platforms rename consoles, replace key systems, and change defaults constantly.
+- **Verbatim checklist steps** — for every human-required step, include the exact current menu path (verified against live docs), the exact output variable name, and where that output goes.
+- **Secret destination classification** — when an auth provider brokers social login (e.g. Supabase Auth + Google/Microsoft OAuth), the OAuth client secrets live in the auth provider's dashboard, not in CI/runtime env vars. The redirect URI is the broker's callback URL, not the app's.
+
 ## Workflow
 
 1. **Read `docs/architecture/`.** If it doesn't exist, stop and tell the user to run `/platform-design` first — provisioning without a recorded architecture is guessing.
 
 2. **Inventory what needs to be provisioned.** Walk the architecture and list every external thing the system depends on to run, deploy, observe, or persist. Hosting, observability, databases, auth, email, queues, AI providers, CDN, analytics, search — anything. Don't restrict to a fixed catalogue: anything the architecture names is in scope.
+
+   **Monorepos with multiple independently-deployable apps:** if the architecture records separate apps (e.g. a Next.js web frontend + a standalone Hono/Express API), treat each as a separate deploy project — its own project entry in the hosting platform, its own root directory, its own env scope. Server secrets (database URLs, service-role keys, OAuth client secrets) belong only on the backend project; public/client variables (`NEXT_PUBLIC_*`, anon keys) belong only on the frontend project. Never share a single deploy project for two apps — env scopes will bleed.
 
 3. **For each item, work out how to interact with it. Go and try.** Investigate every available channel:
    - Is there an **MCP server** connected that covers this platform? Check the tools available in the current session.
@@ -38,6 +48,16 @@ Reads the architecture, works out what cloud platforms / SaaS products / observa
    Construct both strings from the Supabase dashboard "Connect" page and record them as separate secrets — keeping them named differently prevents the wrong URL being placed in the wrong secret store. When wiring `DATABASE_URL` into the app, ensure the Postgres client has `prepare: false` (Transaction pooler does not support prepared statements).
 
    **Automated migrations workflow:** create `.github/workflows/migrate.yml` that runs `drizzle-kit migrate` (or the project's equivalent) on merge to `main` when files under the migrations directory change, using `MIGRATION_DATABASE_URL`. Migrations must not be a manual step. Commit this workflow as part of provisioning.
+
+   **Serverless adapter entrypoint (standalone API frameworks):** a Next.js app deploys natively on Vercel. A standalone API framework (Hono, Express, Fastify, etc.) requires a serverless adapter entrypoint — a specific file (e.g., `api/index.ts`, a `vercel.json` `functions` config) that wraps the app to run as serverless functions. Verify this file exists and is correctly configured before considering the app provisioned. Checking that the framework is imported is not enough — the entrypoint must exist.
+
+   **Compute region:** pin the compute region to the region named in the architecture ADR, co-located with the database. Set it in version-controlled config (e.g., `vercel.json` → `"regions": ["iad1"]`) — not a dashboard toggle that can silently change or default to a different continent. If no region ADR exists, raise it as a blocker and ask the user to decide before provisioning.
+
+   **Free/low-tier constraints:** before provisioning a new resource, check whether the free/low tier of the chosen service imposes a constraint the project is likely to hit (single custom domain, single region, seat caps, email sending limits, etc.). If you encounter one:
+   1. **Surface the limit explicitly** — name the specific constraint.
+   2. **Propose a lean workaround** that reuses an existing resource the org already owns (e.g. reuse an existing domain, an existing Resend account, an existing Sentry org) rather than forcing a paid upgrade.
+   3. **File a deferred GitHub issue** for the proper solution (paid upgrade or dedicated resource), explicitly `Blocked by:` its prerequisite (e.g., "blocked on: team decides to go paid"), so it's tracked without blocking current work.
+   4. **Align with budget ADRs** — check the architecture for a "lean / avoid fixed monthly cost early" constraint. If one exists, the lean workaround is the approved path; do not push a paid upgrade.
 
 5. **Batch the human-only bits into a single checklist, and file it as a GitHub issue.** Some things are inherently human:
    - Creating an account in a new SaaS product

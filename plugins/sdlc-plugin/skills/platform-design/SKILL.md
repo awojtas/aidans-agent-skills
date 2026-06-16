@@ -23,6 +23,10 @@ The skill is **deliberately light**. "Initial design" means **first stab** — n
 - **Push back on premature complexity.** Microservices, Kubernetes, multi-region, real-time-everywhere are all worth questioning at this stage.
 - **Open questions are first-class.** When the user says "I'm not sure" or "let's figure that out later", add an entry to `05-open-questions.md` immediately.
 
+## Standing principles
+
+Before writing any vendor-specific step, key name, config value, or default-behavior claim in this skill's output, consult [`../../shared/platform-standing-principles.md`](../../shared/platform-standing-principles.md). The most critical rule: **fetch current official docs before writing any detail; never rely on training memory.** Cloud platforms rename consoles, replace key systems, and change defaults faster than any model's knowledge.
+
 ## Reference material
 
 The orchestrator and the agent should consult:
@@ -126,6 +130,10 @@ The topics map to files like this:
 
 **During Topics 2, 4, 5, and 6** (hosting, stack, data, integrations), also walk the capability checklist in [`../../shared/default-stack.md`](../../shared/default-stack.md). It does two jobs: it makes the user *consider* each capability — analytics, error tracking, background jobs, and SMS are easy to forget — and it supplies a default vendor to propose wherever the user has a need but no preference. Push on the Core and Common tiers; raise the Situational tier only where the project's nature calls for it. It is a **steer, not a mandate** — an explicit user choice, an org standard, or a tool the repo already uses always wins. Record each accepted default as an ADR like any other decision.
 
+**During Topic 2 (Hosting/deployment), also capture the compute region explicitly.** Don't leave region as "platform default" — defaults vary and are often a different continent from the database. Record the specific region code (e.g., `iad1`, `us-east-1`) as an ADR and note it must co-locate with the database region. If the user doesn't have a preference, propose the region closest to the database or target user base. Also surface any known free/low-tier constraints for the chosen hosting platform (e.g., single custom domain on Vercel free tier, single region on free tiers, email-sending limits) and record them as open questions if there's a risk of hitting them in the current scope.
+
+**For monorepos containing multiple independently-deployable apps** (e.g. a Next.js web frontend + a standalone Hono/Express API): each app needs its own deploy project with its own root directory and its own env scope. Record this as an ADR. Note the env-scope rule: server secrets (database URLs, service-role keys, OAuth client secrets) belong only on the backend project; public/client variables (`NEXT_PUBLIC_*`, anon keys) belong only on the frontend project. Also note that a standalone API framework (Hono, Express, etc.) requires a serverless adapter entrypoint to run as serverless functions — unlike Next.js, which deploys natively — and flag this in `03-external-integrations.md` or `01-stack-and-hosting.md` so `/platform-provision` knows to verify the entrypoint exists.
+
 ### Step 11: Topic 8 — Decisions vs unknowns review
 
 Once the content topics are walked, do a sweep:
@@ -184,7 +192,7 @@ If the architectural change is large enough that the existing structure is wrong
 - **User answers everything "I don't know".** Two passes through with sensible defaults proposed; if still no answers, stop and suggest they think more about the project before continuing — without input, the design would be invention.
 - **User wants an architecture for an already-coded project.** This is *reverse engineering*, not initial design. The skill can run, but tell the user that the goal is *capturing* the architecture that exists (read the code, infer the structure) rather than *deciding* it.
 - **`docs/architecture/` already exists** — see *Re-design mode* above.
-- **Project has multiple sub-projects** (monorepo with separate apps). Run the skill once per sub-project, producing `apps/<name>/docs/architecture/` for each, OR a single top-level `docs/architecture/` that has sub-sections. Ask the user.
+- **Project has multiple sub-projects** (monorepo with separate apps). Run the skill once per sub-project, producing `apps/<name>/docs/architecture/` for each, OR a single top-level `docs/architecture/` that has sub-sections. Ask the user. Whichever structure is chosen, record an ADR for the deployment separation: each independently-deployable app gets its own deploy project (its own root directory, its own env scope). See the "During Topic 2" note above for the env-scope and serverless-entrypoint rules.
 
 ## Lifecycle tracker
 

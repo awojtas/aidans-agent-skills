@@ -1,6 +1,6 @@
 ---
 name: tasks-create-from-requirements
-description: Turns the requirements in docs/requirements/ into a concrete implementation plan of GitHub issues. Reads every requirement, decomposes each one into small-batch tasks (≤1 day each), names them with staged numbering (1.1, 1.2, 2.1...), identifies which tasks need a human (account creation, secrets, design decisions, legal review) and front-loads them into Phase 1 because humans are slower than AI, then creates GitHub milestones (one per phase) and issues with clear Definition of Done plus Given-When-Then acceptance criteria. Applies a minimal 8-label set (priority + type + human-required + blocked) — never uses labels for phases (those are milestones). Shows the proposed plan for user approval before any GitHub mutations happen. Use when the user says "plan the implementation", "create issues from requirements", "break this down into tasks", "what do we build first", "make a backlog", "issuify the requirements", or wants to translate a requirements doc into actionable work in GitHub.
+description: Turns the requirements in docs/requirements/ into a concrete implementation plan of GitHub issues. Reads every requirement, decomposes each one into small-batch tasks (≤1 day each), names them with staged numbering (0.1, 0.2, 1.1, 1.2...), isolates all human-required tasks (account creation, secrets, design decisions, legal review) into a dedicated Phase 0 — Operator Setup milestone so delivery phases contain only agent-executable work, then creates GitHub milestones (one per phase) and issues with clear Definition of Done plus Given-When-Then acceptance criteria. Applies a minimal 8-label set (priority + type + human-required + blocked) — never uses labels for phases (those are milestones). Shows the proposed plan for user approval before any GitHub mutations happen. Use when the user says "plan the implementation", "create issues from requirements", "break this down into tasks", "what do we build first", "make a backlog", "issuify the requirements", or wants to translate a requirements doc into actionable work in GitHub.
 ---
 
 # Tasks from Requirements
@@ -22,7 +22,7 @@ The middle path: produce a **small-batch** plan, phase by phase, that's concrete
 - **Idempotent.** Existing labels and milestones are detected and skipped. Existing issues (by title-prefix match) are surfaced to the user, not duplicated.
 - **No issues created without explicit user yes.** The plan is read, edited, then created — not the other way around.
 - **No phase information in labels.** Phases are milestones. (See `references/labels-and-milestones.md`.)
-- **Front-loads human work** so the AI doesn't stall waiting on accounts/secrets/decisions. (See `references/human-required-checklist.md`.)
+- **Isolates human work into Phase 0 — Operator Setup** so delivery phases are purely agent-executable. The AI can't complete a milestone that contains human tasks — the agent loops. (See `references/human-required-checklist.md`.)
 
 ## Reference material the agent should consult
 
@@ -49,7 +49,7 @@ Tasks-from-requirements progress:
 - [ ] Step 2: Verify gh CLI access and detect existing labels/milestones/issues
 - [ ] Step 3: Decompose each in-scope requirement into tasks (in memory)
 - [ ] Step 4: Identify human-required tasks
-- [ ] Step 5: Order tasks into phases — human-required front-loaded into Phase 1
+- [ ] Step 5: Order tasks into phases — human-required isolated into Phase 0 — Operator Setup
 - [ ] Step 6: Show proposed plan markdown to user; iterate to approval
 - [ ] Step 7: Create missing labels
 - [ ] Step 8: Create missing milestones
@@ -118,6 +118,8 @@ For each task:
 - Acceptance criteria, lifted/adapted from the requirement's Given-When-Then.
 - Estimated effort (≤1 day target).
 
+**Scaffold/setup task DoD — pin the CI install command.** For any task that scaffolds a dependency-managed project (Node, Python, etc.), the generated Definition of Done must require running the **exact install command CI uses**, not a looser local one. For Node specifically: "regenerate a clean lockfile and verify `npm ci` succeeds (not just `npm install`)". Rationale: an incrementally-built `package-lock.json` can be missing transitive optional deps — `npm install` passes locally but `npm ci` fails in CI. The DoD must call out the CI command by name.
+
 ### Step 4: Identify human-required
 
 Walk the task list. For each task, check it against `references/human-required-checklist.md`. Apply the `human-required` flag if **any** of these apply:
@@ -135,16 +137,28 @@ When in doubt, **bias toward the AI doing it** unless one of the catalogue crite
 
 For each human-required task, fill in the human-required block per `references/issue-template.md`: why human, click-time estimate, elapsed-time estimate, step-by-step instructions, where to record outputs.
 
+Also classify **agent-verifiability** for each human-required task and include it in the issue body:
+
+```
+Agent-verifiable: <yes — agent confirms via: <concrete check>> | <no — operator self-certifies on close>
+```
+
+- **Prefer a concrete machine-checkable signal** where one exists — a `gh api` call, a file or env var presence check, a reachable endpoint returning 200, a secret name appearing in `gh secret list`. Name the exact command or check.
+- Use **"no — operator self-certifies on close"** only when the output is genuinely unobservable by an agent (e.g., a secret stored only in an external vault, a console toggle with no API). This is the fallback, not the default.
+
 ### Step 5: Order tasks into phases
 
-Sort tasks into phases. Use these heuristics:
+Sort tasks into phases. The hard structural rule: **delivery phases must contain only agent-executable tasks.** An agent assigned to "implement Phase N" must be able to close every issue in that phase without waiting on a human. Mixing human and AI tasks inside a delivery phase breaks this — the agent finishes what it can, can't close the human issues, and loops.
 
-- **Phase 1 (Foundation):** human-required tasks, project-wide setup, decisions / open-question resolutions that block multiple downstream tasks. Aim for **mostly human** with a few AI tasks that can run in parallel (e.g., set up test scaffolding, CI baseline).
-- **Phase 2+:** Implementation phases, ordered by dependencies. A reasonable theme per phase — e.g., "Core Auth", "Billing", "Polish". Aim for **3–7 phases total**.
+- **Phase 0 — Operator Setup:** contains **all and only** human-required tasks. No AI-executable tasks here. This is the first milestone. The human works through it at their pace; the AI waits on Phase 0 issues only where there's an explicit `Blocked by:` dependency on that issue in a delivery phase.
+- **Phase 1 (Foundation / first delivery):** agent-executable project-wide setup and scaffolding tasks (CI baseline, test scaffolding, migrations framework, etc.). No human tasks.
+- **Phase 2+:** Implementation phases, ordered by dependencies. A reasonable theme per phase — e.g., "Core Auth", "Billing", "Polish". All AI-executable. Aim for **3–7 delivery phases total**.
 
-Within each phase, **number tasks** with the phase prefix (`1.1`, `1.2`, ..., `2.1`, `2.2`, ...). The order within a phase reflects dependency — `1.2` may depend on `1.1`, but not the other way around. Use the issue body's `Blocked by:` field to record dependencies.
+**Numbering:** Phase 0 tasks use the `0.x` prefix (`0.1`, `0.2`, ...); delivery phases use `1.x`, `2.x`, etc.
 
-For tasks that depend on Phase 1 outcomes but live in a later phase, apply the `blocked` label. Remove it once Phase 1's blocking task closes.
+**Dependencies:** for any delivery task that depends on a Phase 0 human task completing (e.g., a secret being present before a CI job can run), apply the `blocked` label to the delivery task and add `Blocked by: #<Phase 0 issue>` in its body. Remove the `blocked` label once the Phase 0 task closes. Phase 0 tasks themselves are rarely blocked — only in the unusual case where a human task can't proceed until a deployment exists (e.g., verifying a domain after production deploy), in which case the Phase 0 issue carries the `Blocked by:` reference.
+
+The order within a phase reflects dependency — `1.2` may depend on `1.1`, but not the other way around.
 
 ### Step 6: Show the proposed plan
 
@@ -154,7 +168,7 @@ Render the plan as a single markdown document. Show:
 - **Labels needed.** The 8-label set, indicating which are new vs. already exist.
 - **Milestones.** Phase number + theme + one-line description, indicating new vs. existing.
 - **Tasks per phase.** Numbered list with title, labels, implements-IDs, estimated effort. Annotate human-required tasks clearly.
-- **Estimated phase totals.** Issue count + rough effort (e.g., "Phase 1: 8 tasks, ~1 day human click-time + 1 day AI work").
+- **Rough effort per phase.** Human-time estimate + AI-time estimate (e.g., "Phase 0: ~half a day human click-time; Phase 1: ~1 day AI work"). Do **not** embed issue counts in the plan prose — the task list is the count. Hardcoded numbers ("6 tasks", "Phase N total: X issues") go stale the moment the plan changes.
 
 Save the plan markdown to `docs/implementation-plan.md` (or a name the user prefers) so the user can edit it. Tell them: *"Open `docs/implementation-plan.md`, make any edits, then say 'approved' to create the GitHub issues."*
 
@@ -186,8 +200,8 @@ For each phase milestone that doesn't exist yet:
 ```bash
 gh api repos/:owner/:repo/milestones \
   --method POST \
-  -f title="Phase 1: Foundation" \
-  -f description="Foundation phase. Accounts, secrets, design decisions, and project scaffolding. Mostly human work — front-loaded so the AI doesn't stall waiting. Phase complete when all secrets are in place, design decisions are recorded, and Phase 2 can start unblocked."
+  -f title="Phase 0: Operator Setup" \
+  -f description="Human setup track. All tasks requiring a human — account creation, secrets, design decisions, domain config, legal review. No AI tasks here. Work through these first; delivery phases (Phase 1+) can start on any task not blocked by a Phase 0 issue. Phase complete when all human-required outputs are in place and dependent delivery tasks are unblocked."
 ```
 
 Don't set due dates unless the user asked for them — false deadlines create noise.
@@ -198,13 +212,13 @@ For each task in the approved plan that doesn't already exist as an issue:
 
 ```bash
 gh issue create \
-  --title "1.1 [HUMAN] Decide on browser support matrix" \
+  --title "0.1 [HUMAN] Decide on browser support matrix" \
   --body "$(cat <<'EOF'
 <full body from references/issue-template.md with substitutions>
 EOF
 )" \
   --label "priority:high,human-required,chore" \
-  --milestone "Phase 1: Foundation"
+  --milestone "Phase 0: Operator Setup"
 ```
 
 **Issue body substitutions:**
@@ -218,13 +232,13 @@ EOF
 
 Print:
 
-- **Labels created.** Count + names.
+- **Labels created.** Names.
 - **Milestones created.** Phase list with URLs.
-- **Issues created.** Count, grouped by milestone, with a couple of highlighted entries (the first human-required, the first Phase 2 implementation task).
+- **Issues created.** Grouped by milestone, with a couple of highlighted entries (the first human-required in Phase 0, the first Phase 1 implementation task).
 - **What's next for the user.**
   - Open the milestones page in GitHub to see the burndown.
-  - Start Phase 1 by working through the human-required issues — these are batch-friendly (knock out in one focused session).
-  - The AI can take Phase 1 non-human issues in parallel.
+  - Start by working through Phase 0 — Operator Setup. These are batch-friendly (knock out in one focused session). Phase 1 delivery tasks unblocked by Phase 0 can run in parallel.
+  - The AI picks up Phase 1 and beyond once its dependencies are clear.
 
 **Commit and push.** Stage `docs/implementation-plan.md` and `README.md` (lifecycle tracker), commit with `docs(plan): create implementation plan and issues`, then follow [`../../shared/commit-push-policy.md`](../../shared/commit-push-policy.md). The GitHub milestones and issues themselves are already pushed via `gh` in Steps 7-9 — no further action needed for them.
 
@@ -236,6 +250,7 @@ Print:
 - **No auto-assigning issues.** Assignment is a human decision. (The skill may suggest "this is a good candidate for the AI" via the absence of `human-required`, but doesn't assign.)
 - **No `Won't (this release)` items.** Explicitly out of scope per the requirements doc; no issues created for them.
 - **No size labels** (S/M/L), no **phase labels**, no `wip`/`in-progress` labels (those are PR states).
+- **No hardcoded counts in the generated plan.** Prose that says "6 tasks", "Phase N total: X issues", or "22 issues across 5 phases" goes stale the moment the plan changes. Let the task tables speak for themselves; don't narrate their length in surrounding prose.
 
 ## Edge cases
 
@@ -247,7 +262,7 @@ Print:
 - **Existing issues with matching titles.** Surface them. Ask: skip (don't recreate), update (re-edit the body), or create-with-suffix (e.g., "1.1 [HUMAN] Decide on browser support matrix (replan 2026-05-13)").
 - **A requirement has no implementable tasks** (e.g., it's purely an assumption / open question). Skip it; surface in the summary as "Skipped, requires resolution first".
 - **The plan ends up with >50 issues.** This is a smell — either the requirements doc is too big for one plan, or decomposition is too granular. Stop and ask the user: is this really one release, or should we scope down?
-- **A human-required task lands in Phase 5.** Push it earlier unless there's a hard dependency on Phase 4 output. Front-loading is the default; deviations need explicit reason.
+- **A human-required task has a dependency on a delivery-phase output** (e.g., domain verification can only happen after production deploys). Keep it in Phase 0 — Operator Setup (that's the home for all human tasks) but mark it `blocked` with `Blocked by: #<delivery issue>`. Never place human-required tasks inside a delivery phase.
 - **User wants to "just do Phase 1 first, replan later".** Excellent default — create only Phase 1 issues, leave the rest of the plan markdown for the next session.
 
 ## Lifecycle tracker

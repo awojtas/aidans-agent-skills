@@ -76,6 +76,15 @@ The failure mode to prevent: the architecture says "Tailwind + shadcn/ui" but ev
 1. **Navigation coverage** — for every new page/route, verify there is either (a) a shell task that adds it to the nav, or (b) the feature task's own DoD states how a user navigates to it from `/`.
 2. **UI foundation presence** — if the architecture names a UI framework, verify a foundation task exists and comes before any feature page tasks in the phase ordering. If neither exists, add it.
 
+**Client ↔ API integration rule (projects with a separate client + API on different origins — emit once, in the first phase that wires the two together):** check whether the architecture records a separate frontend and backend on different origins (e.g., a Next.js client on `web.example.com` calling a Hono API on `api.example.com`). If so, verify an explicit "integrate client ↔ API" task exists in the plan. If not, add one. It must cover:
+
+- CORS configured on the API: the client's production and preview origin(s) are allow-listed, including the `Authorization` header.
+- The production API is reachable by end-user browsers — **not** behind a platform SSO / deployment-protection wall. Access is gated by the application's own JWT/session auth + CORS, not by hiding the API from the internet.
+- The client's API base-URL env var (e.g., `NEXT_PUBLIC_API_URL`) is set in the build environment and baked into the client bundle.
+- Acceptance criterion: a real end-to-end browser call from the client through real auth succeeds in the target environment — not a mocked test, not a server-side call.
+
+The failure mode to prevent: the frontend and API each pass their own tests and deploy successfully, but the deployed product fails at runtime because CORS rejects the browser's preflight, the client calls `undefined/api/...` because the env var was never set, or the API sits behind a platform SSO wall that blocks real users before the app's own auth can run. Independently-green builds hide this entire class of failure.
+
 ### 4. Integration layer
 
 Does it touch an external service?

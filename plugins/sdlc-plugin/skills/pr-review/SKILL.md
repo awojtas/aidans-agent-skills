@@ -91,6 +91,7 @@ Apply `references/pr-review-checklist.md`. Cover every category that's applicabl
 - Architecture (SOLID, dependencies, backwards compat)
 - Build / lint / CI
 - Infrastructure / IaC
+- Cross-origin integration (if API or client API-call config in diff): CORS, no platform SSO wall, API-URL env var, real browser test
 - Documentation
 - Out of scope / follow-ups
 

@@ -53,6 +53,12 @@ Before writing any provider-specific step, key name, config value, region code, 
 
    **Compute region:** pin the compute region to the region named in the architecture ADR, co-located with the database. Set it in version-controlled config (e.g., `vercel.json` → `"regions": ["iad1"]`) — not a dashboard toggle that can silently change or default to a different continent. If no region ADR exists, raise it as a blocker and ask the user to decide before provisioning.
 
+   **Cross-origin API wiring (when architecture has separate frontend + API on different origins):** provisioning isn't complete until the two deployables can actually communicate in the browser:
+
+   1. **Configure CORS on the API.** Allow-list the client's production and preview origin(s), including the `Authorization` header and relevant methods. Set this in version-controlled code (a CORS middleware config), not a dashboard toggle.
+   2. **Do NOT put the production API behind a platform SSO / deployment-protection wall.** Deployment protection hides previews from crawlers — it blocks all unauthenticated requests before the app runs. For the production API, disable deployment protection and rely on the application's own JWT/session auth + CORS allow-list. Rate-limiting and a WAF can add optional defence-in-depth.
+   3. **Set the client's API base-URL env var** (e.g., `NEXT_PUBLIC_API_URL`) in the frontend project's env store, pointing to the API's production URL. Record the var name in `.env.example`. An unset var evaluates to `undefined` at runtime — silent and untested by unit tests.
+
    **Free/low-tier constraints:** before provisioning a new resource, check whether the free/low tier of the chosen service imposes a constraint the project is likely to hit (single custom domain, single region, seat caps, email sending limits, etc.). If you encounter one:
    1. **Surface the limit explicitly** — name the specific constraint.
    2. **Propose a lean workaround** that reuses an existing resource the org already owns (e.g. reuse an existing domain, an existing Resend account, an existing Sentry org) rather than forcing a paid upgrade.

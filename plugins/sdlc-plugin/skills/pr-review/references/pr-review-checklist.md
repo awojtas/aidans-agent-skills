@@ -74,6 +74,13 @@ The reviewer is **not the author's adversary** — they're the author's safety n
 - [ ] **Secrets in the secret manager**, not committed.
 - [ ] **Migrations have rollbacks.**
 
+### Cross-origin integration (skip if client and API are on the same origin, or if the diff doesn't touch the API surface or client API-call configuration)
+
+- [ ] **CORS configured on the API**: the client origin(s) are allow-listed, including the `Authorization` header. No wildcard (`*`) for credentialed requests.
+- [ ] **Production API not behind a platform SSO / deployment-protection wall**: access is gated by the application's own JWT/session auth + CORS, not by a platform gate that blocks end-user browsers before the app runs.
+- [ ] **Client's API-URL env var set in all environments**: `.env.example` updated; var confirmed in the deploy project's env store — not just locally.
+- [ ] **Integration tested with a real cross-origin call through auth**, not only mocked or server-side tests — a test that doesn't cross origins can't catch a CORS misconfiguration.
+
 ### Security (reviewer's quick sniff)
 
 - [ ] **No secrets in the diff.** API keys, tokens, passwords, connection strings, private keys.

@@ -33,3 +33,12 @@ Classify secrets by where they actually live, not where they're convenient to st
 - Do **not** stage these as deploy environment variables — doing so misclassifies where the authoritative credential lives and risks leaking it to the wrong scope.
 
 Only values the application's own runtime must read directly (database URLs, API keys the app calls directly) belong in the deploy secret store.
+
+## Cross-origin API wiring
+
+Two deployables that must talk aren't done until a real call crosses between them in the target environment through real auth — independently-green builds hide CORS, auth-gateway, and env-wiring failures. Keep internal APIs private with authentication + CORS, not by hiding them from the browsers that must call them.
+
+- **The production API is not behind a platform SSO / deployment-protection wall.** Deployment protection (Vercel Deployment Protection, Cloudflare Access, etc.) is designed for hiding *preview deployments* from external crawlers and viewers — it blocks all unauthenticated requests before the application runs. A production API gated this way blocks end-user browsers before the app's own auth can run, making the product non-functional for real users. The correct model: the API is reachable from the internet; the application's own JWT/session auth + CORS allow-list enforces access.
+- **CORS allow-lists the specific client origin(s), not a wildcard.** Include the `Authorization` header and the relevant request methods. A missing `Authorization` in the allow-list silently blocks every authenticated browser request even when CORS appears to be "configured."
+- **The client knows the API's URL at build time via an env var** (`NEXT_PUBLIC_API_URL` or equivalent). Hardcoded URLs or an unset env var that evaluates to `undefined` produce silent runtime failures that no unit test catches.
+- **The integration is verified with a real browser call through real auth** in the target environment — not mocked, not a server-side test (which doesn't cross origins).

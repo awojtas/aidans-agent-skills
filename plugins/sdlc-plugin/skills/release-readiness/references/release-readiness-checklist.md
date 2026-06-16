@@ -108,6 +108,20 @@ Walk in order. For inapplicable categories, say so explicitly with a one-line re
 - Renaming a column in a single migration — old code reads the old name and crashes during deploy.
 - DROP TABLE in a migration with no archive step.
 
+## Cross-origin integration (skip if client and API are on the same origin, or if the diff doesn't touch the API surface or client API-call configuration)
+
+- [ ] **CORS headers configured correctly**: the API allow-lists the client origin(s), including the `Authorization` header. No wildcard (`*`) for credentialed requests.
+- [ ] **API not behind a platform SSO / deployment-protection wall**: the production API is reachable by end-user browsers without a platform authentication challenge. Access is gated by the application's own JWT/session auth + CORS, not by hiding the URL.
+- [ ] **Client's API-URL env var set in all environments**: no hardcoded URLs, no var that evaluates to `undefined` in any deploy target. Confirmed in the deploy project's env store — not just `.env.local`.
+- [ ] **A real browser call through auth was tested** in the target environment — not a server-side test, not a mock. An actual preflight + credentialed request from a browser (or browser-emulation) through the app's own auth, confirming the call reaches the API and the API responds correctly.
+
+**Common gaps:**
+
+- CORS configured with the correct origin but `Authorization` missing from allowed headers — every authenticated browser request blocked.
+- Production API behind Vercel Deployment Protection — real users hit a login page before the app's own auth runs.
+- `NEXT_PUBLIC_API_URL` set in `.env.local` but not in the Vercel frontend project env store — works locally, fails in production silently.
+- Integration tested only at the unit or server level — CORS and SSO failures invisible until a real browser hits the deployed app.
+
 ## What "ready" looks like at the end
 
 After walking every category, you can say:

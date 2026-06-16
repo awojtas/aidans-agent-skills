@@ -61,7 +61,20 @@ Is there a user-facing surface?
 
 A feature route with no link from `/` or the global nav is not "done" — the user has no front door. If decomposing a set of feature pages produces no shell task, one is missing.
 
-**Shell coverage check (after decomposing all UI requirements):** scan the task list. For every new page/route, verify there is either (a) an existing shell task that adds it to the nav, or (b) the feature task's own DoD states how a user navigates to it from `/`. If neither exists, add the nav entry to the shell task or to that feature task's DoD explicitly.
+**UI foundation rule (UI/web projects only — emit once, before any feature page tasks):** check whether the architecture (`docs/architecture/01-stack-and-hosting.md`) names a CSS framework or component library (Tailwind, shadcn/ui, Radix, MUI, Chakra, etc.). If it does, verify a "UI foundation" or "design system setup" task exists in the plan. If not, add one. It must cover:
+
+- Installing and configuring the named CSS framework (e.g. `npx tailwindcss init`, `tailwind.config.ts`, base `globals.css`).
+- Initialising the component library (e.g. `npx shadcn-ui init`, base primitives — Button, Input, Card).
+- Global styles: typography scale, colour tokens/CSS variables, spacing, border-radius, shadow scale.
+- Dark mode configuration if the architecture or requirements call for it.
+- Replacing any bare inline styles left by the scaffold.
+
+The failure mode to prevent: the architecture says "Tailwind + shadcn/ui" but every feature page is bare HTML with ad-hoc inline styles because setup never happened. The scaffold task created the project but didn't configure the design system. Feature tasks assumed it would be done first. Nobody's task was wrong — the foundation task was simply never emitted. Emit it explicitly, first.
+
+**Foundation and shell coverage check (after decomposing all UI requirements):** scan the task list for two things:
+
+1. **Navigation coverage** — for every new page/route, verify there is either (a) a shell task that adds it to the nav, or (b) the feature task's own DoD states how a user navigates to it from `/`.
+2. **UI foundation presence** — if the architecture names a UI framework, verify a foundation task exists and comes before any feature page tasks in the phase ordering. If neither exists, add it.
 
 ### 4. Integration layer
 

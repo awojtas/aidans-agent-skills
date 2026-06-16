@@ -73,6 +73,7 @@ For each issue, run through the review checklist, then decide the action.
 - Does the proposed implementation respect the existing architecture (layers, modules, conventions)?
 - Does it introduce coupling between layers that should be separate (UI ↔ domain, persistence ↔ UI, provider adapter ↔ business logic)?
 - **UI/web navigation coverage:** for issues describing a user-facing page or feature — do the ACs state how a user navigates *to* the feature from `/` or the global nav, not just that the page renders at its URL? If all ACs start at the feature URL, add a DoD item: "Feature is reachable via the home page or global nav (not just directly by URL)." Also scan the issue list for an application shell / home-page task. If none exists and this is a UI-heavy plan, propose one in Step 5.
+- **UI foundation coverage:** if the repo's `docs/architecture/01-stack-and-hosting.md` (or equivalent) names a CSS framework or component library (Tailwind, shadcn/ui, Radix, MUI, etc.), scan the issue list for a design system / UI foundation setup task. If none exists but there are UI feature issues, the feature pages will be built on an unconfigured stack — add the missing task to the Step 5 proposal list. The failure mode: architecture says "Tailwind + shadcn/ui", scaffold creates the project, feature issues implement pages, none of it is styled because setup was never a task.
 
 **SOLID and extensibility**
 - Single responsibility: does the issue ask one thing to do too many things?

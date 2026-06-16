@@ -118,7 +118,10 @@ For each task:
 - Acceptance criteria, lifted/adapted from the requirement's Given-When-Then.
 - Estimated effort (≤1 day target).
 
-**Application shell task (UI/web projects):** after decomposing feature pages, check whether an application shell task exists in the phase. If not, add one per the shell rule in `references/task-decomposition-guide.md` (section 3). A plan where every task is a feature page with no task for `/`, global nav, and routing glue will produce a deployed app with working routes and no front door.
+**UI foundation and shell tasks (UI/web projects):** after decomposing feature pages, check for two cross-cutting tasks that are consistently missing from decomposed plans — see the rules in `references/task-decomposition-guide.md` (section 3):
+
+1. **UI foundation** — if the architecture names a CSS framework or component library (Tailwind, shadcn/ui, etc.), a setup task must exist before any feature page tasks. The failure mode: the scaffold created the project but never configured Tailwind or initialised shadcn/ui, so every feature page ends up as bare HTML with inline styles.
+2. **Application shell** — a task for the real home page at `/`, global nav, and authenticated-redirect routing must exist. The failure mode: every feature page is a working route but there is no front door.
 
 **Scaffold/setup task DoD — pin the CI install command.** For any task that scaffolds a dependency-managed project (Node, Python, etc.), the generated Definition of Done must require running the **exact install command CI uses**, not a looser local one. For Node specifically: "regenerate a clean lockfile and verify `npm ci` succeeds (not just `npm install`)". Rationale: an incrementally-built `package-lock.json` can be missing transitive optional deps — `npm install` passes locally but `npm ci` fails in CI. The DoD must call out the CI command by name.
 

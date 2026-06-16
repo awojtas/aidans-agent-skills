@@ -204,7 +204,7 @@ Work Checker runs (checks: every state covered including error / loading / empty
 
 ### Phase 4 — PE: Implementation
 
-Spawn PE with phase context: *"Implement issue #N. Read `docs/architecture/` first — the implementation must match the recorded architectural choices (stack, hosting, data stores, integrations). If a task makes you want to deviate, stop and surface that to the user as a candidate new ADR rather than silently going off-architecture. Match project conventions. Build to the UX spec from Phase 3 (link in the issue comments). Apply SOLID where it earns its keep. Two Hats — refactors get their own commits. Don't write the tests (TAE does that next). Posts when done."*
+Spawn PE with phase context: *"Implement issue #N. Read `docs/architecture/` first — the implementation must match the recorded architectural choices (stack, hosting, data stores, integrations). If a task makes you want to deviate, stop and surface that to the user as a candidate new ADR rather than silently going off-architecture. Match project conventions. Build to the UX spec from Phase 3 (link in the issue comments). **For any user-facing UI surface (pages, components, layouts), invoke the `/frontend-design` skill to generate the frontend code** — it produces distinctive, production-grade interfaces rather than generic scaffold output. Apply SOLID where it earns its keep. Two Hats — refactors get their own commits. Don't write the tests (TAE does that next). Posts when done."*
 
 PE does:
 - **Reads `docs/architecture/` if present** — the architectural choices recorded there constrain implementation. If the task would deviate, stop and flag before continuing.

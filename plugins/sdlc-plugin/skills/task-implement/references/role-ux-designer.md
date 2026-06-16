@@ -237,7 +237,7 @@ Opens a real browser window. The UX Designer (or QA) can watch the test run, eye
 - Border radius: ...
 - Shadow scale: ...
 
-PE: ready for Phase 4 (implementation). Build to this spec.
+PE: ready for Phase 4 (implementation). Build to this spec. For any user-facing surfaces, use `/frontend-design` to generate the UI code — it produces distinctive, production-grade output rather than generic scaffold.
 ```
 
 ### Phase 5 — Design review

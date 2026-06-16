@@ -77,6 +77,7 @@ git checkout -b <issue-number>-<short-description>
 - Make the minimum changes needed to satisfy the acceptance criteria
 - Follow existing conventions exactly — match code style, naming, file organization
 - No scope creep — if you notice unrelated improvements, note them but don't implement them
+- **For user-facing UI surfaces (pages, components, layouts):** invoke the `/frontend-design` skill to generate the frontend code — it produces distinctive, production-grade interfaces rather than generic scaffold output. Don't hand-write plain HTML/JSX for user-visible pages when this skill is available.
 
 ### Step 5: Add tests
 

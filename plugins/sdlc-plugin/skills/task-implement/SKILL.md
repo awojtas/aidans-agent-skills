@@ -327,6 +327,7 @@ PrjM does:
 - Inspects the diff via `gh pr diff` or `git diff origin/main...HEAD`.
 - Runs the test suite themselves to verify "green" claims.
 - Runs lint + build themselves to verify "green" claims.
+- **For deployed apps, checks the live endpoint** — fetches the URL and reads the latest deploy/runtime logs. A build that exits 0 does not guarantee a running function; treat build-time success and runtime success as two separate gates.
 - Walks the audit checklist in `role-project-manager.md`.
 - Posts the audit result.
 
@@ -344,7 +345,7 @@ Spawn PdM with phase context: *"PrjM has confirmed the work was *executed* prope
 PdM does:
 - Reads the originating requirement (followed via `Implements:` references in the issue).
 - Reads the issue body + the UX Phase 5 comment.
-- Runs the feature themselves (dev server, click through, exercise the path the user would take).
+- Runs the feature themselves (dev server, click through, exercise the path the user would take). **Starts from the app's natural entry point — `/` or the main navigation — not the feature's direct URL.** If the feature isn't reachable from existing navigation, that's a bounce-worthy gap. Checks that empty states have a meaningful next step, not a dead-end or a redirect loop back to itself.
 - Walks the outcome checklist in `role-product-manager.md`: intent, experience, scope, trade-offs surfaced, feedback loop.
 - Posts the audit result.
 

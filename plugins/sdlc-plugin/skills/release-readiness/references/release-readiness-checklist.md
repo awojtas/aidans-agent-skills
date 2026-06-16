@@ -93,6 +93,7 @@ Walk in order. For inapplicable categories, say so explicitly with a one-line re
 - New code path that assumes a config value that doesn't exist in dev.
 - Hard-coded URL that only works in one environment.
 - Migration that runs at startup and fails idempotently the second time, breaking canary.
+- **Build success ≠ runtime success.** For deployed apps, a clean build does not guarantee the deployed function starts correctly — wrong platform config (framework preset, root directory), an env var that evaluates to `undefined` at runtime, or a cold-start ESM/CJS mismatch can all pass CI and fail live. Treat "build passed" and "the deployed app actually works at its URL" as two separate gates.
 
 ## Data safety (if applicable — skip if the diff has no migrations / no schema changes)
 

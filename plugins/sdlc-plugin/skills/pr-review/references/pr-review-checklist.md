@@ -43,6 +43,7 @@ The reviewer is **not the author's adversary** — they're the author's safety n
 - [ ] **No `console.log` / `print` / `debugger`.** Pure debug statements removed.
 - [ ] **No magic strings / numbers.** Named constants where the value carries meaning.
 - [ ] **No hardcoded secrets / API keys / URLs.** All through config / env / secret manager.
+- [ ] **Non-secret config that has a reasonable public default** (e.g. the production API domain) has a sane in-code fallback — a blank env var should fail loudly or use the default, not silently evaluate to `undefined` and produce cryptic runtime failures.
 - [ ] **Error handling exists** for I/O and external calls. No silent swallowing (`catch {}`).
 - [ ] **Function size reasonable.** A function over ~50 lines in this diff should have a comment justifying it, or be a sign a refactor was skipped.
 - [ ] **Naming is descriptive.** No `x`, `y`, `tmp`, `data`, `result` for non-trivial variables.

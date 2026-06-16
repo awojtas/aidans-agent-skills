@@ -136,6 +136,13 @@ For **already-Reviewed** requirements in an "All" pass: short-circuit. Ask once:
 - New open questions → append to `08-open-questions.md` with a fresh `OQ-NNN` ID.
 - New assumptions surfaced → append to `07-assumptions.md` with a fresh `A-NNN` ID.
 
+**UI/web navigation supplement (Pass 5, if the requirement describes a user-facing page or feature):**
+
+- Do the acceptance criteria state how a user *navigates to* the feature — not just that the page renders at its URL? An AC that begins at the feature URL skips the entry-point. Flag: *"AC assumes the user is already on this page. How do they get here from `/`?"*
+- Is there a requirement (or set of requirements) that covers the home page at `/`, global navigation, and authenticated routing? If the requirements describe many feature pages but none covers the shell/navigation, flag the gap: *"No requirement covers the application shell or global nav. Routes without a front door aren't reachable."*
+
+These are quality smells, not blockers — surface them and let the user decide whether to add a requirement or accept the gap.
+
 **Status advancement:**
 
 After all five passes succeed, ask explicitly: *"All passes clean. Ready to advance from Draft to Reviewed?"* — wait for an affirmative answer before changing the Status line. For Reviewed → Approved, the threshold is higher (see `status-lifecycle.md`); never auto-advance from a confirmation session.

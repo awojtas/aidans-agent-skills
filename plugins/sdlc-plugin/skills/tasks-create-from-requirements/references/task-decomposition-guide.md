@@ -52,6 +52,17 @@ Is there a user-facing surface?
 
 → One task per discrete UI surface. Form + form-with-states is one task; brand-new page is its own.
 
+**Application shell rule (UI/web projects only — emit once, in the first UI delivery phase):** before decomposing individual feature pages, check whether a shell task already exists. If not, add one. It must cover:
+
+- A real home page at `/` with primary calls-to-action (sign in / sign up, or enter-the-app) — not the scaffold placeholder.
+- Global navigation (header/nav) shared via the layout, linking the main sections of the app.
+- Authenticated-redirect / routing glue: signed-in users land in the app, not on the marketing page.
+- Removal of any scaffold placeholder pages.
+
+A feature route with no link from `/` or the global nav is not "done" — the user has no front door. If decomposing a set of feature pages produces no shell task, one is missing.
+
+**Shell coverage check (after decomposing all UI requirements):** scan the task list. For every new page/route, verify there is either (a) an existing shell task that adds it to the nav, or (b) the feature task's own DoD states how a user navigates to it from `/`. If neither exists, add the nav entry to the shell task or to that feature task's DoD explicitly.
+
 ### 4. Integration layer
 
 Does it touch an external service?

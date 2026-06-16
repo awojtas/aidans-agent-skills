@@ -72,6 +72,7 @@ For each issue, run through the review checklist, then decide the action.
 **Architecture fit**
 - Does the proposed implementation respect the existing architecture (layers, modules, conventions)?
 - Does it introduce coupling between layers that should be separate (UI ↔ domain, persistence ↔ UI, provider adapter ↔ business logic)?
+- **UI/web navigation coverage:** for issues describing a user-facing page or feature — do the ACs state how a user navigates *to* the feature from `/` or the global nav, not just that the page renders at its URL? If all ACs start at the feature URL, add a DoD item: "Feature is reachable via the home page or global nav (not just directly by URL)." Also scan the issue list for an application shell / home-page task. If none exists and this is a UI-heavy plan, propose one in Step 5.
 
 **SOLID and extensibility**
 - Single responsibility: does the issue ask one thing to do too many things?

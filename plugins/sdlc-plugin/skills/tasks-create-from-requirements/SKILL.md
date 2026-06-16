@@ -118,6 +118,8 @@ For each task:
 - Acceptance criteria, lifted/adapted from the requirement's Given-When-Then.
 - Estimated effort (≤1 day target).
 
+**Application shell task (UI/web projects):** after decomposing feature pages, check whether an application shell task exists in the phase. If not, add one per the shell rule in `references/task-decomposition-guide.md` (section 3). A plan where every task is a feature page with no task for `/`, global nav, and routing glue will produce a deployed app with working routes and no front door.
+
 **Scaffold/setup task DoD — pin the CI install command.** For any task that scaffolds a dependency-managed project (Node, Python, etc.), the generated Definition of Done must require running the **exact install command CI uses**, not a looser local one. For Node specifically: "regenerate a clean lockfile and verify `npm ci` succeeds (not just `npm install`)". Rationale: an incrementally-built `package-lock.json` can be missing transitive optional deps — `npm install` passes locally but `npm ci` fails in CI. The DoD must call out the CI command by name.
 
 ### Step 4: Identify human-required
@@ -226,6 +228,7 @@ EOF
 - Fill `What`, `Why now`, `Definition of Done`, `Acceptance Criteria`, `Implements`, `Context` from the decomposition.
 - For human-required tasks, **prepend** the `## ⚠️ Human Required` block per `references/issue-template.md`.
 - For bug tasks (rare in a fresh plan), use the bug overlay.
+- For UI feature tasks: ensure at least one acceptance criterion states how the user navigates to the feature from `/` or the global nav — not just that the page renders at its URL. "Given the user is on the home page, when they click X, then they land on Y" is the pattern.
 - Resolve `Blocked by:` and `Blocks:` with real issue numbers as you create them in order. Pass 1 creates all issues; Pass 2 goes back and edits the body of each to fill in the now-known issue numbers. (`gh issue edit <num> --body-file <path>`.)
 
 ### Step 10: Summary

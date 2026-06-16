@@ -55,11 +55,16 @@ Before writing any provider-specific step, key name, config value, region code, 
 
    **Web app ↔ API wiring (when architecture has a separate web frontend + API as separate Vercel projects):** use the **BFF + Vercel Trusted Sources** pattern — not direct browser-to-API calls. Browsers cannot produce OIDC tokens; Trusted Sources is service-to-service only.
 
+   **Autonomous steps (do these yourself):**
+
    1. **Keep Deployment Protection ON** on the API project. Do not disable it.
-   2. **Configure Trusted Sources** on the API's Vercel project: dashboard Settings → Deployment Protection → Trusted Sources → add the web app's Vercel project as a trusted source. Dashboard-only configuration (no `vercel.json` equivalent). Fetch the current Vercel documentation to confirm the exact menu path before writing checklist instructions.
-   3. **Install `@vercel/oidc`** in the web app: `npm install @vercel/oidc`.
-   4. **Implement BFF proxy route handlers** in the web app (e.g. `app/api/[...path]/route.ts` for a Next.js app): (a) verify the user's JWT/session and reject unauthenticated requests, (b) call `await getVercelOidcToken()` from `@vercel/oidc`, (c) forward the request to the API with the `x-vercel-trusted-oidc-idp-token` header and the user's JWT. Commit this as code (not a dashboard toggle).
-   5. **Set `API_URL` (server-side) env var** on the web app's Vercel project pointing to the API's deployment URL. This is a server-side variable only — not `NEXT_PUBLIC_`. Record the var name in `.env.example`. No CORS configuration needed: the browser never calls the API directly.
+   2. **Install `@vercel/oidc`** in the web app: `npm install @vercel/oidc`.
+   3. **Implement BFF proxy route handlers** in the web app (e.g. `app/api/[...path]/route.ts` for a Next.js app): (a) verify the user's JWT/session and reject unauthenticated requests, (b) call `await getVercelOidcToken()` from `@vercel/oidc`, (c) forward the request to the API with the `x-vercel-trusted-oidc-idp-token` header and the user's JWT. Commit this as code (not a dashboard toggle).
+   4. **Set `API_URL` (server-side) env var** on the web app's Vercel project pointing to the API's deployment URL. Server-side only — not `NEXT_PUBLIC_`. Record the var name in `.env.example`. No CORS configuration needed: the browser never calls the API directly.
+
+   **Human-required (add to the step 5 checklist — do not attempt autonomously):**
+
+   - **Configure Trusted Sources** on the API's Vercel project: Settings → Deployment Protection → Trusted Sources → add the web app's Vercel project as a trusted source. Dashboard-only — no CLI or API equivalent. Fetch the current Vercel documentation to confirm the exact menu path and field names before writing the checklist step. Record in the provisioning log once done.
 
    **Free/low-tier constraints:** before provisioning a new resource, check whether the free/low tier of the chosen service imposes a constraint the project is likely to hit (single custom domain, single region, seat caps, email sending limits, etc.). If you encounter one:
    1. **Surface the limit explicitly** — name the specific constraint.

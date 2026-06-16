@@ -76,15 +76,22 @@ The failure mode to prevent: the architecture says "Tailwind + shadcn/ui" but ev
 1. **Navigation coverage** — for every new page/route, verify there is either (a) a shell task that adds it to the nav, or (b) the feature task's own DoD states how a user navigates to it from `/`.
 2. **UI foundation presence** — if the architecture names a UI framework, verify a foundation task exists and comes before any feature page tasks in the phase ordering. If neither exists, add it.
 
-**Client ↔ API integration rule (projects with a separate web frontend + API on separate Vercel projects — emit once, in the first phase that wires the two together):** check whether the architecture records a separate frontend and backend deployed as separate Vercel projects. If so, verify an explicit "integrate web app ↔ API" task exists in the plan. If not, add one. It must cover the **BFF + Vercel Trusted Sources** pattern:
+**Web app ↔ API integration rule (projects with a separate web frontend + API on separate Vercel projects — emit two tasks, not one):** check whether the architecture records a separate frontend and backend deployed as separate Vercel projects. If so, verify **two** integration tasks exist in the plan. If not, add them. Trusted Sources configuration is dashboard-only (no CLI/API), making it human-required — it cannot be bundled with the AI-executable BFF work or the Phase 0 isolation rule is violated.
 
-- **BFF proxy route handlers** added to the web app (e.g. `app/api/[...path]/route.ts`): authenticate the user, get an OIDC token via `getVercelOidcToken()` from `@vercel/oidc`, and forward requests to the API with `x-vercel-trusted-oidc-idp-token` + the user's JWT.
-- **Trusted Sources** configured on the API's Vercel project (Settings → Deployment Protection → Trusted Sources): the web app's Vercel project added as a trusted source.
-- **`API_URL` server-side env var** on the web app project (not `NEXT_PUBLIC_`) pointing to the API's URL, so the BFF can call it without exposing it to the browser.
-- **Deployment Protection stays ON** on the API — the API is never directly reachable from the public internet.
+**Task A — Phase 0, `human-required`:** Configure Vercel Trusted Sources on the API project.
+- What the human does: API project → Settings → Deployment Protection → Trusted Sources → add the web app's Vercel project as a trusted source.
+- Mark `human-required` and place in Phase 0 — Operator Setup.
+- Agent-verifiable: yes — once Task B is complete, the agent can confirm by making a BFF call to the API and verifying it does not return a platform authentication challenge.
+
+**Task B — delivery phase, AI-executable, `Blocked by: #<Task A>`:** Implement the BFF proxy.
+- Install `@vercel/oidc` in the web app.
+- Add BFF proxy route handlers (e.g. `app/api/[...path]/route.ts`): authenticate the user, call `await getVercelOidcToken()` from `@vercel/oidc`, forward requests to the API with `x-vercel-trusted-oidc-idp-token` + user JWT.
+- Set `API_URL` server-side env var on the web app project (not `NEXT_PUBLIC_`) pointing to the API's URL.
+- Deployment Protection stays ON on the API — the API is never directly reachable from the public internet.
+- Carry `Blocked by: #<Task A>` — the BFF cannot succeed until Trusted Sources is configured by the human.
 - Acceptance criterion: a real end-to-end call — browser → BFF → API — through real user auth succeeds in the target environment.
 
-The failure mode to prevent: frontend and API each pass their own tests and deploy successfully, but the product fails at runtime because the BFF proxy was never implemented, the OIDC token is missing from BFF calls, Trusted Sources wasn't configured, or the `API_URL` env var is unset. Independently-green builds hide this entire class of failure.
+The failure mode to prevent: frontend and API each pass their own tests and deploy, but the product fails at runtime because the BFF was never implemented, the OIDC token is missing from BFF calls, Trusted Sources wasn't configured, or `API_URL` is unset. Independently-green builds hide this entire class of failure.
 
 ### 4. Integration layer
 

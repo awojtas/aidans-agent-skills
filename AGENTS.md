@@ -107,7 +107,7 @@ This is the core of every skill. It has two parts:
 ```yaml
 ---
 name: <skill-name>
-description: <One paragraph. Used by Claude Code to decide when to trigger the skill — be specific about trigger phrases, user intents, and what the skill covers.>
+description: <One paragraph. Used by Claude Code to decide when to trigger the skill — be specific about trigger phrases, user intents, and what the skill covers. Hard cap: 1024 characters — Codex rejects longer descriptions at install time. Verify with python3 -c "print(len('...'))" before committing.>
 ---
 ```
 
@@ -130,7 +130,7 @@ If a reference doc is shared by **several skills in the same plugin**, put it in
 - **Multi-skill plugins are the norm.** Before scaffolding a new plugin, see if your skill fits an existing one.
 - **Skill names use kebab-case**, with **subject-verb** ordering preferred (e.g., `requirements-add`, `task-implement`, `platform-provision`). This groups related skills together when scanning a plugin's `skills/` folder. Deliverable-noun names (e.g., `solution-design`, `requirements-validation`) are also fine where natural.
 - **Plugin directory names end in `-plugin`** and describe the *theme* of the bundle.
-- **The `description` field in SKILL.md frontmatter is critical** — it controls when Claude Code auto-triggers the skill. Include specific trigger phrases users might say.
+- **The `description` field in SKILL.md frontmatter is critical** — it controls when Claude Code auto-triggers the skill. Include specific trigger phrases users might say. **Hard limit: 1024 characters** — Codex rejects longer descriptions at install time. Verify with `python3 -c "print(len('your description'))"` before committing.
 - **SKILL.md is a prompt, not documentation.** Write it as instructions for an agent, not as a human-readable guide.
 - **Don't duplicate skill content in `README.md`.** The top-level README is deliberately minimal — orient-and-point only. Skill content lives in `marketplace.json`, each `plugin.json`, and each `SKILL.md`.
 

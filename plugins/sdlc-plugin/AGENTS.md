@@ -42,4 +42,4 @@ Use semver per the root `AGENTS.md`: minor for new skills / new reference docs /
 
 - **Phase-number drift in `task-implement`** — see the anchor-skill note above.
 - **Cross-skill references** — `/ai-ready-repo` mentions `/repo-bootstrap` and `/repo-release-ready` by name; `/release-readiness` distinguishes itself from `/platform-verify`. When renaming a skill, grep across the plugin for stale references.
-- **`description` field length** — some skills (e.g. `task-implement`, `ai-ready-repo`) have long descriptions intentionally; the trigger-phrase coverage is the value. Trim only if redundant, not on principle.
+- **`description` field length** — some skills (e.g. `task-implement`, `ai-ready-repo`) have long descriptions intentionally; the trigger-phrase coverage is the value. Trim only if redundant, not on principle. **Hard limit: 1024 characters** — Codex rejects longer descriptions at install time. After editing a description, verify with `python3 -c "print(len('your description'))"` before committing.

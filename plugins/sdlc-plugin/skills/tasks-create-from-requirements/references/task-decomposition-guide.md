@@ -76,14 +76,15 @@ The failure mode to prevent: the architecture says "Tailwind + shadcn/ui" but ev
 1. **Navigation coverage** — for every new page/route, verify there is either (a) a shell task that adds it to the nav, or (b) the feature task's own DoD states how a user navigates to it from `/`.
 2. **UI foundation presence** — if the architecture names a UI framework, verify a foundation task exists and comes before any feature page tasks in the phase ordering. If neither exists, add it.
 
-**Client ↔ API integration rule (projects with a separate client + API on different origins — emit once, in the first phase that wires the two together):** check whether the architecture records a separate frontend and backend on different origins (e.g., a Next.js client on `web.example.com` calling a Hono API on `api.example.com`). If so, verify an explicit "integrate client ↔ API" task exists in the plan. If not, add one. It must cover:
+**Client ↔ API integration rule (projects with a separate web frontend + API on separate Vercel projects — emit once, in the first phase that wires the two together):** check whether the architecture records a separate frontend and backend deployed as separate Vercel projects. If so, verify an explicit "integrate web app ↔ API" task exists in the plan. If not, add one. It must cover the **BFF + Vercel Trusted Sources** pattern:
 
-- CORS configured on the API: the client's production and preview origin(s) are allow-listed, including the `Authorization` header.
-- The production API is reachable by end-user browsers — **not** behind a platform SSO / deployment-protection wall. Access is gated by the application's own JWT/session auth + CORS, not by hiding the API from the internet.
-- The client's API base-URL env var (e.g., `NEXT_PUBLIC_API_URL`) is set in the build environment and baked into the client bundle.
-- Acceptance criterion: a real end-to-end browser call from the client through real auth succeeds in the target environment — not a mocked test, not a server-side call.
+- **BFF proxy route handlers** added to the web app (e.g. `app/api/[...path]/route.ts`): authenticate the user, get an OIDC token via `getVercelOidcToken()` from `@vercel/oidc`, and forward requests to the API with `x-vercel-trusted-oidc-idp-token` + the user's JWT.
+- **Trusted Sources** configured on the API's Vercel project (Settings → Deployment Protection → Trusted Sources): the web app's Vercel project added as a trusted source.
+- **`API_URL` server-side env var** on the web app project (not `NEXT_PUBLIC_`) pointing to the API's URL, so the BFF can call it without exposing it to the browser.
+- **Deployment Protection stays ON** on the API — the API is never directly reachable from the public internet.
+- Acceptance criterion: a real end-to-end call — browser → BFF → API — through real user auth succeeds in the target environment.
 
-The failure mode to prevent: the frontend and API each pass their own tests and deploy successfully, but the deployed product fails at runtime because CORS rejects the browser's preflight, the client calls `undefined/api/...` because the env var was never set, or the API sits behind a platform SSO wall that blocks real users before the app's own auth can run. Independently-green builds hide this entire class of failure.
+The failure mode to prevent: frontend and API each pass their own tests and deploy successfully, but the product fails at runtime because the BFF proxy was never implemented, the OIDC token is missing from BFF calls, Trusted Sources wasn't configured, or the `API_URL` env var is unset. Independently-green builds hide this entire class of failure.
 
 ### 4. Integration layer
 

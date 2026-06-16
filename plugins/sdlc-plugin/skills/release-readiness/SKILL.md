@@ -106,7 +106,7 @@ Apply `references/release-readiness-checklist.md`. Cover every category. For ina
 5. **Failure modes** — timeouts, retries, circuit breakers, graceful degradation.
 6. **Deploy safety** — env vars in all environments; canary compatibility.
 7. **Data safety** (if applicable) — migrations reversible; backward-compatible schema.
-8. **Cross-origin integration** (if the change touches an API called by a separate-origin client, or the client's API-call configuration) — CORS headers present and correct, production API not behind a platform SSO wall, client's API-URL env var set in all environments, a real browser call through auth verified in the target environment.
+8. **Web app ↔ API integration** (if the change touches the BFF proxy, Trusted Sources config, or API-call path) — BFF proxy handlers complete with OIDC token, Trusted Sources configured on the API project, API Deployment Protection ON, `API_URL` server-side env var set, end-to-end call verified.
 
 ### Step 5: Classify findings
 

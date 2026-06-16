@@ -74,12 +74,15 @@ The reviewer is **not the author's adversary** — they're the author's safety n
 - [ ] **Secrets in the secret manager**, not committed.
 - [ ] **Migrations have rollbacks.**
 
-### Cross-origin integration (skip if client and API are on the same origin, or if the diff doesn't touch the API surface or client API-call configuration)
+### Web app ↔ API integration (skip if no separate API Vercel project, or if the diff doesn't touch the BFF proxy, Trusted Sources config, or API-call path)
 
-- [ ] **CORS configured on the API**: the client origin(s) are allow-listed, including the `Authorization` header. No wildcard (`*`) for credentialed requests.
-- [ ] **Production API not behind a platform SSO / deployment-protection wall**: access is gated by the application's own JWT/session auth + CORS, not by a platform gate that blocks end-user browsers before the app runs.
-- [ ] **Client's API-URL env var set in all environments**: `.env.example` updated; var confirmed in the deploy project's env store — not just locally.
-- [ ] **Integration tested with a real cross-origin call through auth**, not only mocked or server-side tests — a test that doesn't cross origins can't catch a CORS misconfiguration.
+Uses the **BFF + Vercel Trusted Sources** pattern. Browsers never call the API directly.
+
+- [ ] **BFF proxy route handlers present**: the web app has server-side handlers that call `getVercelOidcToken()` from `@vercel/oidc` and forward the OIDC token + user JWT to the API.
+- [ ] **Trusted Sources configured**: the web app's Vercel project is listed as a trusted source on the API project. (Dashboard-only config — check provisioning log or ask the author to confirm.)
+- [ ] **API Deployment Protection stays ON**: no change in the diff disables protection on the API project. Do not flag the API returning an auth challenge for direct unauthenticated requests as a bug — that's correct.
+- [ ] **`API_URL` server-side env var** in the web app's env store (not `NEXT_PUBLIC_`), and `.env.example` updated.
+- [ ] **Integration verified end-to-end** (browser → BFF → API through real user auth), not only unit or mock tests.
 
 ### Security (reviewer's quick sniff)
 

@@ -34,11 +34,29 @@ Classify secrets by where they actually live, not where they're convenient to st
 
 Only values the application's own runtime must read directly (database URLs, API keys the app calls directly) belong in the deploy secret store.
 
-## Cross-origin API wiring
+## Cross-origin API wiring (BFF + Vercel Trusted Sources)
 
-Two deployables that must talk aren't done until a real call crosses between them in the target environment through real auth — independently-green builds hide CORS, auth-gateway, and env-wiring failures. Keep internal APIs private with authentication + CORS, not by hiding them from the browsers that must call them.
+When a web frontend (e.g. Next.js on one Vercel project) and a separate API (e.g. Hono/Express on a second Vercel project) must communicate, the correct pattern is a **Backend for Frontend (BFF)** proxy — never a direct browser-to-API call:
 
-- **The production API is not behind a platform SSO / deployment-protection wall.** Deployment protection (Vercel Deployment Protection, Cloudflare Access, etc.) is designed for hiding *preview deployments* from external crawlers and viewers — it blocks all unauthenticated requests before the application runs. A production API gated this way blocks end-user browsers before the app's own auth can run, making the product non-functional for real users. The correct model: the API is reachable from the internet; the application's own JWT/session auth + CORS allow-list enforces access.
-- **CORS allow-lists the specific client origin(s), not a wildcard.** Include the `Authorization` header and the relevant request methods. A missing `Authorization` in the allow-list silently blocks every authenticated browser request even when CORS appears to be "configured."
-- **The client knows the API's URL at build time via an env var** (`NEXT_PUBLIC_API_URL` or equivalent). Hardcoded URLs or an unset env var that evaluates to `undefined` produce silent runtime failures that no unit test catches.
-- **The integration is verified with a real browser call through real auth** in the target environment — not mocked, not a server-side test (which doesn't cross origins).
+```
+browser → web-app (Next.js route handler, same origin)
+              → adds Vercel OIDC token (Trusted Sources) + forwards user JWT
+              → api-project (Deployment Protection stays ON)
+```
+
+Two deployables that must talk aren't done until a real call crosses between them in the target environment through real auth — independently-green builds hide BFF-wiring, OIDC-token, and server-env-var failures.
+
+**Why BFF, not direct browser calls:**
+
+- Vercel Deployment Protection blocks all unauthenticated requests before the app runs. Browsers cannot produce OIDC tokens, so they cannot bypass protection via Trusted Sources — Trusted Sources is service-to-service only.
+- Even without protection, exposing the API directly to the internet requires CORS and makes the API reachable from anywhere. The BFF keeps the API private: only reachable from the Vercel projects you explicitly authorise.
+- Bonus: no CORS configuration needed — the browser only ever hits its own origin.
+
+**Implementation requirements:**
+
+- **Keep Deployment Protection ON** on the API project. Do not disable it.
+- **Trusted Sources** configured in the API project's Vercel dashboard (Settings → Deployment Protection → Trusted Sources): add the web app's Vercel project as a trusted source. Dashboard-only — there is no `vercel.json` equivalent.
+- **`@vercel/oidc` package** installed in the web app (`npm install @vercel/oidc`).
+- **BFF proxy route handlers** in the web app (e.g. `app/api/[...path]/route.ts`) that: (1) authenticate the user (reject unauthenticated requests), (2) call `await getVercelOidcToken()` from `@vercel/oidc`, (3) forward the request to the API with `x-vercel-trusted-oidc-idp-token: <oidc-token>` and the user's JWT.
+- **`API_URL` env var on the web app project** (server-side, not `NEXT_PUBLIC_`) pointing to the API's deployment URL. The BFF reads this; the browser never sees it.
+- App-level per-user auth is unchanged — the proxy forwards the user's JWT, so tenant scoping and roles still apply on the API.

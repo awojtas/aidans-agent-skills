@@ -108,19 +108,22 @@ Walk in order. For inapplicable categories, say so explicitly with a one-line re
 - Renaming a column in a single migration — old code reads the old name and crashes during deploy.
 - DROP TABLE in a migration with no archive step.
 
-## Cross-origin integration (skip if client and API are on the same origin, or if the diff doesn't touch the API surface or client API-call configuration)
+## Web app ↔ API integration (skip if there is no separate API Vercel project, or if the diff doesn't touch the BFF proxy, Trusted Sources config, or API-call path)
 
-- [ ] **CORS headers configured correctly**: the API allow-lists the client origin(s), including the `Authorization` header. No wildcard (`*`) for credentialed requests.
-- [ ] **API not behind a platform SSO / deployment-protection wall**: the production API is reachable by end-user browsers without a platform authentication challenge. Access is gated by the application's own JWT/session auth + CORS, not by hiding the URL.
-- [ ] **Client's API-URL env var set in all environments**: no hardcoded URLs, no var that evaluates to `undefined` in any deploy target. Confirmed in the deploy project's env store — not just `.env.local`.
-- [ ] **A real browser call through auth was tested** in the target environment — not a server-side test, not a mock. An actual preflight + credentialed request from a browser (or browser-emulation) through the app's own auth, confirming the call reaches the API and the API responds correctly.
+Uses the **BFF + Vercel Trusted Sources** pattern. Browsers never call the API directly.
+
+- [ ] **BFF proxy route handlers present and complete**: the web app has server-side proxy handlers that (a) authenticate the user, (b) call `getVercelOidcToken()` from `@vercel/oidc`, (c) forward requests to the API with `x-vercel-trusted-oidc-idp-token` + user JWT.
+- [ ] **Trusted Sources configured on the API project**: the web app's Vercel project is listed as a trusted source (API project → Settings → Deployment Protection → Trusted Sources).
+- [ ] **API Deployment Protection is ON**: the API is not directly reachable from the public internet. A direct unauthenticated request to the API URL returns a Vercel authentication challenge.
+- [ ] **`API_URL` server-side env var set in all environments**: the web app's Vercel project env store has the API's URL as a server-side variable (not `NEXT_PUBLIC_`). Confirmed in the deploy project — not just `.env.local`.
+- [ ] **A real end-to-end call verified in the target environment**: browser → BFF → API through real user auth — not a mocked or server-only test.
 
 **Common gaps:**
 
-- CORS configured with the correct origin but `Authorization` missing from allowed headers — every authenticated browser request blocked.
-- Production API behind Vercel Deployment Protection — real users hit a login page before the app's own auth runs.
-- `NEXT_PUBLIC_API_URL` set in `.env.local` but not in the Vercel frontend project env store — works locally, fails in production silently.
-- Integration tested only at the unit or server level — CORS and SSO failures invisible until a real browser hits the deployed app.
+- BFF handlers exist but `getVercelOidcToken()` call is missing — OIDC token not added, API rejects all BFF calls.
+- Trusted Sources not configured on the API project — BFF calls blocked even with the OIDC token present.
+- `API_URL` set locally but not in the Vercel web app env store — BFF calls hit `undefined` in production.
+- Integration tested only at the unit or API level — BFF wiring failures invisible until a full stack is deployed.
 
 ## What "ready" looks like at the end
 

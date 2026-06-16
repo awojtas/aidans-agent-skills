@@ -1,7 +1,7 @@
 {
 	"name": "sdlc-plugin",
 	"description": "Bundled skills for the full Software Development Lifecycle — plan, build, ship, operate, maintain. Workflow chain from early idea sketching through repo bootstrap to task implementation and post-implementation requirements verification, plus helpers for status, surgical requirement edits, audit, course-correction, backlog triage, production-error triage, peer PR review, per-feature release-readiness, AI-readiness audit of existing mature repos, branch pruning, and dev-loop fixes (build / test). `/task-implement` orchestrates a multi-persona, multi-phase workflow — Principal Engineer, QA Engineer, Cloud Architect, UX/UI Designer, Security Engineer, Test Automation Engineer, Site Reliability Engineer, Project Manager (process), Product Manager (outcome), and Work Checker.",
-	"version": "5.26.0",
+	"version": "5.27.0",
 	"author": {
 		"name": "Aidan Wojtas",
 		"url": "https://github.com/awojtas/aidans-agent-skills"

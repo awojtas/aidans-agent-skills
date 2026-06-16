@@ -134,7 +134,7 @@ Phase 2 starts the auth surface. The sign-in endpoint is the first user-facing e
 
 - **Phase / milestone:** Phase 2 — Core Auth & Profile
 - **Estimated effort:** 1 day
-- **Blocked by:** #14 (1.7 Add `AUTH_JWT_SECRET` to GitHub secrets)
+- **Blocked by:** #14 (0.7 Add `AUTH_JWT_SECRET` to GitHub secrets)
 - **Blocks:** #18 (2.3 Implement /signin UI), #20 (2.5 Implement password-reset flow)
 - **Requirement source:** [docs/requirements/03-functional/auth.md](../docs/requirements/03-functional/auth.md)
 ```
@@ -179,6 +179,6 @@ Phase 0 — everything in Phase 1+ that deploys depends on these secrets being i
 
 - **Phase / milestone:** Phase 0 — Operator Setup
 - **Estimated effort:** 20 min click-time
-- **Blocks:** #5 (1.8 Configure Vercel preview deploys in CI), #12 (2.1 Implement Edge middleware)
+- **Blocks:** #5 (1.1 Configure Vercel preview deploys in CI), #12 (2.1 Implement Edge middleware)
 - **Requirement source:** [docs/requirements/06-constraints.md](../docs/requirements/06-constraints.md) (C-T-001 mandates Vercel hosting)
 ```

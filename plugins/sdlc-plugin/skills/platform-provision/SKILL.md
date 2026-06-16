@@ -24,6 +24,21 @@ Reads the architecture, works out what cloud platforms / SaaS products / observa
 
 4. **Provision what you can autonomously.** Create the project / org / dashboard / DB / whatever. Capture every output the human will care about later: resource IDs, regions, URLs, DSNs, project tokens, organization slugs. Record them as you go.
 
+   **Supabase Postgres — connection strings (apply whenever Supabase is the database):**
+
+   Supabase exposes three connection modes. The Direct connection (`db.<ref>.supabase.co:5432`) is IPv6-only by default and unreachable from GitHub Actions runners and most dev machines — do not use it in CI or serverless. Use the pooler host instead:
+
+   | Var name | Pooler mode | Port | For |
+   |---|---|---|---|
+   | `MIGRATION_DATABASE_URL` | Session (DDL-capable) | 5432 | drizzle-kit / CI migrations |
+   | `DATABASE_URL` | Transaction (serverless-optimized) | 6543 | Vercel functions / Edge runtime |
+
+   Username format for both: `postgres.<project-ref>` (not `postgres`).
+
+   Construct both strings from the Supabase dashboard "Connect" page and record them as separate secrets — keeping them named differently prevents the wrong URL being placed in the wrong secret store. When wiring `DATABASE_URL` into the app, ensure the Postgres client has `prepare: false` (Transaction pooler does not support prepared statements).
+
+   **Automated migrations workflow:** create `.github/workflows/migrate.yml` that runs `drizzle-kit migrate` (or the project's equivalent) on merge to `main` when files under the migrations directory change, using `MIGRATION_DATABASE_URL`. Migrations must not be a manual step. Commit this workflow as part of provisioning.
+
 5. **Batch the human-only bits into a single checklist, and file it as a GitHub issue.** Some things are inherently human:
    - Creating an account in a new SaaS product
    - Agreeing to ToS or choosing a billing plan

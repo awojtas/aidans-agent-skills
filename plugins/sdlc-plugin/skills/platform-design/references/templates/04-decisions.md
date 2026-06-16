@@ -50,7 +50,17 @@ The "Consequences" line is the most valuable part — it captures what the decis
 - **Decision.** Client-side code (web app, mobile, CLIs) uses the **publishable key** (`sb_publishable_…`). Server-side code (API, Edge Functions, background workers) uses the **secret key** (`sb_secret_…`). User-issued JWTs are verified via the JWKS endpoint (`https://<ref>.supabase.co/auth/v1/.well-known/jwks.json`) using asymmetric signing (ES256 recommended), not the legacy shared JWT secret. Edge Functions set `verify_jwt = false` and verify tokens in application code. Env vars use the new JSON-object shape: `SUPABASE_PUBLISHABLE_KEYS` and `SUPABASE_SECRET_KEYS` (see [migration guide](https://supabase.com/docs/guides/getting-started/migrating-to-new-api-keys)).
 - **Consequences.** *Easier:* keys are independently revocable without rotating the JWT secret; secret key is browser-blocked (HTTP 401 on browser User-agent — accidental client-side exposure is caught automatically). *Harder:* Edge Functions must explicitly handle JWT auth in code; env var values are JSON objects, not plain strings (`JSON.parse(Deno.env.get('SUPABASE_SECRET_KEYS')!)['default']`). *Re-decide when:* Supabase changes the key model again, or the project migrates away from Supabase.
 
-### ADR-003: {{e.g. Use serverless functions over containers for the API}}
+### ADR-003: Use Session pooler for migrations, Transaction pooler for serverless runtime
+
+*(Include if Supabase is in the stack. Delete otherwise.)*
+
+- **Status.** Accepted.
+- **Date.** {{date}}
+- **Context.** Supabase exposes a Direct connection (`db.<ref>.supabase.co:5432`) and two pooler modes on a shared pooler host. The Direct connection is IPv6-only by default and unreachable from GitHub Actions runners and most development machines — making it unsuitable for CI or serverless runtimes without purchasing the IPv4 add-on. The Session pooler (port 5432) is IPv4, DDL-capable, and supports prepared statements. The Transaction pooler (port 6543) is IPv4 and optimised for many short-lived connections (serverless), but does not support prepared statements.
+- **Decision.** CI migrations (drizzle-kit / migrate) use the **Session pooler** stored as `MIGRATION_DATABASE_URL`. The serverless app runtime (Vercel functions) uses the **Transaction pooler** stored as `DATABASE_URL` with `prepare: false` in the Postgres client. The Direct connection is reserved for local Supabase CLI use only. The two env var names are kept distinct so the wrong URL cannot be put in the wrong secret store. Migrations run automatically in CI on merge when migration files change — not as a manual step.
+- **Consequences.** *Easier:* CI migrations and serverless runtime both connect over IPv4 with no add-on required; accidental misuse is caught by the naming split. *Harder:* prepared statements unavailable in the serverless runtime (use query-level placeholders instead — Drizzle handles this transparently with `prepare: false`). *Re-decide when:* IPv6 becomes universally available in CI runners; or Supabase changes the pooler model.
+
+### ADR-004: {{e.g. Use serverless functions over containers for the API}}
 
 - **Status.** Accepted.
 - **Date.** {{2026-05-13}}
@@ -58,7 +68,7 @@ The "Consequences" line is the most valuable part — it captures what the decis
 - **Decision.** {{Deploy API as Vercel serverless functions (Node runtime), with selected edge functions for latency-sensitive reads.}}
 - **Consequences.** *Easier:* zero infra ops; autoscale to zero; native git integration for deploys. *Harder:* cold starts on cold routes (~200-500ms acceptable for now); 10s execution-time limit constrains long operations (push them to Inngest workers); no shared in-memory state between invocations (use Redis). *Locked out of:* WebSockets on the same path (use a separate provider — see ADR-NNN). *Re-decide when:* monthly Vercel bill exceeds {{$200}} or cold-start latency becomes a customer-visible problem.
 
-### ADR-004: {{...}}
+### ADR-005: {{...}}
 
 *(Continue. Each one stays small. If a decision needs 5+ paragraphs, it's probably a design doc, not an ADR — write that separately under `docs/design/` or `docs/architecture/specs/`.)*
 

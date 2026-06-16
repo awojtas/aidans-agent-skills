@@ -11,6 +11,34 @@
 | Analytics events     | {{PostHog / event table in Postgres + dbt}} | {{}}                                              |
 | Logs / metrics       | *(see `01-stack-and-hosting.md`)*       |                                                         |
 
+## Supabase Postgres connection modes
+
+*(Include if Supabase is the database. Delete otherwise.)*
+
+Supabase exposes three connection modes. **Do not use the Direct connection in CI or serverless** — it is IPv6-only by default and unreachable from GitHub Actions runners and most dev machines (requires a paid IPv4 add-on to fix).
+
+| Mode | Host | Port | IPv4 | DDL / migrations | Prepared statements | Use for |
+|------|------|------|------|-----------------|---------------------|---------|
+| Direct | `db.<ref>.supabase.co` | 5432 | ❌ IPv6-only | Yes | Yes | Local dev with Supabase CLI only |
+| **Session pooler** | `aws-<region>.pooler.supabase.com` | **5432** | ✅ | Yes | Yes | **CI migrations** (`MIGRATION_DATABASE_URL`) |
+| **Transaction pooler** | `aws-<region>.pooler.supabase.com` | **6543** | ✅ | No | No | **Serverless runtime** (`DATABASE_URL`) |
+
+Pooler username format: `postgres.<project-ref>` (not `postgres`).
+
+**Required env var split** — two separate vars prevent the wrong URL going to the wrong consumer:
+
+```
+# Vercel / Edge Functions — Transaction pooler, prepare: false in Postgres client
+DATABASE_URL=postgres://postgres.<ref>:[PASSWORD]@aws-<region>.pooler.supabase.com:6543/postgres
+
+# drizzle-kit / CI migrations — Session pooler, DDL-capable
+MIGRATION_DATABASE_URL=postgres://postgres.<ref>:[PASSWORD]@aws-<region>.pooler.supabase.com:5432/postgres
+```
+
+**Automated migrations** — add a GitHub Actions workflow that runs `drizzle-kit migrate` (or equivalent) on merge to `main` when files under the migrations directory change, using `MIGRATION_DATABASE_URL`. Migrations should not be a manual step.
+
+---
+
 ## Top-level entities (initial sketch)
 
 What this system stores. Not a full schema — just the shape.

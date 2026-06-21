@@ -25,3 +25,12 @@ After research, before assets. Re-run when the product or audience shifts.
 `positioning.md` and an updated `one_liner`. This is the brief `marketing-assets` writes against.
 
 Lean on the verbatim language from research — borrowed words convert better than invented ones.
+
+## Lifecycle tracker
+
+This skill owns the **Positioning** stage of the marketing lifecycle tracker kept at the bottom of the acted-on repo's `README.md`. See [`../../shared/marketing-lifecycle.md`](../../shared/marketing-lifecycle.md) for the block format, emoji legend, and create-or-update algorithm.
+
+- **When this skill begins its substantive work** (after prerequisites pass), set the `Positioning` line to ⏳ (in progress). Create `README.md` and/or the tracker block first if either is missing.
+- **When this skill completes successfully**, set the `Positioning` line to ✅ (done).
+
+Touch only the `Positioning` line — leave every other stage exactly as found.

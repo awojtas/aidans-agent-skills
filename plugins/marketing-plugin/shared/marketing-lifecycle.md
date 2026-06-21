@@ -14,24 +14,69 @@ The skills compose into a loop, not a one-way line. Research feeds the plan; met
 8. **metrics** (`marketing-metrics`) — funnel + tracker ROI + periodic engagement pulls.
 9. **followup** (`marketing-followup`) — the steady weekly engine, retros, double-down calls; recycle into research.
 
-## Lifecycle tracker (maintained in the app's `docs/marketing/marketing-plan.md` or README)
+## The stages
 
-```
+The stage labels used in the tracker — exact strings that must match across all skills.
+
+| Stage label | Owning skill |
+|---|---|
+| Init | `marketing-init` |
+| Readiness | `marketing-readiness` |
+| Research | `marketing-research` |
+| Positioning | `marketing-positioning` |
+| Plan | `marketing-plan` |
+| Assets | `marketing-assets` |
+| Launch | `marketing-launch` |
+| Metrics | `marketing-metrics` |
+| Follow-up | `marketing-followup` |
+
+## Lifecycle tracker
+
+The tracker lives at the **very bottom of the acted-on repo's `README.md`** — not in `docs/marketing/`. Each staged skill updates its own line as it runs; `marketing-status` rebuilds the whole block from a repo scan.
+
+### The block
+
+```markdown
 <!-- marketing-lifecycle:start -->
 ## Marketing progress
-- ⬜ Init — marketing-init
-- ⬜ Readiness — marketing-readiness
-- ⬜ Research — marketing-research
-- ⬜ Positioning — marketing-positioning
-- ⬜ Plan — marketing-plan
-- ⬜ Assets — marketing-assets
-- ⬜ Launch — marketing-launch
-- ⬜ Metrics — marketing-metrics
-- 🔁 Follow-up — marketing-followup (ongoing)
+
+- ⬜ Init — `marketing-init`
+- ⬜ Readiness — `marketing-readiness`
+- ⬜ Research — `marketing-research`
+- ⬜ Positioning — `marketing-positioning`
+- ⬜ Plan — `marketing-plan`
+- ⬜ Assets — `marketing-assets`
+- ⬜ Launch — `marketing-launch`
+- ⬜ Metrics — `marketing-metrics`
+- 🔁 Follow-up — `marketing-followup` (ongoing)
+
+✅ done · ⏳ in progress · ⬜ not started · 🔁 recurring — maintained by the marketing-plugin skills.
 <!-- marketing-lifecycle:end -->
 ```
 
-✅ done · ⏳ in progress · ⬜ not started · 🔁 recurring.
+The two `<!-- marketing-lifecycle:… -->` comment lines are the anchors. Never remove them — they are how every skill finds the block on the next run.
+
+### Create-or-update algorithm
+
+Target: `README.md` in the **root of the repo being acted on** (not the plugin repo).
+
+1. **No `README.md`** → create it: an H1 with the repo/project name, a blank line, then the block — every stage ⬜ except any this run sets otherwise.
+2. **`README.md` exists, no `<!-- marketing-lifecycle:start -->`** → append the block at the very bottom, preceded by one blank line. Every stage ⬜ except any this run sets.
+3. **Block already present** → replace the content between the comment anchors in place; leave the block where it sits.
+
+### A staged skill updates one line
+
+A lifecycle skill touches **only its own stage's line**:
+
+- When it begins its substantive work (after prerequisites pass) → set its line's emoji to ⏳.
+- On successful completion → set its line's emoji to ✅ (or back to 🔁 for `Follow-up`, which is recurring and never permanently done).
+- Every other line is left exactly as found. Never downgrade or re-evaluate another stage.
+
+Writing the file is the requirement. Committing follows the skill's normal behaviour — if the skill already commits its other outputs, include `README.md` in that commit; if it makes no commits, leave the tracker edit as an unstaged working-tree change.
+
+### `marketing-status` rebuilds every line
+
+`marketing-status` already scans the full `docs/marketing/` state, so it has evidence for every stage. It writes **every** stage line from that scan, then stages only `README.md`, commits `docs: update marketing lifecycle tracker`, and pushes. If the block already matches the scan, it skips the commit. This makes `marketing-status` the way to reconcile the tracker when skills ran out of order or before the tracker existed.
 
 ## Scaling to the constraints
 

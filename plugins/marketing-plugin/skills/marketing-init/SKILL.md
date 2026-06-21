@@ -22,7 +22,7 @@ The entry point. Every other skill in this bundle reads `docs/marketing/profile.
    - which tools are in play (listening, analytics, images, email, scheduler)
 2. **Write `docs/marketing/profile.md`** in the app repo from `../../shared/profile-template.md`, filling the frontmatter from the answers. Leave unknowns as clearly-marked TODOs rather than guessing.
 3. **Create living-docs folder** if a Drive-style tool is declared: make `Projects/<App>/` and copy the growth tracker (and any other templates) from the central "Marketing Templates" folder. Record the URLs in the profile's `links`.
-4. **Add the lifecycle tracker** block (from `../../shared/marketing-lifecycle.md`) to the plan doc or README.
+4. **Add the lifecycle tracker** block to the **very bottom of `README.md`** using the create-or-update algorithm in `../../shared/marketing-lifecycle.md`. Set the `Init` line to ✅.
 5. **Commit** the scaffold on a branch.
 
 ## Output
@@ -32,3 +32,12 @@ The entry point. Every other skill in this bundle reads `docs/marketing/profile.
 ## Guardrails
 
 Never write secrets into `profile.md` (it lives in the repo). See `../../shared/tooling.md` and `../../shared/guardrails.md`.
+
+## Lifecycle tracker
+
+This skill owns the **Init** stage of the marketing lifecycle tracker kept at the bottom of the acted-on repo's `README.md`. See [`../../shared/marketing-lifecycle.md`](../../shared/marketing-lifecycle.md) for the block format, emoji legend, and create-or-update algorithm.
+
+- **When this skill begins its substantive work** (after prerequisites pass), set the `Init` line to ⏳ (in progress). Create `README.md` and/or the tracker block first if either is missing.
+- **When this skill completes successfully**, set the `Init` line to ✅ (done).
+
+Touch only the `Init` line — leave every other stage exactly as found.

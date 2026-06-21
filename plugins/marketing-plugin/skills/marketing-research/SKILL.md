@@ -26,3 +26,12 @@ Before positioning and copy, and periodically to refresh (recycle from `marketin
 ## Guardrails
 
 Listening only. Do not scrape personal profiles to build cold-contact lists. See `../../shared/guardrails.md`.
+
+## Lifecycle tracker
+
+This skill owns the **Research** stage of the marketing lifecycle tracker kept at the bottom of the acted-on repo's `README.md`. See [`../../shared/marketing-lifecycle.md`](../../shared/marketing-lifecycle.md) for the block format, emoji legend, and create-or-update algorithm.
+
+- **When this skill begins its substantive work** (after prerequisites pass), set the `Research` line to ⏳ (in progress). Create `README.md` and/or the tracker block first if either is missing.
+- **When this skill completes successfully**, set the `Research` line to ✅ (done).
+
+Touch only the `Research` line — leave every other stage exactly as found.

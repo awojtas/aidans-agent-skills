@@ -25,3 +25,12 @@ Log each push in the growth tracker (channel, effort, spend, link) so `marketing
 ## Output
 
 Channel-ready, human-postable packs + tracker rows. Nothing public is auto-posted.
+
+## Lifecycle tracker
+
+This skill owns the **Launch** stage of the marketing lifecycle tracker kept at the bottom of the acted-on repo's `README.md`. See [`../../shared/marketing-lifecycle.md`](../../shared/marketing-lifecycle.md) for the block format, emoji legend, and create-or-update algorithm.
+
+- **When this skill begins its substantive work** (after prerequisites pass), set the `Launch` line to ⏳ (in progress). Create `README.md` and/or the tracker block first if either is missing.
+- **When this skill completes successfully**, set the `Launch` line to ✅ (done).
+
+Touch only the `Launch` line — leave every other stage exactly as found.

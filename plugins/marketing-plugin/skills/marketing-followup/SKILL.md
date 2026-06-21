@@ -27,3 +27,12 @@ Post-launch, ongoing. The recurring phase of the lifecycle.
 A drafted, human-approvable weekly batch + updated tracker, and periodic retro notes that seed the next research round.
 
 Public posting stays human-posted (`../../shared/guardrails.md`).
+
+## Lifecycle tracker
+
+This skill owns the **Follow-up** stage of the marketing lifecycle tracker kept at the bottom of the acted-on repo's `README.md`. See [`../../shared/marketing-lifecycle.md`](../../shared/marketing-lifecycle.md) for the block format, emoji legend, and create-or-update algorithm.
+
+- **When this skill begins a session**, set the `Follow-up` line to ⏳ (in progress). Create `README.md` and/or the tracker block first if either is missing.
+- **When the session completes**, set the `Follow-up` line back to 🔁 (recurring). Follow-up never reaches ✅ — it is an ongoing stage.
+
+Touch only the `Follow-up` line — leave every other stage exactly as found.

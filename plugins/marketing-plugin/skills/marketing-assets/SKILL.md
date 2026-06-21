@@ -26,3 +26,12 @@ After `marketing-plan`. Re-run to add assets for a new channel.
 ## Output
 
 Approved-ready copy + asset specs for `marketing-launch`. Visual production is a human task.
+
+## Lifecycle tracker
+
+This skill owns the **Assets** stage of the marketing lifecycle tracker kept at the bottom of the acted-on repo's `README.md`. See [`../../shared/marketing-lifecycle.md`](../../shared/marketing-lifecycle.md) for the block format, emoji legend, and create-or-update algorithm.
+
+- **When this skill begins its substantive work** (after prerequisites pass), set the `Assets` line to ⏳ (in progress). Create `README.md` and/or the tracker block first if either is missing.
+- **When this skill completes successfully**, set the `Assets` line to ✅ (done).
+
+Touch only the `Assets` line — leave every other stage exactly as found.

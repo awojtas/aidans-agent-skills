@@ -75,7 +75,7 @@ Work through each item in order:
 
 1. **Read context.** Read the relevant source files. If `docs/architecture/` exists, check it for any relevant decisions. If the item involves a UI/UX change and the `/frontend-design` skill is available, invoke it for that item.
 2. **Implement.** Make the fix.
-3. **Commit.** Use a conventional commit message that references the item number: e.g., `fix(home): replace em/en dash with hyphen (#1)`.
+3. **Commit.** Use a conventional commit message that references the item number: e.g., `fix(home): replace em/en dash with hyphen [feedback 1]`. Use `[feedback N]` notation, not `#N` — GitHub interprets `#N` as an issue/PR reference and would create a spurious link.
 4. **Merge to main.** Check whether the project uses branch protection before assuming a direct push is allowed — if branch protection is on, open a PR per item (or batch related items into one PR).
 5. **Check off and continue.** If an item fails (file not found, ambiguous spec), note it and move on — don't stall the batch.
 

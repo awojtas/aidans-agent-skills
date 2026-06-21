@@ -1,6 +1,6 @@
 ---
 name: marketing-followup
-description: 'Run the steady, low-time growth engine after launch — a small rotating weekly habit plus periodic retros that recycle results back into research. Keeps marketing sustainable for a busy owner instead of a one-off launch that fizzles. Use when the user says "weekly marketing", "marketing follow-up", "growth engine", "what should I do this week", or wants an ongoing cadence.'
+description: 'Run the steady, low-time growth engine after launch — a small rotating weekly habit (posts, forum threads, SEO pages, behavioral push notifications, win-back sequences, referral monitoring, A/B tests) plus periodic retros that recycle results back into research. Keeps marketing sustainable for a busy owner instead of a one-off launch that fizzles. Use when the user says "weekly marketing", "marketing follow-up", "growth engine", "re-engagement", "what should I do this week", or wants an ongoing cadence.'
 ---
 
 # The follow-up engine
@@ -19,6 +19,10 @@ Post-launch, ongoing. The recurring phase of the lifecycle.
    - answer one or two forum threads value-first (surfaced from research)
    - ship one SEO/comparison page (recurring organic traffic)
    - review metrics and double down on the channel that produced activated users
+   - send a behavioral push or in-app message to users who hit a milestone or haven't returned in 7 days (draft ready from assets; human triggers)
+   - run a win-back sequence for users inactive 14+ days — one short message acknowledging the gap, offering a concrete re-entry hook, easy to ignore
+   - check referral program conversion; if uptake is low, adjust the reward visibility or the friction in the share flow
+   - A/B test one element (headline, CTA, screenshot, notification copy) — pick the winner, record it, move on
 3. **Periodic retro:** what produced real users, what to cut, what to repeat. Recycle into a fresh `marketing-research` round so the language and thread list stay current.
 4. **Keep it tiny.** If it doesn't fit the weekly budget, cut scope — a sustainable small habit beats an ambitious plan that gets abandoned.
 

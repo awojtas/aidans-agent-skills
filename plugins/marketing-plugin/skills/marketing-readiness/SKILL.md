@@ -26,3 +26,12 @@ Read `docs/marketing/profile.md`, then audit:
 A punch-list ranked by severity, and a GitHub issue per real gap (use the repo's existing labels; do not invent labels). Call out the single highest-leverage fix. Recommend holding public promotion until the essentials pass.
 
 See `../../shared/guardrails.md` for the legal items.
+
+## Lifecycle tracker
+
+This skill owns the **Readiness** stage of the marketing lifecycle tracker kept at the bottom of the acted-on repo's `README.md`. See [`../../shared/marketing-lifecycle.md`](../../shared/marketing-lifecycle.md) for the block format, emoji legend, and create-or-update algorithm.
+
+- **When this skill begins its substantive work** (after prerequisites pass), set the `Readiness` line to ⏳ (in progress). Create `README.md` and/or the tracker block first if either is missing.
+- **When this skill completes successfully**, set the `Readiness` line to ✅ (done).
+
+Touch only the `Readiness` line — leave every other stage exactly as found.

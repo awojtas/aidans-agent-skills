@@ -1,6 +1,6 @@
 ---
 name: marketing-readiness
-description: 'Check whether an app is actually ready to have traffic driven at it, before any promotion starts. Audits the live site, onboarding/first-run, analytics wiring, signup + pricing story, social-share metadata, and legal basics; produces a severity-ranked punch-list and files GitHub issues for the gaps. Use when the user says "is my app ready to market", "pre-launch audit", "marketing readiness", or before running marketing-launch.'
+description: 'Check whether an app is actually ready to have traffic driven at it, before any promotion starts. Audits the live site, onboarding/first-run, analytics wiring, signup + pricing story, social-share metadata, legal basics, app store listing quality (if on iOS/Android), and campaign infrastructure (deep links, push opt-in timing); produces a severity-ranked punch-list and files GitHub issues for the gaps. Use when the user says "is my app ready to market", "pre-launch audit", "marketing readiness", or before running marketing-launch.'
 ---
 
 # Is the app ready to be marketed?
@@ -20,6 +20,8 @@ Read `docs/marketing/profile.md`, then audit:
 3. **Analytics.** Is the funnel instrumented (`visited → signed_up → activated → retained`)? You cannot manage what you cannot see.
 4. **Signup + pricing story.** Can a stranger sign up? Is there a pricing page (even a "free beta + coming soon" one)? Launch visitors expect one.
 5. **Legal basics.** Privacy notice, analytics consent if needed, terms.
+6. **App store listing (if on iOS/Android).** Does the title lead with the primary keyword without sounding robotic? Does the description open with benefits, not features? Are screenshots storytelling — do they convey what the experience *feels* like rather than just showing raw UI? Is an in-app review prompt implemented, timed to fire after a user completes a genuinely positive action (task completed, goal hit, streak reached) — not on first launch, where most users decline?
+7. **Campaign infrastructure.** Can marketing campaigns (ads, emails, push notifications) deep-link users to a specific in-app screen, not just the home screen? If push is in the plan: is the permission ask timed to a meaningful moment rather than cold on first app open? Drop-off here silently caps your push reach for good.
 
 ## Output
 

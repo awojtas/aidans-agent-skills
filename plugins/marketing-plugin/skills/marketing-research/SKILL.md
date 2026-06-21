@@ -17,11 +17,12 @@ Before positioning and copy, and periodically to refresh (recycle from `marketin
 2. **Define/refine the ICP and venues** — the subreddits, communities, directories, and forums where this audience actually is.
 3. **Listen.** Drive the listening tool to pull real discussion about the problem and the alternatives. Follow the method in `../../shared/tooling.md` (for Reddit: API actor, tight global search phrases, then filter to relevant communities — browser scrapers get blocked).
 4. **Analyse, don't dump.** Pull out: recurring pain themes ranked by frequency; **verbatim phrases** real users use (gold for copy); the named competitors and what people dislike about each; a shortlist of specific threads where the product is a genuine answer (feeds value-first engagement later) and SEO topics.
-5. **Write `docs/marketing/research-findings.md`** with quotes and the thread/SEO shortlist.
+5. **Competitor listing audit (if the app is on iOS/Android).** For the top 3–5 direct competitors in the store: note the keywords embedded in their title/subtitle, what their highest-upvoted reviews praise and complain about, and obvious gaps in their listings (thin descriptions, weak screenshots, low ratings on specific dimensions). This feeds the ASO copy pack in `marketing-assets` and sharpens the positioning wedge.
+6. **Write `docs/marketing/research-findings.md`** with quotes, the thread/SEO shortlist, and (if applicable) the competitor listing summary.
 
 ## Output
 
-`research-findings.md` — feeds `marketing-positioning`, `marketing-assets`, and the thread list for `marketing-launch`/`marketing-followup`.
+`research-findings.md` — feeds `marketing-positioning`, `marketing-assets`, and the thread/ASO keyword list for `marketing-launch`/`marketing-followup`.
 
 ## Guardrails
 

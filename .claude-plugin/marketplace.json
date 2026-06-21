@@ -23,6 +23,11 @@
       "name": "executive-advisor-plugin",
       "source": "./plugins/executive-advisor-plugin",
       "description": "Business advisory skills for agents acting as executives and advisors — strategic audits, business-purpose alignment, and decision-making frameworks drawn from foundational management thinking."
+    },
+    {
+      "name": "marketing-plugin",
+      "source": "./plugins/marketing-plugin",
+      "description": "Take any app to market on a small budget with heavy AI leverage — readiness, audience research, positioning, planning, asset prep, launch runbooks, metrics, and an ongoing growth engine, all driven by a per-app profile."
     }
   ]
 }

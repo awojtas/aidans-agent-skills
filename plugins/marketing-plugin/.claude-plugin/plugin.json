@@ -1,0 +1,10 @@
+{
+	"name": "marketing-plugin",
+	"description": "Bundled skills for taking any app to market on a small budget with heavy AI leverage — readiness, audience research, positioning, planning, asset prep, launch runbooks, metrics, and an ongoing growth engine.",
+	"version": "1.0.0",
+	"author": {
+		"url": "https://github.com/awojtas/aidans-agent-skills"
+	},
+	"repository": "https://github.com/awojtas/aidans-agent-skills",
+	"skills": "./skills/"
+}

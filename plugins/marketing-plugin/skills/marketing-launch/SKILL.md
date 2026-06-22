@@ -15,7 +15,7 @@ After assets exist and readiness passes. For seed pushes and the main launch.
 
 Read `marketing-plan.md`, the assets, and `../../shared/guardrails.md`. Then, per channel:
 
-- **Directories (seed):** prep every listing (description, links, screenshots) as a copy-paste pack; human submits. One-time, permanent backlinks. Cover: Product Hunt, BetaList, AlternativeTo, AppAdvice, and any niche directories surfaced in research.
+- **Directories (seed):** prep every listing (description, links, screenshots) as a copy-paste pack; human submits. One-time, permanent backlinks. Cover: BetaList, AlternativeTo, AppAdvice, and any niche directories surfaced in research. (Product Hunt is a full launch event, not a directory — see its dedicated runbook below.)
 - **Review sites + niche press:** use the press kit from assets; identify 3–5 relevant review blogs, YouTube channels, or niche journalists who cover the category; draft a short personal pitch (one paragraph — not an attachment dump) and link the press kit; human sends. Third-party validation drives installs and builds long-lived backlinks that directories alone don't.
 - **Product Hunt (the one big push):** assemble the full kit; line up the pre-launch email list for first-hours momentum; prep the launch-day cross-posts and a first-comment plan; the human runs the day. Launches win on pre-built audience, not luck.
 - **Reddit / forums:** use the thread shortlist from research; draft genuinely-helpful, value-first replies where the product is the real answer; human posts. Never spam — read each sub's self-promo rule.

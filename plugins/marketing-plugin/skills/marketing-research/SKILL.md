@@ -1,6 +1,6 @@
 ---
 name: marketing-research
-description: 'Find out who the users are, where they gather, the exact words they use for their pain, and what they hate about competitors — by listening, not guessing. Drives a listening tool (e.g. Apify) to mine real discussion, then synthesises themes, verbatim language, a thread shortlist, and competitor pain into docs/marketing/research-findings.md. Use when the user says "marketing research", "voice of customer", "who are my users", "competitor research", or before positioning/copy.'
+description: 'Find out who the users are, where they gather, the exact words they use for their pain, and what they hate about competitors — by listening, not guessing. Drives a listening tool (e.g. Apify) to mine real discussion, then synthesises themes, verbatim language, a thread shortlist, and competitor pain into docs/marketing/research-findings.md. For iOS/Android apps, also audits competitor store listings for ASO keyword signals, review themes, and listing gaps. Use when the user says "marketing research", "voice of customer", "who are my users", "competitor research", "ASO research", "app store keywords", or before positioning/copy.'
 ---
 
 # Voice-of-customer research

@@ -1,6 +1,6 @@
 ---
 name: task-implement
-description: 'Heavyweight, multi-persona SDLC workflow for a single GitHub issue — specialist personas (Principal Engineer, QA, Cloud Architect, UX, Security, Test Automation, SRE, Project Manager, Product Manager, Work Checker) run across phases, each posting audit-trail comments on the issue, culminating in a reviewed, merged PR. Expect hours of runtime. Use when the user says "task-implement", "thoroughly implement", "careful implementation", "production-critical", "complex feature", "risky change", "full SDLC workflow", or explicitly wants multi-persona review and an audit trail. For routine tasks use /issue-work instead — it is faster and sufficient for most issues.'
+description: 'Adaptive multi-persona SDLC workflow for a single GitHub issue. Opens with a complexity-routing step that scores risk (real money? public users? publicly visible? embarrassment or legal exposure?) and decides which specialist personas to activate — Cloud Architect, Security Engineer, and SRE can be skipped for low-risk or local-only work; PE, QA, TAE, PrjM, PdM, and Work Checker always run. Active personas post audit-trail comments; the run culminates in a reviewed, merged PR. Scales from a lean few-persona pass to hours of full-suite orchestration. Use when the user says "task-implement", "thoroughly implement", "careful implementation", "production-critical", "complex feature", or wants multi-persona review with an audit trail. For single-agent quick tasks use /issue-work.'
 ---
 
 # Implementing a task end-to-end with role-based orchestration
@@ -10,26 +10,26 @@ This skill takes one GitHub issue from "picked up" to **merged and closed**. It 
 ## When to use this vs the lighter alternatives
 
 - `/issue-work` — single-agent quick pass. Use when the task is small and the quality bar is "merges cleanly".
-- `/task-implement` — multi-agent orchestration. Use when the task is important, complex, or risk-bearing, and the quality bar is "audited, fully tested, self-reviewed".
+- `/task-implement` — adaptive multi-persona orchestration. **Phase 0a runs first** and decides which specialist personas are actually needed based on a risk score. Low-risk local work might skip Cloud Architect, Security, and SRE entirely and finish in minutes; production-critical work gets the full suite and takes hours. If you're not sure whether you need the full workflow, just use `/task-implement` — the routing step will size it correctly.
 
-If you're not sure, default to `/issue-work` for tasks under ~half a day of work and `/task-implement` for anything bigger or anything carrying production risk.
+The gap between the two is now a spectrum, not a cliff. `/issue-work` is still the right call for truly routine single-agent tasks; `/task-implement` covers everything from "a bit more rigour than issue-work" up to "full production audit trail".
 
 ## The personas
 
 Each persona is a sub-agent the orchestrator spawns with a focused brief.
 
-| Persona | Mandate | Reference doc | Posts comment as |
-|---------|---------|----------------|------------------|
-| **Principal Engineer (PE)** | Build it. Branch setup, implementation, lint+build, PR, review-feedback. | `references/role-principal-engineer.md` | `[Principal Engineer]` |
-| **QA Engineer (QA)** | Make it testable; verify it's tested. Can use Playwright for AC oversight. | `references/role-qa-engineer.md` | `[QA Engineer]` |
-| **Cloud Architect (CA)** | Identify and apply (or surface) infra/IaC/pipeline changes. | `references/role-cloud-architect.md` | `[Cloud Architect]` |
-| **UX/UI Designer (UX)** | Establish the design spec before implementation; verify the rendered output after. Uses the project's design system if one exists, or defines principles if not. Uses Playwright to verify. | `references/role-ux-designer.md` | `[UX/UI Designer]` |
-| **Security Engineer (Sec)** | Audit the diff for OWASP-shape defects — authn/authz, injection, secrets, crypto, session, dependency hygiene, rate-limit and abuse. Bounces on Critical / High. | `references/role-security-engineer.md` | `[Security Engineer]` |
-| **Test Automation Engineer (TAE)** | Write the tests at the right level. | `references/role-test-automation-engineer.md` | `[Test Automation Engineer]` |
-| **Site Reliability Engineer (SRE)** | Verify production-readiness — observability, alerting, runbook, rollback, capacity, failure modes, deploy safety. Per-feature scope, distinct from platform-level `/platform-verify`. | `references/role-sre.md` | `[SRE]` |
-| **Project Manager (PrjM)** | Process-diligence audit; bounce back if work isn't actually delivered. | `references/role-project-manager.md` | `[Project Manager]` |
-| **Product Manager (PdM)** | Outcome audit against the originating requirement — does the user-facing result match the intent? Actually tries the feature. | `references/role-product-manager.md` | `[Product Manager]` |
-| **Work Checker (WC)** | Audit every phase before handoff. Catches the ~80% of self-audit defects. | `references/role-work-checker.md` | `[Work Checker]` |
+| Persona | Mandate | Conditional? | Reference doc | Posts comment as |
+|---------|---------|--------------|----------------|------------------|
+| **Principal Engineer (PE)** | Build it. Branch setup, implementation, lint+build, PR, review-feedback. | Always active | `references/role-principal-engineer.md` | `[Principal Engineer]` |
+| **QA Engineer (QA)** | Make it testable; verify it's tested. Can use Playwright for AC oversight. | Always active | `references/role-qa-engineer.md` | `[QA Engineer]` |
+| **Cloud Architect (CA)** | Identify and apply (or surface) infra/IaC/pipeline changes. | **Conditional** — skipped if no cloud deployment or IaC detected at LOW risk | `references/role-cloud-architect.md` | `[Cloud Architect]` |
+| **UX/UI Designer (UX)** | Establish the design spec before implementation; verify the rendered output after. Uses the project's design system if one exists, or defines principles if not. Uses Playwright to verify. | **Conditional** — skipped if backend-only task at LOW risk | `references/role-ux-designer.md` | `[UX/UI Designer]` |
+| **Security Engineer (Sec)** | Audit the diff for OWASP-shape defects — authn/authz, injection, secrets, crypto, session, dependency hygiene, rate-limit and abuse. Bounces on Critical / High. | **Conditional** — skipped at LOW risk with no auth/data surface; lightweight pass at MEDIUM | `references/role-security-engineer.md` | `[Security Engineer]` |
+| **Test Automation Engineer (TAE)** | Write the tests at the right level. | Always active | `references/role-test-automation-engineer.md` | `[Test Automation Engineer]` |
+| **Site Reliability Engineer (SRE)** | Verify production-readiness — observability, alerting, runbook, rollback, capacity, failure modes, deploy safety. Per-feature scope, distinct from platform-level `/platform-verify`. | **Conditional** — skipped if not deployed to any environment | `references/role-sre.md` | `[SRE]` |
+| **Project Manager (PrjM)** | Process-diligence audit; bounce back if work isn't actually delivered. | Always active (scope varies by risk tier) | `references/role-project-manager.md` | `[Project Manager]` |
+| **Product Manager (PdM)** | Outcome audit against the originating requirement — does the user-facing result match the intent? Actually tries the feature. | Always active (scope varies by risk tier) | `references/role-product-manager.md` | `[Product Manager]` |
+| **Work Checker (WC)** | Audit every active phase before handoff. Catches the ~80% of self-audit defects. | Runs after every active phase | `references/role-work-checker.md` | `[Work Checker]` |
 
 The orchestrator is the conductor. It tracks state (current phase, branch, PR number, bounce-back counts) and dispatches each persona.
 
@@ -65,24 +65,128 @@ The orchestrator and each spawned sub-agent should consult these as needed:
 6. **The user has time.** This skill can run for hours. Set the expectation.
 7. **`docs/architecture/` is present.** Implementation work without a recorded architecture risks drift from the agreed technical shape. If `docs/architecture/` is missing, surface this to the user before starting — *"No architecture folder found. Implementation can proceed but personas will be implementing against unstated architectural assumptions. Run `/platform-design` first?"* If the user says proceed, the personas treat the existing code as the de facto architecture.
 
+## Phase 0a — Complexity routing (runs before everything)
+
+**The orchestrator runs this step directly — no sub-agent spawned.** It reads the task and repo context, scores the risk, builds a run profile, and confirms it with the user before Phase 0 begins. This is the only gate that can authorise skipping a phase.
+
+### Step 1: Auto-detect signals
+
+Read without spawning a sub-agent:
+
+- `AGENTS.md`, `CLAUDE.md`, `README.md` — what kind of project? Local tool, web app, API service, mobile app?
+- IaC / deployment config presence (any of: `vercel.json`, `firebase.json`, `serverless.yml`, `*.tf`, `cdk.json`, `Dockerfile`, `.github/workflows/*.yml` with deploy steps, `fly.toml`, `render.yaml`) — is this deployed anywhere?
+- Payment/financial library evidence (`stripe`, `paypal`, `braintree`, `plaid`, `adyen` in package manifests or imports)
+- Auth surface evidence (`clerk`, `auth0`, `supabase-auth`, `next-auth`, `passport`, `jwt` in package manifests or imports)
+- Issue body and title — does the user say "local only", "personal project", "dev machine", "just for me"?
+
+### Step 2: Ask what can't be auto-detected
+
+If signals don't give a clear picture, ask the user in a single batch (not one question at a time). Skip any question auto-detection already answered confidently:
+
+1. **Real users?** — "Do non-developer users interact with this app today, even a small number?"
+2. **Real money?** — "Does this feature touch payment processing, billing, financial accounts, or real money in any form?"
+3. **Public visibility?** — "Is this accessible to the public internet, or only on your local machine or an internal network?"
+4. **Embarrassment / legal exposure?** — "If a bug in this feature went live undetected, would users, customers, or the public see the impact?"
+
+### Step 3: Score the risk tier
+
+| Signal | Points |
+|---|---|
+| Real users (non-developers) using it today | +2 |
+| Handles real money or financial data | +3 |
+| Publicly visible to the internet | +2 |
+| Bug would cause user-visible embarrassment or legal/regulatory exposure | +2 |
+| Deployed to any cloud environment | +1 |
+| Auth surface present (login, sessions, roles, permissions) | +1 |
+
+**Total → tier:**
+- **0–2: LOW** — local dev tool, personal project, no real users, not deployed
+- **3–5: MEDIUM** — deployed or has real users, limited exposure
+- **6+: HIGH** — public-facing, financial, or reputationally / legally sensitive
+
+### Step 4: Build the run profile
+
+| Phase | Persona | LOW | MEDIUM | HIGH |
+|---|---|---|---|---|
+| 0 | PE: Branch setup | ✅ | ✅ | ✅ |
+| 1 | QA: Ticket validation | ✅ | ✅ | ✅ |
+| 2 | CA: Cloud architecture | Skip unless IaC/deploy detected | ✅ if IaC/deploy present | ✅ Always |
+| 3 | UX: Design spec | Skip if backend-only | ✅ if UI surface present | ✅ Always |
+| 4 | PE: Implementation | ✅ | ✅ | ✅ |
+| 5 | UX: Design review | Skip if Phase 3 skipped | ✅ if Phase 3 ran | ✅ Always |
+| 6 | Sec: Security review | Skip if no auth/data surface | Lightweight pass | ✅ Full OWASP |
+| 7 | TAE: Tests | ✅ | ✅ | ✅ |
+| 8 | QA: Test validation | ✅ | ✅ | ✅ |
+| 9 | PE: Lint + build | ✅ | ✅ | ✅ |
+| 10 | SRE: Prod-readiness | Skip if not deployed | ✅ if deployed | ✅ Always |
+| 11 | PrjM: Process audit | Abbreviated | Full | Full |
+| 12 | PdM: Outcome review | Abbreviated | Full | Full |
+| 13 | PE: PR + merge | ✅ | ✅ | ✅ |
+
+**Abbreviated scope (LOW tier) means:**
+- PrjM Phase 11: Confirm work was actually done, tests pass, lint is green. Skip the deep process-execution audit.
+- PdM Phase 12: Confirm the feature does what the issue asked. Skip the walk-from-entry-point and originating-requirement deep-read.
+
+**MEDIUM Sec lightweight pass** means: walk the diff for obvious auth/injection/secret issues; skip the full OWASP category-by-category sweep.
+
+### Step 5: Present and confirm
+
+Print the run profile and ask the user to confirm before Phase 0 starts:
+
+```
+Run profile for issue #<N>: <title>
+
+Risk tier: <LOW / MEDIUM / HIGH>
+Risk factors: <list the signals that contributed points, e.g. "deployed to Vercel (+1), public internet (+2)">
+
+Phases:
+✅ Phase 0  — PE: Branch setup
+✅ Phase 1  — QA: Ticket validation
+⏭ Phase 2  — CA: Cloud architecture  [SKIPPED — no deployment config detected]
+✅ Phase 3  — UX: Design spec
+✅ Phase 4  — PE: Implementation
+✅ Phase 5  — UX: Design review
+⏭ Phase 6  — Sec: Security review    [SKIPPED — LOW risk, no auth surface detected]
+✅ Phase 7  — TAE: Tests
+✅ Phase 8  — QA: Test validation
+✅ Phase 9  — PE: Lint + build
+⏭ Phase 10 — SRE: Prod-readiness     [SKIPPED — not deployed]
+✅ Phase 11 — PrjM: Process audit     [abbreviated scope]
+✅ Phase 12 — PdM: Outcome review     [abbreviated scope]
+✅ Phase 13 — PE: PR + merge
+
+Confirm, or override any phase decision before we start.
+```
+
+Accept plain-language overrides — e.g. "skip CA but run Sec" or "run full PrjM". Update the profile before proceeding. If the user confirms, lock the profile: the orchestrator may not add or remove phases after this point.
+
+### Skipped-phase audit trail
+
+For each skipped phase, the orchestrator posts a brief comment on the GitHub issue so the audit trail stays honest:
+
+`[Orchestrator] Phase <N> (<Persona>) skipped — run profile: <one-line reason>`
+
+---
+
 ## Workflow
 
 The full phase sequence:
 
 ```text
 task-implement progress:
+- [ ] Phase 0a — Orchestrator: Complexity routing + run profile
 - [ ] Phase 0  — PE:   Branch setup
 - [ ] Phase 1  — QA:   Ticket validation
-- [ ] Phase 2  — CA:   Cloud architecture review
-- [ ] Phase 3  — UX:   Design specification
+- [ ] Phase 2  — CA:   Cloud architecture review          [conditional — see run profile]
+- [ ] Phase 3  — UX:   Design specification               [conditional — see run profile]
 - [ ] Phase 4  — PE:   Implementation
-- [ ] Phase 5  — UX:   Design review
-- [ ] Phase 6  — Sec:  Security review
+- [ ] Phase 5  — UX:   Design review                     [conditional — runs if Phase 3 ran]
+- [ ] Phase 6  — Sec:  Security review                   [conditional — see run profile]
 - [ ] Phase 7  — TAE:  Tests
 - [ ] Phase 8  — QA:   Test validation
 - [ ] Phase 9  — PE:   Lint + build
-- [ ] Phase 10 — SRE:  Production-readiness review
-- [ ] Phase 11 — PrjM: Process-diligence audit (can bounce back to any earlier phase)
+- [ ] Phase 10 — SRE:  Production-readiness review        [conditional — see run profile]
+- [ ] Phase 11 — PrjM: Process-diligence audit (can bounce back to any earlier active phase)
 - [ ] Phase 12 — PdM:  Outcome review (can bounce or recommend /requirements-rework)
 - [ ] Phase 13 — PE:   PR + self-review + merge
 - [ ] Phase 14 — PE:   Review feedback addressed (opt-in; only if user requested human review before merge)
@@ -408,6 +512,8 @@ Final summary post by the orchestrator (not a persona) to the GitHub issue, plus
 - PR: <URL> (merged)
 - Commits: <N>
 - Tests added: <unit-count> unit / <int-count> integration / <e2e-count> E2E
+- Risk tier: <LOW / MEDIUM / HIGH> (score: <N>)
+- Phases skipped: <list from run profile, or "none">
 - Bounce-backs during session: <count> (see PrjM / PdM comments)
 - Human-required infra checklist items: <count> (see CA comment)
 
@@ -418,6 +524,7 @@ The terminal summary:
 
 - PR link (merged).
 - Time elapsed.
+- Risk tier and phases skipped (visible signal of how much was actually run).
 - Bounce-back count (visible signal of quality friction).
 - Number of WC findings caught and fixed (visible signal of self-audit value).
 
@@ -468,6 +575,13 @@ Across the long-running session:
   "branch": "42-add-rate-limit-to-signin",
   "pr_number": null,  // until Phase 13
   "current_phase": 4,
+  "risk_tier": "LOW",           // set in Phase 0a; LOW / MEDIUM / HIGH
+  "risk_score": 2,              // numeric total from the scoring table
+  "run_profile": {              // set in Phase 0a; locked after user confirms
+    "Phase 2 (CA)":  "SKIPPED — no deployment config detected",
+    "Phase 6 (Sec)": "SKIPPED — LOW risk, no auth surface",
+    "Phase 10 (SRE)":"SKIPPED — not deployed"
+  },
   "bounce_back_counts": {
     "PE": { "Phase 4": 1 },
     "TAE": { "Phase 7": 0 }
@@ -480,7 +594,7 @@ Stored in memory across the session; printed in the final summary.
 
 ## Strict non-goals
 
-- **No skipping phases.** The phase sequence is intentional. If the user wants a lighter pass, use `/issue-work`.
+- **No unilateral phase skipping.** Phases may only be skipped when Phase 0a's complexity routing explicitly authorises it, with the reason recorded in the run profile and posted as an audit-trail comment on the issue. Skipping a phase for any other reason — speed, context pressure, "it seems unnecessary", rate limit, or token budget — is not allowed. If you believe a phase is unnecessary for a reason not captured by the routing table, surface it to the user during Phase 0a and get explicit sign-off before locking the profile.
 - **No limit-citing shortcuts.** Daily usage limits, rate limits, remaining-context pressure, "running low on tokens", model-quota messages, or session length are **never** legitimate reasons to skip a phase, skip the Work Checker, collapse two phases into one, mark a phase done without running it, downgrade a persona's brief, or declare the task complete with phases outstanding. The correct response to capacity pressure is to **pause and report**: post an `[Orchestrator]` comment on the issue naming the phase in flight and what's left, then stop. The user resumes the session later — every persona's prior comment is the durable state, so resumption is cheap. Lying about completion to avoid a pause is the worst possible outcome and a Work Checker / PrjM bounce.
 - **No skipping the merge.** In the default flow the skill merges the PR at the end of Phase 13. If the user asked for human review (`--review` or equivalent), the skill pauses before merging — but it never silently drops the merge step in the default flow.
 - **No auto-fixing across roles.** The Work Checker reports; it doesn't fix. The role fixes.

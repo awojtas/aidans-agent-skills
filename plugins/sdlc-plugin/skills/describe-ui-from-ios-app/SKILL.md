@@ -154,6 +154,14 @@ docs/as-built/ui-description/
 
 ---
 
+## Commit (standalone use)
+
+If this skill was invoked directly rather than through `/requirements-from-app`, commit the output following [`../../shared/commit-push-policy.md`](../../shared/commit-push-policy.md). Use commit message: `docs(as-built): capture iOS UI description — <app name>`
+
+If invoked by `/requirements-from-app`, skip this step — that skill owns the commit.
+
+---
+
 ## Guardrails
 
 - Never bypass FaceID/TouchID prompts automatically — ask the user to dismiss them manually and continue

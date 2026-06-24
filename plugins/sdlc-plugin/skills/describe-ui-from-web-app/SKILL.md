@@ -117,7 +117,7 @@ docs/as-built/ui-description/
 ```
 
 **`screens/<screen-name>.md`:**
-```markdown
+````markdown
 # <Screen Name>
 
 **URL:** <url>
@@ -142,7 +142,15 @@ docs/as-built/ui-description/
 ## Observed network calls
 | Method | Path | Notes |
 |--------|------|-------|
-```
+````
+
+---
+
+## Commit (standalone use)
+
+If this skill was invoked directly rather than through `/requirements-from-app`, commit the output following [`../../shared/commit-push-policy.md`](../../shared/commit-push-policy.md). Use commit message: `docs(as-built): capture web UI description — <app name>`
+
+If invoked by `/requirements-from-app`, skip this step — that skill owns the commit.
 
 ---
 

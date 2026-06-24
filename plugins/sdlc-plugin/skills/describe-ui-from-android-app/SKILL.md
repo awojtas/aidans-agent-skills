@@ -40,7 +40,7 @@ Navigate through the app's major flows. For each screen that appears:
 **Quick hierarchy check (always first):**
 ```bash
 adb shell uiautomator dump /sdcard/ui_dump.xml
-adb pull /sdcard/ui_dump.xml ./ui_dump_<screen-name>.xml
+adb pull /sdcard/ui_dump.xml docs/as-built/ui-description/hierarchies/<screen-name>.xml
 ```
 
 If the XML contains meaningful content (more than 3 nodes), the screen is capturable. If the XML is nearly empty (`<hierarchy rotation="0"><node ... /></hierarchy>` with no children), note as "sparse — anti-tampering suspected."
@@ -128,6 +128,14 @@ docs/as-built/ui-description/
 ## Content structure
 (Lists, cards, RecyclerViews — describe the item template)
 ```
+
+---
+
+## Commit (standalone use)
+
+If this skill was invoked directly rather than through `/requirements-from-app`, commit the output following [`../../shared/commit-push-policy.md`](../../shared/commit-push-policy.md). Use commit message: `docs(as-built): capture Android UI description — <app name>`
+
+If invoked by `/requirements-from-app`, skip this step — that skill owns the commit.
 
 ---
 

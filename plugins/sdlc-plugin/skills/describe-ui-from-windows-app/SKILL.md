@@ -17,7 +17,7 @@ Inspect a running Windows desktop application through the Windows UI Automation 
 
 ## Phase 0 — Preflight
 
-1. Confirm the environment is Windows: run `[System.Environment]::OSVersion` (PowerShell) or `ver` (cmd). If not Windows, stop and print:
+1. Confirm the environment is Windows: run `[System.Environment]::OSVersion.Platform` (PowerShell). If the result is not `Win32NT`, stop immediately and print:
    > This skill requires Windows. pywinauto and the Windows UI Automation framework are Windows-only. Run this skill from a Windows machine or VM.
 
 2. Check pywinauto: `python -c "import pywinauto; print('ok')"`. If it fails:
@@ -116,7 +116,7 @@ docs/as-built/ui-description/
 ```
 
 **`screens/<window-name>.md`:**
-```markdown
+````markdown
 # <Window Name>
 
 **Window class:** <class name>
@@ -133,7 +133,15 @@ docs/as-built/ui-description/
 ```
 <paste print_control_identifiers() output here>
 ```
-```
+````
+
+---
+
+## Commit (standalone use)
+
+If this skill was invoked directly rather than through `/requirements-from-app`, commit the output following [`../../shared/commit-push-policy.md`](../../shared/commit-push-policy.md). Use commit message: `docs(as-built): capture Windows UI description — <app name>`
+
+If invoked by `/requirements-from-app`, skip this step — that skill owns the commit.
 
 ---
 

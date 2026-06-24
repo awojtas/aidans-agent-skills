@@ -28,7 +28,7 @@ If ambiguous after one clarifying question, default to web.
 
 ## Step 1 — Invoke the capture skill
 
-Tell the user which `describe-ui-from-*` skill you are invoking and why. Execute that skill's full workflow (it is defined in the same plugin directory). Do not summarise or shortcut the capture skill — run it completely.
+Tell the user which `describe-ui-from-*` skill you are invoking and why. Invoke it as a slash command (e.g. `/describe-ui-from-web-app`) — all four are registered skills in this same plugin. Do not summarise or shortcut the capture skill — run it completely.
 
 When the capture skill finishes, `docs/as-built/ui-description/` will contain:
 - `screen-inventory.md` — table of all discovered screens

@@ -1,6 +1,6 @@
 ---
 name: repo-bootstrap
-description: Bootstraps a brand-new GitHub repository end-to-end — prompts for a project name and short intro, creates a private GitHub repo under the user's account, clones it to ~/src/<repo-name>, scaffolds .gitignore, .gitattributes, AGENTS.md, CLAUDE.md, README.md, LICENSE, .github/copilot-instructions.md, .github/pull_request_template.md, and a minimal check-root-docs workflow, then makes the initial commit and pushes. Use when the user says "new project", "new repo", "start a new project", "bootstrap a repo", "create a GitHub repo", "spin up a project", "scaffold a new repo", or describes wanting to begin something from scratch with a fresh GitHub repo. Deliberately scoped to day-0 scaffolding — branching strategy, CI/CD, deploys, observability, dependabot, and other maturity concerns belong to the separate repo-level-up skill.
+description: Bootstraps a brand-new GitHub repository end-to-end — prompts for a project name and short intro, creates a private GitHub repo under the user's account, clones it to an inferred local dev directory (e.g. ~/src or ~/dev — detected from context, confirmed with user), scaffolds .gitignore, .gitattributes, AGENTS.md, CLAUDE.md, README.md, LICENSE, .github/copilot-instructions.md, .github/pull_request_template.md, and a minimal check-root-docs workflow, then makes the initial commit and pushes. Use when the user says "new project", "new repo", "start a new project", "bootstrap a repo", "create a GitHub repo", "spin up a project", "scaffold a new repo", or describes wanting to begin something from scratch with a fresh GitHub repo. Deliberately scoped to day-0 scaffolding — branching strategy, CI/CD, deploys, observability, dependabot, and other maturity concerns belong to the separate repo-level-up skill.
 ---
 
 # Bootstrapping a new GitHub repository
@@ -12,7 +12,7 @@ This skill creates a brand-new repo from nothing. It is **only** for day-0 scaff
 Confirm before starting:
 
 1. `gh` CLI is installed and authenticated (`gh auth status`).
-2. `~/src/` exists on disk (`ls ~/src` — create it if missing).
+2. `<BASE_DIR>` is determined (see Step 2 — derive base directory).
 3. The user's GitHub login (`gh api user --jq .login`) — used as the owner for the new repo.
 
 If any of these fails, surface the problem and stop.
@@ -39,7 +39,7 @@ Ask the user **once**, in a single AskUserQuestion-style prompt, for:
 1. **Project name** (required). Free-form — accept any string the user types.
 2. **Brief intro** (optional). One or two sentences on what the project is for. Empty/blank is fine — treat that as a "vanilla project" and use a placeholder intro in scaffolded files.
 
-If the user invoked the skill with a name (e.g. `/repo-bootstrap turnsies`), use that as the default for the name prompt rather than asking from scratch.
+If the user invoked the skill with a name (e.g. `/repo-bootstrap my-app`), use that as the default for the name prompt rather than asking from scratch.
 
 If the user gave no intro, use this placeholder in scaffolded files:
 
@@ -47,7 +47,31 @@ If the user gave no intro, use this placeholder in scaffolded files:
 {{PROJECT_NAME}} is a new project. Update this section with a short description once the direction is clear.
 ```
 
-### Step 2: Derive repo slug + check it's free
+### Step 2: Determine base directory, derive repo slug, and check both are free
+
+#### 2a — Determine `<BASE_DIR>`
+
+Run the following to get the current working directory:
+
+```bash
+pwd
+```
+
+Apply this decision tree to pick `<BASE_DIR>`:
+
+| CWD pattern | Action |
+|---|---|
+| Looks like a dev root (`~/src`, `~/dev`, `~/projects`, `~/code`, `~/workspace`, `C:\dev`, `C:\src`, `C:\projects`, or similar: exactly 1–2 levels below home/drive root with a development-sounding name) | Propose CWD as `<BASE_DIR>` and confirm with user |
+| CWD is inside a project inside a dev root (e.g. `~/src/existing-project` or `~/src/existing-project/docs`) | Propose the dev-root ancestor as `<BASE_DIR>` and confirm with user |
+| CWD is the home directory (`~`, `/home/<user>`, `C:\Users\<user>`) | Too broad — ask the user to specify `<BASE_DIR>` explicitly |
+| CWD is a filesystem root (`/`, `C:\`) | Too broad — ask the user to specify `<BASE_DIR>` explicitly |
+| CWD is a deeply nested path with no obvious dev-root ancestor | Ask the user to specify `<BASE_DIR>` explicitly |
+
+If asking, phrase it as: _"Where should I clone the new repo? (e.g. `~/src`, `~/projects`, `C:\dev`)"_
+
+If the chosen `<BASE_DIR>` does not exist, create it: `mkdir -p <BASE_DIR>`.
+
+#### 2b — Derive repo slug
 
 - **Slug** = the project name processed as follows, in order:
   1. Insert a hyphen at every lowercase→uppercase letter transition (e.g. `yA` → `y-A`).
@@ -57,20 +81,32 @@ If the user gave no intro, use this placeholder in scaffolded files:
   5. Strip leading/trailing hyphens.
 
   Examples: `MobileDevBrowser` → `mobile-dev-browser`, `MyApp` → `my-app`, `My Cool Project!` → `my-cool-project`.
-- **Target path** = `~/src/<slug>`.
 
-Verify both are free **before** creating anything:
+- **Target path** = `<BASE_DIR>/<slug>`.
+
+#### 2c — Check both are free
+
+Verify before creating anything:
 
 ```bash
 gh repo view "$(gh api user --jq .login)/<slug>" 2>/dev/null && echo "REPO_EXISTS" || echo "REPO_FREE"
-test -e ~/src/<slug> && echo "PATH_EXISTS" || echo "PATH_FREE"
+test -e <BASE_DIR>/<slug> && echo "PATH_EXISTS" || echo "PATH_FREE"
 ```
 
 If either exists, surface the collision and ask the user for an alternative slug. Do not overwrite.
 
 ### Step 3: Collect copyright holder
 
-Ask the user for the LICENSE copyright holder. Default to **`Grainbox Limited`** (the user's commercial entity). Year = current year, auto-derived (`date +%Y`).
+Ask the user for the LICENSE copyright holder. Before asking, scan LICENSE files in sibling directories under `<BASE_DIR>` to infer the most likely entity:
+
+```bash
+find "<BASE_DIR>" -maxdepth 2 -name LICENSE -type f | xargs grep -h "Copyright" 2>/dev/null | sed 's/.*Copyright[^0-9]*[0-9]* *//' | sort | uniq -c | sort -rn | head -5
+```
+
+- If one name appears clearly across multiple siblings, propose it as the default: _"Copyright holder — looks like `<name>` from your other repos. Confirm or enter a different name."_
+- If nothing useful is found, or if `<BASE_DIR>` has no sibling repos yet, ask without a default: _"Who should the LICENSE copyright holder be? (e.g. your name, company, or GitHub username)"_
+
+Year = current year, auto-derived (`date +%Y`).
 
 ### Step 4: Create the GitHub repo
 
@@ -87,8 +123,8 @@ Do **not** pass `--clone`, `--source`, `--gitignore`, or `--license` — we are 
 ### Step 5: Initialise local repo and scaffold files
 
 ```bash
-mkdir -p ~/src/<slug>
-cd ~/src/<slug>
+mkdir -p <BASE_DIR>/<slug>
+cd <BASE_DIR>/<slug>
 git init -b main
 git remote add origin "git@github.com:$(gh api user --jq .login)/<slug>.git"
 ```
@@ -135,7 +171,7 @@ If the push fails because the remote already had a commit (rare — only possibl
 Print a short summary:
 
 - Repo URL: `https://github.com/<owner>/<slug>`
-- Local path: `~/src/<slug>`
+- Local path: `<BASE_DIR>/<slug>`
 - Files scaffolded (a flat list)
 - One-line pointer: _"When you're ready to add a branching strategy, CI, deploys, etc., run `/repo-release-ready`."_
 
@@ -157,7 +193,7 @@ If the user asks for any of these during the bootstrap, acknowledge the request 
 
 ## Edge cases
 
-- **`~/src` doesn't exist.** Create it (`mkdir -p ~/src`) before Step 2.
+- **`<BASE_DIR>` doesn't exist.** Create it (`mkdir -p <BASE_DIR>`) as part of Step 2a.
 - **`gh` not authenticated.** Tell the user to run `gh auth login` and stop.
 - **User aborts mid-flow.** Don't leave a half-scaffolded GitHub repo. If the local scaffold fails after `gh repo create` succeeded, offer to delete the remote with `gh repo delete <owner>/<slug> --yes` (ask first — destructive).
 - **User wants the repo public.** This skill is private-by-default by design. Tell them to flip visibility with `gh repo edit --visibility public` after bootstrap, or to do it manually in the GitHub UI.

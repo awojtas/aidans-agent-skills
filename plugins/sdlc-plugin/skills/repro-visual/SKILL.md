@@ -135,7 +135,7 @@ Then eyeball each screenshot for things DOM metrics can't catch:
 
 **Colour & contrast** — text on gradient or image backgrounds; error/warning text. All readable without straining. Check both light and dark areas of the screen. Disabled elements are exempt from WCAG contrast requirements but should still be visually recognisable as disabled — not invisible.
 
-**Interactive states** — hover buttons and links: should have a visible state change. Tab through the page: each interactive element needs a visible focus indicator (ring, border, background fill — any form; the WCAG requirement is visibility, not shape). Selected/active states are distinct from default.
+**Interactive states** — hover buttons and links: should have a visible state change. Tab through the page: each interactive element needs a visible focus indicator (ring, border, background fill — any form; the WCAG requirement is visibility, not shape). Selected/active states are distinct from default. If an indicator is missing: look for `outline: none` or `outline: 0` in CSS without a replacement — this is WCAG Failure F78, and it is NOT exempt as "browser default" (suppressing the outline is author modification; the browser-default exemption only applies when the author's CSS leaves `:focus` completely untouched). Also check modals: focus must move inside the modal on open, stay trapped there while open, and return to the trigger element on close.
 
 **Component states:**
 - *Empty*: lists, grids, and feeds with no data show a helpful message + CTA, not a blank void.
@@ -146,7 +146,7 @@ Then eyeball each screenshot for things DOM metrics can't catch:
 
 **Icons** — consistent style across the screen (all outlined or all filled, never mixed); consistent stroke weight and size; not blurry on high-DPI displays (SVG preferred over raster).
 
-**Forms** — every input has a visible label above it, not just a placeholder (placeholder disappears on typing and is never a substitute for a label); required fields marked; error messages sit directly below their field, not in a generic toast.
+**Forms** — every input has a visible label above it, not just a placeholder (placeholder disappears on typing and is never a substitute for a label); required fields indicated consistently; error messages sit directly below their field, not in a generic toast; validation triggers on blur (leaving the field), not on each keystroke — mid-entry errors interrupt the user mid-thought and are confirmed bad UX (exception: password-strength meters and character counters).
 
 **Visual hierarchy** — step back and look at the whole screen before moving on. There should be one obvious focal point (headline or primary CTA) per screen; if everything competes equally for attention, nothing registers. The primary CTA should be visually dominant (size, colour, placement) and clearly distinct from secondary actions. Quick test: squint at the screenshot — the thing that survives blur should be the intended entry point.
 

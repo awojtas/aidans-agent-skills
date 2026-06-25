@@ -67,25 +67,36 @@ If the feature involves data, seed a representative scenario first (`--seed`) so
 For each screen + viewport combination, run `--screenshot` then `--measure`, then run the following checks via `page.evaluate`:
 
 ```js
-// Horizontal overflow (causes unexpected horizontal scroll)
-const hasOverflow = document.documentElement.scrollWidth > window.innerWidth + 1;
+const checks = await page.evaluate(() => {
+  // Horizontal overflow (causes unexpected horizontal scroll)
+  const hasOverflow = document.documentElement.scrollWidth > window.innerWidth + 1;
 
-// Elements clipped or pushed off-screen
-const offScreen = [...document.querySelectorAll('*')].filter(el => {
-  const r = el.getBoundingClientRect();
-  return r.width > 0 && (r.right < 0 || r.left > window.innerWidth);
-});
+  // Elements clipped or pushed off-screen (scoped to body to skip <head>/<script>)
+  const offScreen = [...document.querySelectorAll('body *')].filter(el => {
+    const r = el.getBoundingClientRect();
+    return r.width > 0 && (r.right < 0 || r.left > window.innerWidth);
+  }).map(el =>
+    el.tagName.toLowerCase() +
+    (el.id ? '#' + el.id : el.classList.length ? '.' + el.classList[0] : '')
+  );
 
-// Text truncation (text taller than its container)
-const truncated = [...document.querySelectorAll('p, span, h1, h2, h3, li, label')].filter(el => {
-  return el.scrollHeight > el.offsetHeight + 2;
-});
+  // Text truncation — horizontal ellipsis (scrollWidth wider than visible clientWidth)
+  const truncated = [...document.querySelectorAll('p, span, h1, h2, h3, li, label, td')].filter(el => {
+    return el.scrollWidth > el.clientWidth + 1;
+  }).map(el => el.textContent.trim().slice(0, 60));
 
-// Touch targets too small on mobile (< 44px wide or tall)
-const smallTargets = [...document.querySelectorAll('button, a, [role="button"]')].filter(el => {
-  const r = el.getBoundingClientRect();
-  return r.width < 44 || r.height < 44;
+  // Touch targets too small on mobile (< 44px in either dimension)
+  const smallTargets = [...document.querySelectorAll('button, a, [role="button"]')].filter(el => {
+    const r = el.getBoundingClientRect();
+    return r.width > 0 && (r.width < 44 || r.height < 44);
+  }).map(el => {
+    const r = el.getBoundingClientRect();
+    return { text: el.textContent.trim().slice(0, 40), w: Math.round(r.width), h: Math.round(r.height) };
+  });
+
+  return { hasOverflow, offScreen, truncated, smallTargets };
 });
+console.log(JSON.stringify(checks, null, 2));
 ```
 
 Also navigate to the **empty/zero state** of any list or collection on the screen — check whether it has a clear call-to-action or just shows a blank.
@@ -113,12 +124,18 @@ Ask: *"Found N issue(s) across X screen(s). Proceed to fix all, or tell me which
 
 ### Step 4: Work through the list
 
-Once the user approves, fix each item in order. For each:
+Once the user approves, fix each item in order. Do not deploy between items.
 
-- Use the bug repro workflow: measure baseline → prove fix by DOM injection → implement → re-verify on prod.
+- For each: measure baseline → prove fix by DOM injection → implement (commit). Stop there — no per-item deploys.
 - Mark the item done in the list as you go (`~~1~~` or similar).
 - **For enhancements that need design judgement** (e.g. what the empty state should say, which colour to use) — pause and ask the user before implementing. Don't invent copy or design decisions.
 - One item at a time — don't batch-fix; a fix for one item can affect the measurements for another.
+
+### Step 5: Deploy and verify on production
+
+Once all items are committed, deploy once, then run a single verification pass: for each fixed item, re-run `--measure` and `--screenshot` at the same viewport(s) and confirm the numbers are now correct. **Vercel/preview deploys are often SSO-protected** — verify on prod, not a preview URL, or wire a bypass token.
+
+Clean up: delete any seeded test data and temp screenshots. Leave the test account tidy.
 
 ---
 

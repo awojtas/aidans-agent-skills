@@ -5,6 +5,8 @@ description: Reproduce and verify a UI layout bug in a WPF or WinForms desktop a
 
 This is the **WPF / WinForms** entry point to the `/repro-visual` skill. Follow `repro-visual`'s **WPF / native-Windows path** — Step 0 detection is already resolved (it's a Windows desktop app).
 
+**No init step needed.** The WPF workflow is self-contained PowerShell — nothing to scaffold or check in. Skip `/repro-visual-init` entirely; the scripts you need are in `repro-visual`'s `references/wpf-uiautomation.md`.
+
 Key reminders for this path:
 
 - Run all PowerShell in **`powershell.exe` (PS 5.1)**, not `pwsh` — `.NET Framework` types (`System.Drawing`, `UIAutomation*`) are unavailable in PS 7.

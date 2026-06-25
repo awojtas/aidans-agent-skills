@@ -199,6 +199,7 @@ DOM-injection has no direct WPF analogue. The equivalent: implement the XAML/C# 
 - **Reuse the cached session.** Don't log in in a loop — auth providers rate-limit rapid logins.
 - **Headless + emulation, not the chrome-devtools MCP**, in environments with no display server.
 - **Different sizes matter.** Check 320, 360, 412, and a non-overflowing width — a fix tuned to one size often regresses another.
+- **Metrics don't catch everything.** After the automated sweep, eyeball each screenshot: text contrast on complex or gradient backgrounds, placeholder text that's too long or too small to read comfortably, monospace fonts on non-code inputs. These aren't reliably caught by DOM measurements.
 - **Don't commit secrets.**
 
 **WPF / desktop:**

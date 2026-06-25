@@ -122,7 +122,23 @@ const checks = await page.evaluate(() => {
     return true;
   }).map(input => input.getAttribute('placeholder') || input.getAttribute('name') || input.type);
 
-  return { hasOverflow, offScreen, truncated, smallTargets, brokenImages, distortedImages, unlabelledInputs };
+  // Popup-role elements inside an overflow:hidden ancestor — these will be clipped when opened
+  const clippedPopups = [...document.querySelectorAll(
+    '[role="menu"], [role="listbox"], [role="tooltip"], [role="dialog"]'
+  )].filter(el => {
+    let p = el.parentElement;
+    while (p && p !== document.body) {
+      const s = getComputedStyle(p);
+      if (s.overflow === 'hidden' || s.overflowX === 'hidden' || s.overflowY === 'hidden') return true;
+      p = p.parentElement;
+    }
+    return false;
+  }).map(el =>
+    el.getAttribute('role') +
+    (el.id ? '#' + el.id : el.classList.length ? '.' + el.classList[0] : '')
+  );
+
+  return { hasOverflow, offScreen, truncated, smallTargets, brokenImages, distortedImages, unlabelledInputs, clippedPopups };
 });
 console.log(JSON.stringify(checks, null, 2));
 ```
@@ -136,6 +152,8 @@ Then eyeball each screenshot for things DOM metrics can't catch:
 **Colour & contrast** — text on gradient or image backgrounds; error/warning text. All readable without straining. Check both light and dark areas of the screen. Disabled elements are exempt from WCAG contrast requirements but should still be visually recognisable as disabled — not invisible.
 
 **Interactive states** — hover buttons and links: should have a visible state change. Tab through the page: each interactive element needs a visible focus indicator (ring, border, background fill — any form; the WCAG requirement is visibility, not shape). Selected/active states are distinct from default. If an indicator is missing: look for `outline: none` or `outline: 0` in CSS without a replacement — this is WCAG Failure F78, and it is NOT exempt as "browser default" (suppressing the outline is author modification; the browser-default exemption only applies when the author's CSS leaves `:focus` completely untouched). Also check modals: focus must move inside the modal on open, stay trapped there while open, and return to the trigger element on close.
+
+**Layering & z-order** — open every interactive layer (dropdown menus, tooltips, date pickers, popovers, context menus, bottom sheets, modals) and confirm it renders fully above all other content. Two distinct failure patterns: (1) the popup is clipped at a container edge — a parent has `overflow: hidden` that cuts the element off (the automated `clippedPopups` check above catches this passively; verify visually by opening the popup and seeing if it's truncated); (2) the popup renders at full size but another element is painted on top of it — a `z-index` stacking context collision, only visible when the popup is actually open. Sticky headers and sidebars are the most common culprits for both.
 
 **Component states:**
 - *Empty*: lists, grids, and feeds with no data show a helpful message + CTA, not a blank void.

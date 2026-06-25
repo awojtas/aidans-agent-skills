@@ -56,7 +56,7 @@ jobs:
           echo "Checking deployment status for main branch..."
           main_sha=$(git rev-parse origin/main)
 
-          deployment_state=$(gh api "repos/${{ github.repository }}/commits/${main_sha}/status" \
+          deployment_state=$(gh api "repos/$GITHUB_REPOSITORY/commits/${main_sha}/status" \
             --jq '.statuses[] | select(.context == "Vercel – {{REPO_NAME}}") | .state' \
             | head -1)
 
@@ -87,12 +87,14 @@ jobs:
           echo "pr_number=${pr_number}" >> "$GITHUB_OUTPUT"
 
       - name: Merge promotion PR
+        env:
+          PR_NUMBER: ${{ steps.create-pr.outputs.pr_number }}
         run: |
           set -euo pipefail
-          pr_number="${{ steps.create-pr.outputs.pr_number }}"
+          pr_number="$PR_NUMBER"
           echo "Merging promotion PR #${pr_number}..."
           merge_result=$(gh api \
-            repos/${{ github.repository }}/pulls/${pr_number}/merge \
+            "repos/$GITHUB_REPOSITORY/pulls/${pr_number}/merge" \
             --method PUT \
             -f merge_method=merge \
             -f commit_title="Promote main to UAT" \
@@ -107,9 +109,11 @@ jobs:
 
       - name: Clean up PR on failure
         if: failure()
+        env:
+          PR_NUMBER: ${{ steps.create-pr.outputs.pr_number }}
         run: |
           set -euo pipefail
-          pr_number="${{ steps.create-pr.outputs.pr_number }}"
+          pr_number="$PR_NUMBER"
           if [ -n "${pr_number}" ]; then
             echo "Closing promotion PR #${pr_number} due to merge failure..."
             gh pr close "${pr_number}"

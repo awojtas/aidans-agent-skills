@@ -57,10 +57,12 @@ jobs:
           fi
 
       - name: Verify main branch deployments are ready
+        env:
+          FORCE_DEPLOY: ${{ inputs.force_deploy }}
         run: |
           set -euo pipefail
 
-          if [ "${{ inputs.force_deploy }}" == "true" ]; then
+          if [ "$FORCE_DEPLOY" == "true" ]; then
             echo "⚠️ Force deploy enabled. Skipping deployment status check."
             exit 0
           fi
@@ -68,7 +70,7 @@ jobs:
           echo "Checking deployment status for main branch..."
           main_sha=$(git rev-parse origin/main)
 
-          deployment_state=$(gh api "repos/${{ github.repository }}/commits/${main_sha}/status" \
+          deployment_state=$(gh api "repos/$GITHUB_REPOSITORY/commits/${main_sha}/status" \
             --jq '.statuses[] | select(.context == "Vercel – {{REPO_NAME}}") | .state' \
             | head -1)
 
@@ -78,7 +80,7 @@ jobs:
             echo "::error::This usually happens when you run this workflow immediately after merging a PR to main."
             echo "::error::"
             echo "::error::Please wait 1-2 minutes for the deployment to complete, then try again."
-            echo "::error::You can check deployment status at: https://github.com/${{ github.repository }}/commits/main"
+            echo "::error::You can check deployment status at: https://github.com/$GITHUB_REPOSITORY/commits/main"
             exit 1
           fi
 
@@ -109,7 +111,7 @@ jobs:
           set -euo pipefail
           echo "⚠️ Disabling Production {{REPO_NAME_TITLE}} ruleset temporarily..."
 
-          ruleset=$(gh api repos/${{ github.repository }}/rulesets \
+          ruleset=$(gh api "repos/$GITHUB_REPOSITORY/rulesets" \
             --method GET \
             --jq '.[] | select(.name == "Production {{REPO_NAME_TITLE}}")')
 
@@ -133,7 +135,7 @@ jobs:
             rules: [(.rules // [])[] | {type: .type, parameters: (.parameters | del(.automatic_copilot_code_review_enabled))}]
           }' > /tmp/ruleset_disabled.json
 
-          gh api repos/${{ github.repository }}/rulesets/${ruleset_id} \
+          gh api "repos/$GITHUB_REPOSITORY/rulesets/${ruleset_id}" \
             --method PUT \
             --input /tmp/ruleset_disabled.json
 
@@ -141,12 +143,14 @@ jobs:
           sleep 2
 
       - name: Merge promotion PR
+        env:
+          PR_NUMBER: ${{ steps.create-pr.outputs.pr_number }}
         run: |
           set -euo pipefail
-          pr_number="${{ steps.create-pr.outputs.pr_number }}"
+          pr_number="$PR_NUMBER"
           echo "Merging promotion PR #${pr_number}..."
           merge_result=$(gh api \
-            repos/${{ github.repository }}/pulls/${pr_number}/merge \
+            "repos/$GITHUB_REPOSITORY/pulls/${pr_number}/merge" \
             --method PUT \
             -f merge_method=merge \
             -f commit_title="Promote main to production" \
@@ -161,9 +165,11 @@ jobs:
 
       - name: Re-enable branch protection rules if force_deploy enabled
         if: inputs.force_deploy == true && steps.disable-rules.outputs.ruleset_id != ''
+        env:
+          RULESET_ID: ${{ steps.disable-rules.outputs.ruleset_id }}
         run: |
           set -euo pipefail
-          ruleset_id="${{ steps.disable-rules.outputs.ruleset_id }}"
+          ruleset_id="$RULESET_ID"
           cat /tmp/ruleset_backup.json | jq '{
             name: .name,
             target: .target,
@@ -173,16 +179,18 @@ jobs:
             rules: [(.rules // [])[] | {type: .type, parameters: (.parameters | del(.automatic_copilot_code_review_enabled))}]
           }' > /tmp/ruleset_enabled.json
 
-          gh api repos/${{ github.repository }}/rulesets/${ruleset_id} \
+          gh api "repos/$GITHUB_REPOSITORY/rulesets/${ruleset_id}" \
             --method PUT \
             --input /tmp/ruleset_enabled.json
           echo "✓ Ruleset re-enabled"
 
       - name: Re-enable rules on failure if they were disabled
         if: failure() && inputs.force_deploy == true && steps.disable-rules.outputs.ruleset_id != ''
+        env:
+          RULESET_ID: ${{ steps.disable-rules.outputs.ruleset_id }}
         run: |
           set -euo pipefail
-          ruleset_id="${{ steps.disable-rules.outputs.ruleset_id }}"
+          ruleset_id="$RULESET_ID"
           cat /tmp/ruleset_backup.json | jq '{
             name: .name,
             target: .target,
@@ -192,16 +200,18 @@ jobs:
             rules: [(.rules // [])[] | {type: .type, parameters: (.parameters | del(.automatic_copilot_code_review_enabled))}]
           }' > /tmp/ruleset_enabled_failsafe.json
 
-          gh api repos/${{ github.repository }}/rulesets/${ruleset_id} \
+          gh api "repos/$GITHUB_REPOSITORY/rulesets/${ruleset_id}" \
             --method PUT \
             --input /tmp/ruleset_enabled_failsafe.json
           echo "✓ Ruleset re-enabled"
 
       - name: Clean up PR on failure
         if: failure()
+        env:
+          PR_NUMBER: ${{ steps.create-pr.outputs.pr_number }}
         run: |
           set -euo pipefail
-          pr_number="${{ steps.create-pr.outputs.pr_number }}"
+          pr_number="$PR_NUMBER"
           echo "Closing promotion PR #${pr_number} due to merge failure..."
           gh pr close "${pr_number}"
           echo "✓ Promotion PR closed."

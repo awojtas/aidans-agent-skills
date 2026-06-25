@@ -21,13 +21,14 @@ jobs:
 
       - name: Check for disallowed markdown files in root
         id: check
+        env:
+          BASE_REF: ${{ github.base_ref }}
         run: |
-          changed_md_files=$(git diff --name-only --diff-filter=ACMR origin/${{ github.base_ref }}...HEAD | grep '^[^/]*\.md$' || true)
-
           allowed_files=("README.md" "CLAUDE.md" "AGENTS.md")
           disallowed_files=()
 
-          for file in $changed_md_files; do
+          while IFS= read -r -d '' file; do
+            [[ "$file" =~ ^[^/]+\.md$ ]] || continue
             filename=$(basename "$file")
             filename_lower=$(echo "$filename" | tr '[:upper:]' '[:lower:]')
 
@@ -43,24 +44,30 @@ jobs:
             if [ "$is_allowed" = false ]; then
               disallowed_files+=("$filename")
             fi
-          done
+          done < <(git diff -z --name-only --diff-filter=ACMR "origin/$BASE_REF...HEAD")
 
           if [ ${#disallowed_files[@]} -gt 0 ]; then
-            echo "found_issues=true" >> $GITHUB_OUTPUT
-            echo "files=${disallowed_files[*]}" >> $GITHUB_OUTPUT
+            echo "found_issues=true" >> "$GITHUB_OUTPUT"
+            {
+              echo 'files<<__EOF__'
+              printf '%s\n' "${disallowed_files[@]}"
+              echo '__EOF__'
+            } >> "$GITHUB_OUTPUT"
             echo "::warning::Found markdown files in root that should be in /docs: ${disallowed_files[*]}"
           else
-            echo "found_issues=false" >> $GITHUB_OUTPUT
+            echo "found_issues=false" >> "$GITHUB_OUTPUT"
             echo "No disallowed markdown files found in root"
           fi
 
       - name: Post PR comment if issues found
         if: steps.check.outputs.found_issues == 'true'
         uses: actions/github-script@v8
+        env:
+          FILES: ${{ steps.check.outputs.files }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const files = '${{ steps.check.outputs.files }}'.split(' ');
+            const files = process.env.FILES.split('\n').filter(Boolean);
             const fileList = files.map(f => `- \`${f}\``).join('\n');
 
             const comment = `## Documentation File Location Issue
@@ -78,7 +85,7 @@ jobs:
 
             You can do this with:
             \`\`\`bash
-            ${files.map(f => `git mv ${f} docs/`).join('\n')}
+            ${files.map(f => `git mv "${f}" docs/`).join('\n')}
             git commit -m "Move documentation to docs folder"
             git push
             \`\`\`

@@ -129,9 +129,9 @@ console.log(JSON.stringify(checks, null, 2));
 
 Then eyeball each screenshot for things DOM metrics can't catch:
 
-**Spacing & alignment** — consistent gaps between like elements; nothing cramped or oddly spaced; content aligned to an implicit grid.
+**Spacing & alignment** — consistent gaps between like elements; nothing cramped or oddly spaced; content aligned to an implicit grid. Outer padding of a grouped section should exceed the spacing between items inside it — if the two are equal, elements feel randomly stacked rather than grouped.
 
-**Typography** — same content types (headings, body, labels) use consistent font weights and sizes; line-height readable, not cramped; heading hierarchy clear at a glance.
+**Typography** — body text at 16px or larger for comfortable reading; heading levels have genuinely visible size jumps (each level roughly 1.25× the one below — five barely-distinguishable sizes is noise, not hierarchy); consistent font weights and sizes for the same content type; line-height not cramped.
 
 **Colour & contrast** — text on gradient or image backgrounds; error/warning text. All readable without straining. Check both light and dark areas of the screen. Disabled elements are exempt from WCAG contrast requirements but should still be visually recognisable as disabled — not invisible.
 
@@ -147,6 +147,8 @@ Then eyeball each screenshot for things DOM metrics can't catch:
 **Icons** — consistent style across the screen (all outlined or all filled, never mixed); consistent stroke weight and size; not blurry on high-DPI displays (SVG preferred over raster).
 
 **Forms** — every input has a visible label above it, not just a placeholder (placeholder disappears on typing and is never a substitute for a label); required fields marked; error messages sit directly below their field, not in a generic toast.
+
+**Visual hierarchy** — step back and look at the whole screen before moving on. There should be one obvious focal point (headline or primary CTA) per screen; if everything competes equally for attention, nothing registers. The primary CTA should be visually dominant (size, colour, placement) and clearly distinct from secondary actions. Quick test: squint at the screenshot — the thing that survives blur should be the intended entry point.
 
 **Mobile-specific mechanics** (narrow viewports):
 - Page scrolling sideways from a `min-width` + `overflow-x` container escaping its bounds.

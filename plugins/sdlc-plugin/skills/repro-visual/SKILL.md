@@ -133,9 +133,9 @@ Then eyeball each screenshot for things DOM metrics can't catch:
 
 **Typography** — same content types (headings, body, labels) use consistent font weights and sizes; line-height readable, not cramped; heading hierarchy clear at a glance.
 
-**Colour & contrast** — text on gradient or image backgrounds; error/warning text; disabled elements. All readable without straining. Check both light and dark areas of the screen.
+**Colour & contrast** — text on gradient or image backgrounds; error/warning text. All readable without straining. Check both light and dark areas of the screen. Disabled elements are exempt from WCAG contrast requirements but should still be visually recognisable as disabled — not invisible.
 
-**Interactive states** — hover buttons and links: should have a visible state change. Tab through the page: each interactive element needs a visible focus ring. Selected/active states are distinct from default.
+**Interactive states** — hover buttons and links: should have a visible state change. Tab through the page: each interactive element needs a visible focus indicator (ring, border, background fill — any form; the WCAG requirement is visibility, not shape). Selected/active states are distinct from default.
 
 **Component states:**
 - *Empty*: lists, grids, and feeds with no data show a helpful message + CTA, not a blank void.

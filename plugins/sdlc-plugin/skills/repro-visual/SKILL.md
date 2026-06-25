@@ -95,12 +95,69 @@ const checks = await page.evaluate(() => {
     return { text: el.textContent.trim().slice(0, 40), w: Math.round(r.width), h: Math.round(r.height) };
   });
 
-  return { hasOverflow, offScreen, truncated, smallTargets };
+  // Broken images (loaded but empty)
+  const brokenImages = [...document.querySelectorAll('img')].filter(img =>
+    img.complete && img.naturalWidth === 0
+  ).map(img => img.getAttribute('alt') || img.src.split('/').pop().slice(0, 50) || '(no alt)');
+
+  // Images rendered at wrong aspect ratio (squished/stretched > 15% off natural)
+  const distortedImages = [...document.querySelectorAll('img')].filter(img => {
+    if (!img.complete || img.naturalWidth === 0 || img.naturalHeight === 0) return false;
+    const r = img.getBoundingClientRect();
+    if (r.width === 0 || r.height === 0) return false;
+    return Math.abs(r.width / r.height - img.naturalWidth / img.naturalHeight) / (img.naturalWidth / img.naturalHeight) > 0.15;
+  }).map(img => {
+    const r = img.getBoundingClientRect();
+    return { src: img.src.split('/').pop().slice(0, 40), natural: `${img.naturalWidth}×${img.naturalHeight}`, rendered: `${Math.round(r.width)}×${Math.round(r.height)}` };
+  });
+
+  // Inputs with no accessible label (no <label for>, aria-label, aria-labelledby, title, or wrapping label)
+  const unlabelledInputs = [...document.querySelectorAll(
+    'input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"])'
+  )].filter(input => {
+    if (input.id && document.querySelector(`label[for="${input.id}"]`)) return false;
+    if (input.getAttribute('aria-label') || input.getAttribute('aria-labelledby')) return false;
+    if (input.getAttribute('title')) return false;
+    if (input.closest('label')) return false;
+    return true;
+  }).map(input => input.getAttribute('placeholder') || input.getAttribute('name') || input.type);
+
+  return { hasOverflow, offScreen, truncated, smallTargets, brokenImages, distortedImages, unlabelledInputs };
 });
 console.log(JSON.stringify(checks, null, 2));
 ```
 
-Also navigate to the **empty/zero state** of any list or collection — check whether it has a clear call-to-action.
+Then eyeball each screenshot for things DOM metrics can't catch:
+
+**Spacing & alignment** — consistent gaps between like elements; nothing cramped or oddly spaced; content aligned to an implicit grid.
+
+**Typography** — same content types (headings, body, labels) use consistent font weights and sizes; line-height readable, not cramped; heading hierarchy clear at a glance.
+
+**Colour & contrast** — text on gradient or image backgrounds; error/warning text; disabled elements. All readable without straining. Check both light and dark areas of the screen.
+
+**Interactive states** — hover buttons and links: should have a visible state change. Tab through the page: each interactive element needs a visible focus ring. Selected/active states are distinct from default.
+
+**Component states:**
+- *Empty*: lists, grids, and feeds with no data show a helpful message + CTA, not a blank void.
+- *Loading*: async content shows a skeleton or spinner — no raw flash of unstyled content.
+- *Error*: validation messages are adjacent to their field, legible, and specific (not just "invalid").
+
+**Images** — crop and focal-point appropriate for the container shape; `object-fit` not cutting off the subject.
+
+**Icons** — consistent style across the screen (all outlined or all filled, never mixed); consistent stroke weight and size; not blurry on high-DPI displays (SVG preferred over raster).
+
+**Forms** — every input has a visible label above it, not just a placeholder (placeholder disappears on typing and is never a substitute for a label); required fields marked; error messages sit directly below their field, not in a generic toast.
+
+**Mobile-specific mechanics** (narrow viewports):
+- Page scrolling sideways from a `min-width` + `overflow-x` container escaping its bounds.
+- `position: sticky` elements overlaying scrollable content underneath them.
+- Bottom bars / fixed navs covering the last list item.
+- iOS overscroll bounce revealing a background-colour mismatch at top or bottom.
+
+**Desktop-specific patterns** (wide viewports):
+- Max-width containers centred, not left-aligned or edge-to-edge.
+- Multi-column layouts balanced; not one tall column next to a stub.
+- Hover-only affordances (tooltips, action menus) — information only reachable by hover is inaccessible on touch.
 
 #### Step 3: Present findings and ask to proceed
 

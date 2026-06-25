@@ -28,7 +28,7 @@ The harness exposes a stable CLI (exact invocation prefix is per-repo, e.g. `pnp
 | `--login` | Log in once and cache the session (storageState). Run this first if measures fail with auth errors. |
 | `--device mobile\|desktop\|<width>` | Emulate a device or a raw CSS width (e.g. `360`). |
 | `--url <baseUrl>` | Override the target (defaults to the prod URL in env). |
-| `--timeline <id>` / `--path <route>` | Navigate to the screen under test. |
+| `--path <route>` | Navigate to the screen under test (e.g. `--path /dashboard`). |
 | `--seed <spec.json>` | Create test data via the app's API; prints the new id(s). |
 | `--measure` | Print DOM metrics for the component under test (e.g. `{centerOffsetPx, workFillPct, allWorkVisible, …}`). |
 | `--screenshot <file>` | Save a screenshot. |

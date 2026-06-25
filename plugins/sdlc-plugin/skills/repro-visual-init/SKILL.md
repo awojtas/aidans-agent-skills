@@ -28,7 +28,7 @@ Copy `references/harness-template/` into `<webapp>/scripts/repro/` and **adapt**
 
 - **`auth.mjs`** — implement `login(page,cfg)`, `isLoggedIn(page)`, and `authHeaders(page)` (or `authCookies`) for the discovered auth strategy. This is the main per-repo edit; use `references/auth-strategies.md`.
 - **`harness.mjs`** — set the `.env` path + the API base; replace the example `gotoX()` / `measureX()` with the real selectors + metrics from step 1.6 (see `references/measuring.md`).
-- **`run.mjs`** — adjust the `--seed` body to the app's create-entity calls; set the default route/`--<entity>` flag name.
+- **`run.mjs`** — adjust the `--seed` body to the app's create-entity calls; set the default route/`--<entity>` flag name; update the `SELECTOR-FOR-A-RENDERED-ELEMENT` placeholder in the `--assert-loads` branch to the same rendered-element selector used in `gotoScreen`.
 - **`.env.e2e.example`** — the env keys (`REPRO_BASE_URL`, creds or token).
 - **`README.md`** — fill in the real commands.
 

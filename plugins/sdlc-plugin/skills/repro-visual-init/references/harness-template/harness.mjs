@@ -14,7 +14,7 @@ import { chromium } from '@playwright/test'; // or 'playwright' if that's the de
 import { authHeaders, isLoggedIn, login } from './auth.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-// TODO(init): point at wherever the app loads its env from.
+// Points to <webapp>/.env.e2e — update only if your .env.e2e lives elsewhere.
 const ENV_FILE = path.join(HERE, '..', '..', '.env.e2e');
 const STATE_PATH = path.join(HERE, '.auth', 'state.json');
 // TODO(init): the base for the app's API (same-origin '/api', or a full host).

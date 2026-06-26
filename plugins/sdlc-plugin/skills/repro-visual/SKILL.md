@@ -1,9 +1,9 @@
 ---
 name: repro-visual
-description: 'Reproduce, diagnose and VERIFY UI bugs against the live app by MEASURING the real UI tree — not eyeballing screenshots. Two paths: Web — drives a per-repo Playwright harness (emulated browser, any viewport, cached session, seed via API) for layout/responsive/mobile bugs and post-build visual audits; WPF/WinForms — launches the exe, captures via PrintWindow, measures via UIAutomation BoundingRectangle, checks at DPI scale. First-time web setup: run /repro-visual-init (web-only; WPF recipe in references/wpf-uiautomation.md). Use when a bug is about position/sizing/responsiveness/layout, a fix looks right but user says still wrong, or to QA a feature before declaring done. Triggers: repro on mobile, layout bug, measure the DOM, still off on mobile, verify the fix, visual audit this feature, WPF UI bug, measure WPF window, desktop app layout.'
+description: 'Reproduce, diagnose and VERIFY UI bugs against the live app by MEASURING the real UI tree — not eyeballing screenshots. Two paths: Web — drives a per-repo Playwright harness (emulated browser, any viewport, cached session, seed via API) for layout/responsive/mobile bugs and post-build visual audits; WPF/WinForms — attaches via wpfbuddy-mcp (UIAutomation) to a running app, measures from the automation tree, interacts via invoke/set_value/grid tools, checks at DPI scale. First-time web setup: run /repro-visual-init (web-only; WPF recipe in references/wpf-desktop.md). Use when a bug is about position/sizing/responsiveness/layout, a fix looks right but user says still wrong, or to QA a feature before declaring done. Triggers: repro on mobile, layout bug, measure the DOM, verify the fix, visual audit this feature, WPF UI bug, wpfbuddy, desktop app layout.'
 ---
 
-Reproduce a UI bug **against the live app**, diagnose it from **measurements of the real UI tree**, prove the fix before shipping, and re-verify on the deployed build. Works for both **web apps** (Playwright + DOM) and **WPF / WinForms desktop apps** (UIAutomation + PrintWindow). The philosophy is identical: measure, don't eyeball; prove the fix; re-verify on prod.
+Reproduce a UI bug **against the live app**, diagnose it from **measurements of the real UI tree**, prove the fix before shipping, and re-verify on the deployed build. Works for both **web apps** (Playwright + DOM) and **WPF / WinForms desktop apps** (wpfbuddy-mcp / UIAutomation + PrintWindow). The philosophy is identical: measure, don't eyeball; prove the fix; re-verify on prod.
 
 ## Step 0: Identify the target type
 
@@ -214,59 +214,69 @@ Once all items are committed, deploy once, then verify: for each fixed item, re-
 
 ## WPF / native-Windows path
 
-Same philosophy — measure, don't eyeball; prove the fix; re-verify on the built/installed binary — but different tooling. No browser, no Node, no Playwright. Full recipe with ready-to-run PowerShell in `references/wpf-uiautomation.md`.
+Same philosophy as the web path — measure, don't eyeball; prove the fix; re-verify on the built/installed binary — but different tooling. The primary backend is **wpfbuddy-mcp**: a UIAutomation-based MCP server that attaches to any running WPF app and provides structured inspect / measure / interact / assert tools without requiring changes to the target app. Full tool reference, PrintWindow recipe, and gotchas in `references/wpf-desktop.md`.
 
-### Step 1: Launch and wait for the target window
+### Step 1: Load wpfbuddy tools
 
-- Build if needed (`dotnet build` or MSBuild). Locate the `.exe` under `bin\Debug\` or the installed/deployed path.
-- Launch as a background process; record the PID.
-- **Desktop apps start slowly and variably** (the same app can take 16s to 33s across runs). Poll for the window with a 60s+ timeout — a fixed sleep will intermittently time out.
-- Enumerate windows by PID + visible + Win32 class starts with `HwndWrapper` to find the WPF window handle. **Skip the splash screen** (`SplashScreen` opens its own `HwndWrapper`); wait until the real `<Window>` appears.
-- See `references/wpf-uiautomation.md` for the `EnumWindows` + `GetClassName` recipe.
+wpfbuddy tools may be registered as deferred MCP tools — load their schemas before calling them:
 
-### Step 2: Screenshot via PrintWindow
-
-Run in **Windows PowerShell 5.1 (`powershell.exe`), not PowerShell 7 (`pwsh`)** — `System.Drawing.Bitmap` and UIAutomation types live in .NET Framework assemblies that PS 7 does not load by default.
-
-Use `PrintWindow(hwnd, hdc, 2 /*PW_RENDERFULLCONTENT*/)` — **never `Graphics.CopyFromScreen`**. `CopyFromScreen` grabs the physical screen at the window's coordinates: if anything is in front of the app, you capture the wrong content (a calendar, a chat window, sensitive data). `PrintWindow` renders from the window's own surface and works even when fully occluded or minimised. See `references/wpf-uiautomation.md` for the script.
-
-### Step 3: Measure via UIAutomation BoundingRectangle
-
-```powershell
-# powershell.exe (PS 5.1 only)
-Add-Type -AssemblyName UIAutomationClient
-Add-Type -AssemblyName UIAutomationTypes
-
-$root = [System.Windows.Automation.AutomationElement]::FromHandle($hwnd)
-$cond = [System.Windows.Automation.Condition]::TrueCondition  # NOT AutomationElement.TrueCondition
-$all  = $root.FindAll([System.Windows.Automation.TreeScope]::Descendants, $cond)
-
-foreach ($el in $all) {
-    $r   = $el.Current.BoundingRectangle
-    $id  = $el.Current.AutomationId   # = XAML x:Name
-    if ($r.Width -gt 0) { Write-Host "$($el.Current.ControlType.ProgrammaticName)  id=$id  ${r.Width}x${r.Height}" }
-}
+```
+ToolSearch("select:wpf_list_apps,wpf_attach,wpf_list_windows,wpf_select_window,wpf_focus_window,wpf_snapshot,wpf_explain_screen,wpf_click,wpf_invoke,wpf_double_click,wpf_set_value,wpf_grid_get_rows,wpf_grid_find_row,wpf_grid_double_click_row,wpf_wait_for_window,wpf_wait_for_element,wpf_assert_text,wpf_assert_exists")
 ```
 
-`AutomationId` = XAML `x:Name` (WPF maps these automatically). `BoundingRectangle` is in screen pixels at the current DPI. At 100% scaling, `BoundingRectangle.Width` matches XAML `Width` exactly for fixed-size elements.
+If no `wpf_*` tools are found after this, wpfbuddy-mcp is not registered in this session. Tell the user to follow the setup steps in `references/wpf-desktop.md` and restart the Claude Code session.
 
-**The right scale axis for WPF is DPI, not viewport width.** Re-check at 100% / 125% / 150% display scaling to confirm the layout holds across monitor configurations.
+### Step 2: Attach to the running app
 
-### Step 4: Diagnose from the tree
+Prefer attaching to an already-running instance — especially if a human is mid-task. Never kill or restart the app without asking.
 
-Compare `BoundingRectangle` values against XAML-specified sizes. Common issues: margins accumulating, Grid column widths not summing correctly, DPI-unaware coordinates. Use the full element tree to spot the point where layout diverges from spec.
+```
+wpf_list_apps()          // find the target process and note its PID
+wpf_attach(pid=...)      // attach (or processName='MyApp')
+wpf_list_windows()       // list windows in the attached process
+wpf_select_window(...)   // select the target window
+wpf_focus_window()       // bring it to the foreground
+```
 
-### Step 5: Prove the fix (rebuild + re-measure)
+After any navigation that opens a new window or dialog, call `wpf_select_window` again — the active window context changes.
 
-DOM-injection has no direct WPF analogue. The equivalent: implement the XAML/C# change, rebuild (`dotnet build --project <csproj>`, not the whole solution), re-launch, re-capture, re-measure. If numbers are now correct across DPI scales → commit. Keep rebuilds scoped to the changed project to stay fast.
+### Step 3: Snapshot and measure
 
-### Step 6: Re-verify on the installed/deployed build
+```
+wpf_explain_screen()     // start here if you don't know what screen you're on
+wpf_snapshot()           // structured tree: bounds, patterns, className, isOffscreen,
+                          // AutomationId — auto-flags missing / duplicate IDs
+```
 
-"Prod" for a desktop app is the installed binary (ClickOnce, MSIX, xcopy, or similar). Re-run capture + measure against that build, not just `bin\Debug`.
+Read the snapshot before interacting. The `.className` field exposes real WPF control types (`DataGrid`, `ComboBox`, `TabItem`, etc.) that bare UIAutomation `ControlType` collapses into coarse categories. For grids: `wpf_grid_get_rows` / `wpf_grid_get_cell`.
 
-### Step 7: Clean up
+**Axis note:** "viewport width" is meaningless on desktop. The real axis is **DPI scaling** (100% / 125% / 150%) + window state (normal / maximised / resized). Re-check at each DPI scale just as the web path checks each viewport width.
 
-`Stop-Process -Id $proc.Id`. Delete any temp screenshots.
+### Step 4: Capture a screenshot
+
+**Use PrintWindow — NOT `wpf_screenshot`.** `wpf_screenshot` grabs the physical screen region: any overlapping window bleeds through (occlusion + privacy hazard) and the inline base64 it returns overflows agent context. Instead, run the PrintWindow recipe from `references/wpf-desktop.md` in PowerShell 5.1 (`powershell.exe`) and save directly to a PNG file, then open natively. PrintWindow renders from the window's own surface, so it works even when fully occluded or off-screen.
+
+### Step 5: Diagnose from the tree
+
+Compare snapshot bounds against expected XAML sizes. Check `isOffscreen`, `className`, available patterns, and AutomationId uniqueness. If diagnosis stalls on a data question, try `wpf_probe_connect` then `wpf_get_bindings` / `wpf_get_binding_errors` (probe mode — see `references/wpf-desktop.md`).
+
+Common issues: margins accumulating, Grid column widths not summing, z-order from `Panel.ZIndex`, DPI-unaware coordinates.
+
+### Step 6: Prove the fix
+
+Two options:
+
+a. **Interact to verify** — use `wpf_click` / `wpf_invoke` / `wpf_set_value` / `wpf_select_by_text` / grid tools to drive the scenario and re-snapshot. If measurements are now correct, the logic is right.
+
+b. **Rebuild and re-measure** — implement the XAML/C# change, `dotnet build --project <csproj>` (scope to the changed project for speed), re-launch, re-attach, re-snapshot. Lock in with `wpf_assert_*` so regressions are detectable.
+
+### Step 7: Re-verify on the installed/deployed artifact
+
+"Prod" for a desktop app is the installed binary (ClickOnce, MSIX, xcopy). Re-attach to or relaunch that artifact, re-snapshot at the same states and DPI scales, and confirm bounds are correct.
+
+### Step 8: Clean up
+
+If you launched a throwaway instance: `Stop-Process -Id $proc.Id`. Delete any temp screenshots.
 
 ---
 
@@ -281,12 +291,13 @@ DOM-injection has no direct WPF analogue. The equivalent: implement the XAML/C# 
 - **Don't commit secrets.**
 
 **WPF / desktop:**
-- **Run in Windows PowerShell 5.1** (`powershell.exe`). PS 7 fails on .NET Framework types.
-- **Never `CopyFromScreen`** — it captures whatever is physically behind the window. Privacy hazard.
-- **Expect a splash screen.** Wait for the real window, not the first `HwndWrapper` that appears.
-- **Use polled waits** (60s+ timeout, 500ms poll interval). Desktop apps start slowly and variably.
-- **Kill the launched process** when done (`Stop-Process`). Don't leave ghost instances.
-- **Win32 ClassName ≠ UIAutomation ClassName.** `GetClassName` → `HwndWrapper[…]`; UIAutomation → `Window`. Don't mix them.
+- **Load wpfbuddy tools first** — they may be deferred; call ToolSearch before any `wpf_*` tool or the call fails.
+- **Attach, don't launch,** when a human is mid-task. Never kill or restart the app without asking.
+- **Never `wpf_screenshot`** — physical screen grab (occlusion + privacy hazard, context overflow from base64). Use PrintWindow (PS 5.1) → PNG file. See `references/wpf-desktop.md`.
+- **Re-select the window after navigation.** Dialogs and new windows change the active window context; call `wpf_select_window` again.
+- **DPI, not viewport width.** Re-check at 100% / 125% / 150% display scaling.
+- **`wpf_grid_find_row` matches on Name, not cell text.** Act by row index when in doubt.
+- **Kill only throwaway instances** (`Stop-Process`). Don't leave ghost processes running.
 
 ## Aliases
 

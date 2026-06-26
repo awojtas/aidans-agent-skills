@@ -11,7 +11,7 @@ The reusable *method* is generic; the *glue* (URL, auth, selectors) is per-repo 
 
 **WPF / WinForms project?** Look for `<OutputType>WinExe</OutputType>`, `<UseWPF>true</UseWPF>`, or `<UseWindowsForms>true</UseWindowsForms>` in any `.csproj`. If found: stop. Tell the user:
 
-> This is a WPF / WinForms project. No harness scaffolding is needed — the `/repro-visual` WPF path uses PowerShell + UIAutomation directly (no Node, no Playwright, nothing to check in). Use `/repro-on-desktop-windows-app` to start measuring.
+> This is a WPF / WinForms project. No harness scaffolding is needed — the `/repro-visual` WPF path uses **wpfbuddy-mcp** (UIAutomation; no Node, no Playwright, nothing to check in). Use `/repro-on-desktop-windows-app` to start. If wpfbuddy-mcp is not yet registered in your Claude Code session, follow the one-time setup in `references/wpf-desktop.md` (inside the repro-visual skill).
 
 **Harness already exists?** If `scripts/repro/run.mjs` or a `"repro"` script in a `package.json` is present, **do not overwrite it** — tell the user it's already set up and stop, unless they explicitly asked to refresh/upgrade (then diff and update only what's needed).
 

@@ -126,6 +126,7 @@ const checks = await page.evaluate(() => {
   const clippedPopups = [...document.querySelectorAll(
     '[role="menu"], [role="listbox"], [role="tooltip"], [role="dialog"]'
   )].filter(el => {
+    if (getComputedStyle(el).position === 'fixed') return false; // fixed positioning bypasses overflow clipping
     let p = el.parentElement;
     while (p && p !== document.body) {
       const s = getComputedStyle(p);
@@ -153,7 +154,7 @@ Then eyeball each screenshot for things DOM metrics can't catch:
 
 **Interactive states** — hover buttons and links: should have a visible state change. Tab through the page: each interactive element needs a visible focus indicator (ring, border, background fill — any form; the WCAG requirement is visibility, not shape). Selected/active states are distinct from default. If an indicator is missing: look for `outline: none` or `outline: 0` in CSS without a replacement — this is WCAG Failure F78, and it is NOT exempt as "browser default" (suppressing the outline is author modification; the browser-default exemption only applies when the author's CSS leaves `:focus` completely untouched). Also check modals: focus must move inside the modal on open, stay trapped there while open, and return to the trigger element on close.
 
-**Layering & z-order** — open every interactive layer (dropdown menus, tooltips, date pickers, popovers, context menus, bottom sheets, modals) and confirm it renders fully above all other content. Two distinct failure patterns: (1) the popup is clipped at a container edge — a parent has `overflow: hidden` that cuts the element off (the automated `clippedPopups` check above catches this passively; verify visually by opening the popup and seeing if it's truncated); (2) the popup renders at full size but another element is painted on top of it — a `z-index` stacking context collision, only visible when the popup is actually open. Sticky headers and sidebars are the most common culprits for both.
+**Layering & z-order** — open every interactive layer (dropdown menus, tooltips, date pickers, popovers, context menus, bottom sheets, modals) and confirm it renders fully above all other content. Two distinct failure patterns: (1) the popup is clipped at a container edge — a parent has `overflow: hidden` that cuts the element off (the automated `clippedPopups` check above catches this passively; verify visually by opening the popup and seeing if it's truncated); (2) the popup renders at full size but another element is painted on top of it — a `z-index` stacking context collision, only visible when the popup is actually open. For clipping (pattern 1), the usual culprit is a card or scroll container using `overflow: hidden` for border-radius or animation containment — not sticky headers. For stacking collisions (pattern 2), sticky headers and fixed sidebars are the most common offenders.
 
 **Component states:**
 - *Empty*: lists, grids, and feeds with no data show a helpful message + CTA, not a blank void.

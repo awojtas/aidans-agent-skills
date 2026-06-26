@@ -221,7 +221,7 @@ Same philosophy as the web path — measure, don't eyeball; prove the fix; re-ve
 wpfbuddy tools may be registered as deferred MCP tools — load their schemas before calling them:
 
 ```
-ToolSearch("select:wpf_list_apps,wpf_attach,wpf_list_windows,wpf_select_window,wpf_focus_window,wpf_snapshot,wpf_explain_screen,wpf_click,wpf_invoke,wpf_double_click,wpf_set_value,wpf_grid_get_rows,wpf_grid_find_row,wpf_grid_double_click_row,wpf_wait_for_window,wpf_wait_for_element,wpf_assert_text,wpf_assert_exists")
+ToolSearch("select:wpf_list_apps,wpf_attach,wpf_list_windows,wpf_select_window,wpf_focus_window,wpf_snapshot,wpf_explain_screen,wpf_click,wpf_invoke,wpf_double_click,wpf_set_value,wpf_select_by_text,wpf_grid_get_rows,wpf_grid_find_row,wpf_grid_get_cell,wpf_grid_double_click_row,wpf_wait_for_window,wpf_wait_for_element,wpf_probe_connect,wpf_get_bindings,wpf_get_binding_errors,wpf_assert_text,wpf_assert_exists")
 ```
 
 If no `wpf_*` tools are found after this, wpfbuddy-mcp is not registered in this session. Tell the user to follow the setup steps in `references/wpf-desktop.md` and restart the Claude Code session.

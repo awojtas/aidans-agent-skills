@@ -173,7 +173,7 @@ function Capture-Window($hwnd, $outPath) {
 }
 ```
 
-Get `$hwnd` from `wpf_list_windows` output, or enumerate via `EnumWindows` (see `references/wpf-uiautomation.md`). Save to a temp path and read the PNG natively.
+Get `$hwnd` from `wpf_list_windows` output, or enumerate via `EnumWindows` (see `wpf-uiautomation.md`). Save to a temp path and read the PNG natively.
 
 > If a future version of wpfbuddy offers off-screen / PrintWindow-based capture (verify it is NOT a screen grab), prefer that and drop this recipe.
 
@@ -237,4 +237,4 @@ Without a probe, all UIAutomation-based tools still work. Probe mode surfaces Vi
 
 ## Fallback — when wpfbuddy is unavailable
 
-If wpfbuddy-mcp cannot be registered (non-Windows environment, network restriction, etc.), fall back to raw PowerShell 5.1 + UIAutomation. See `references/wpf-uiautomation.md` for the complete recipe. No extra dependencies — works on any Windows machine with .NET Framework — but considerably more boilerplate and no interact / assert / generate tools.
+If wpfbuddy-mcp cannot be registered (non-Windows environment, network restriction, etc.), fall back to raw PowerShell 5.1 + UIAutomation. See `wpf-uiautomation.md` for the complete recipe. No extra dependencies — works on any Windows machine with .NET Framework — but considerably more boilerplate and no interact / assert / generate tools.

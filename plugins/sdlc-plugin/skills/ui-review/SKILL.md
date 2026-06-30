@@ -1,6 +1,6 @@
 ---
 name: ui-review
-description: "Opinionated, evidence-based review of a running UI's visual/UX quality, organized around 'deliberate design choice, or leftover tool default?' MUST see the rendered app (chrome-devtools MCP or the repro-visual harness); warns and gets consent before going static-only. Runs a deterministic anti-slop pre-scan (npx impeccable detect), measures computed styles instead of eyeballing (contrast, type scale, spacing), exercises hover/focus/loading/empty/error states across breakpoints and dark mode, then fans out judgment lenses (Nielsen heuristics, visual craft, accessibility, AI-slop catalogue) into a verified synthesis ending in a ruthless Critical/High/Medium/Low action list. Read-only; offers issues or a report after. Use when the user says 'UI review', 'design review', 'review the UI', 'does this look AI-generated', 'design QA', or 'why does my app look generic'. Reviews rendered design quality — not component reuse (ui-component-review), not creating UI (frontend-design)."
+description: "Opinionated, evidence-based review of a running UI's visual/UX quality, organized around 'deliberate design choice, or leftover tool default?' MUST see the rendered app (chrome-devtools MCP or the repro-visual harness); warns and gets consent before going static-only. Runs a deterministic anti-slop pre-scan (npx impeccable detect), measures computed styles instead of eyeballing (contrast, type scale, spacing), exercises hover/focus/loading/empty/error states across breakpoints and dark mode, then fans out judgment lenses (Nielsen heuristics, visual craft, state/responsive completeness, accessibility, AI-slop catalogue) into a verified synthesis ending in a ruthless Critical/High/Medium/Low action list. Read-only; offers issues or a report after. Use when the user says 'UI review', 'design review', 'review the UI', 'does this look AI-generated', 'design QA', or 'why does my app look generic'. Reviews rendered design quality — not component reuse (ui-component-review), not creating UI (frontend-design)."
 ---
 
 # UI review
@@ -51,7 +51,7 @@ Let the user narrow to a flow or screen set; otherwise cover the primary screens
 
 A UI review that only reads code misses real contrast, spacing, state, and motion. **Reuse the repo's existing render backends — build nothing new:**
 
-- **Primary — chrome-devtools MCP** (zero install, available in most sessions; the backend `describe-ui-from-web-app` uses). Flow: `navigate_page` → `resize_page` / `emulate` for breakpoints → `take_screenshot` → `evaluate_script` for computed styles → `hover` / `click` for states → `take_snapshot` for the a11y tree. Use when the app URL is reachable and a display/session exists.
+- **Primary — chrome-devtools MCP** (zero install, available in most sessions; the backend `describe-ui-from-web-app` uses). Flow: `navigate_page` → `resize_page` / `emulate` for breakpoints → `take_screenshot` → `evaluate_script` for computed styles → `hover` / `click` for states → `take_snapshot` for the a11y tree. Use when the app URL is reachable and a display/session exists. These chrome-devtools tools are **deferred MCP tools** — load their schemas before calling (invoke the `chrome-devtools-mcp:chrome-devtools` skill, or load via `ToolSearch`), or the first call fails with InputValidationError.
 - **Escalation — the `repro-visual` Playwright harness** (`scripts/repro/`). Reuse when the app needs auth/session, seeded data, headless/CI, or no-display-server emulation: call its `withSession({ device })` / `deviceContext()` / `page.evaluate()` / `page.screenshot()` (`../repro-visual-init/references/harness-template/harness.mjs`). If the app is auth-gated and the harness isn't scaffolded yet, point the user to `/repro-visual-init` — don't reinvent the login glue.
 
 **No-render fallback (consent-gated).** If neither backend can reach the app, **stop and warn explicitly**: without the rendered UI the review can only read code and will miss real contrast, spacing, state, and motion issues. Proceed static-only **only on the user's explicit consent**, and stamp this banner at the top of the output:
@@ -67,7 +67,7 @@ Run the deterministic anti-slop layer early so judgment agents spend their budge
 **Impeccable / tokyn (optional, graceful):** if `npx`/node is available:
 
 ```bash
-npx impeccable detect            # 41 deterministic rules + browser rules; add a URL/dir target as needed
+npx impeccable detect            # deterministic rule set + browser rules; add a URL/dir target as needed
 ```
 
 It catches the mechanical slop tells (default palettes, Inter/Geist/Space-Grotesk overuse, uniform radius, colored card borders, gradient stripes, icon-tile grids, etc.). Feed its hits in as **pre-verified**. If unavailable, skip and **note it in the output** (no silent gap). Never just parrot it — it owns the mechanical layer.
@@ -91,7 +91,7 @@ Across breakpoints **320 / 768 / 1024 / 1440** and in **light + dark mode**:
 - **Extract computed styles** via `evaluate_script` / `page.evaluate()`: `font-family`, text/background `color` (compute the **contrast ratio**), `border-radius`, `box-shadow`, the spacing scale (`gap`, `padding`, `margin`), `font-size` per heading level.
 - **Exercise states**: `hover` / focus (Tab) / active / disabled, and the lifecycle states — **loading / empty / error** (seed or trigger them; a missing empty/error state is itself a finding).
 
-**Reuse `repro-visual`'s existing audit checks** — don't duplicate them. Its `page.evaluate` battery (overflow, off-screen, truncation, small targets <44px, broken/distorted images, unlabelled inputs, clipped popups) and its eyeball checklist (spacing, typography, contrast, interactive states, z-order, component states, forms, hierarchy, mobile mechanics) live in `../repro-visual/SKILL.md` (visual-audit mode, ~lines 70–174). Run that battery as the measurement menu.
+**Reuse `repro-visual`'s existing audit checks** — don't duplicate them. Its `page.evaluate` battery (overflow, off-screen, truncation, small targets <44px, broken/distorted images, unlabelled inputs, clipped popups) and its eyeball checklist (spacing, typography, contrast, interactive states, z-order, component states, forms, hierarchy, mobile mechanics) live in `../repro-visual/SKILL.md` (visual-audit mode). Run that battery as the measurement menu.
 
 ### Step 5: Fan out judgment lenses (parallel)
 

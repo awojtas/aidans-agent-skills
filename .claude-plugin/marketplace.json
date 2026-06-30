@@ -7,7 +7,7 @@
     {
       "name": "sdlc-plugin",
       "source": "./plugins/sdlc-plugin",
-      "description": "Bundled skills for the full Software Development Lifecycle — plan, build, ship, operate, maintain. From early idea sketching through repo bootstrap, task implementation, and post-implementation verification, plus helpers for status, audit, course-correction, backlog and production-error triage, peer PR review, per-feature release-readiness, AI-readiness audit of existing mature repos, and dev-loop fixes."
+      "description": "Bundled skills for the full Software Development Lifecycle — plan, build, ship, operate, maintain. From early idea sketching through repo bootstrap, task implementation, and post-implementation verification, plus helpers for status, audit, course-correction, backlog and production-error triage, peer PR review, per-feature release-readiness, AI-readiness audit of existing mature repos, opinionated ETC-driven architecture review, evidence-based anti-slop UI/design-quality review, web-standards and security-posture app-conformance audits, and dev-loop fixes."
     },
     {
       "name": "content-plugin",

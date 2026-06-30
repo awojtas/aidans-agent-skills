@@ -1,6 +1,6 @@
 ---
 name: repro-on-desktop-web
-description: Reproduce and verify a front-end bug on a DESKTOP browser viewport against the deployed web app — a thin entry point to /repro-visual with the device preset set to a wide screen. Use when the user reports a layout/responsive bug at desktop widths, or to confirm a fix doesn't regress the wide-screen layout. Drives the per-repo Playwright harness to measure the real DOM (centre, fill, visibility, overflow) at desktop widths, not eyeball screenshots. If no harness exists yet, run /repro-visual-init first. Triggers: repro this on desktop web, check the desktop layout, it's wrong on a wide screen, verify the desktop view, test at full width.
+description: 'Reproduce and verify a front-end bug on a DESKTOP browser viewport against the deployed web app — a thin entry point to /repro-visual with the device preset set to a wide screen. Use when the user reports a layout/responsive bug at desktop widths, or to confirm a fix doesn''t regress the wide-screen layout. Drives the per-repo Playwright harness to measure the real DOM (centre, fill, visibility, overflow) at desktop widths, not eyeball screenshots. If no harness exists yet, run /repro-visual-init first. Triggers: repro this on desktop web, check the desktop layout, it''s wrong on a wide screen, verify the desktop view, test at full width.'
 ---
 
 This is the **desktop web** entry point to the `/repro-visual` skill. Follow `repro-visual`'s web path workflow, with these viewport defaults:

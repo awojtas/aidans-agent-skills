@@ -111,6 +111,19 @@ description: <One paragraph. Used by Claude Code to decide when to trigger the s
 ---
 ```
 
+**The frontmatter must be valid YAML.** Codex uses a strict parser and *skips the entire skill* if it can't parse — Claude Code is more lenient, so a broken skill can look fine locally yet silently vanish in Codex. The usual culprit is an **unquoted `description:` that contains a colon-followed-by-space** (`Triggers: foo`, `docs/as-built/: bar`) — YAML reads the inner `: ` as a nested mapping and throws *"mapping values are not allowed in this context"*. Other plain-scalar hazards: a leading `'`/`"`/`[`/`{`/`>`/`|`/`@`/`` ` ``, or a ` #`. **Fix:** wrap the whole value in single quotes (`description: 'Triggers: foo'`), doubling any literal apostrophe (`it''s`). Verify the whole repo parses before committing:
+```bash
+python3 - <<'PY'
+import pathlib, re, yaml
+fm = re.compile(r'^---\r?\n(.*?)\r?\n---', re.S)
+for md in sorted(pathlib.Path("plugins").glob("*/skills/*/SKILL.md")):
+    m = fm.search(md.read_text())
+    try: yaml.safe_load(m.group(1)); d = yaml.safe_load(m.group(1)).get("description","")
+    except Exception as e: print("INVALID", md, "->", str(e).splitlines()[0]); continue
+    if len(d) > 1024: print("TOO LONG", md, len(d))
+PY
+```
+
 **Body** (Markdown after the frontmatter):
 The full instructions Claude follows when the skill is invoked. Write this as a step-by-step runbook. Be explicit — the agent executing this has no prior context about your skill. Include:
 - What the skill does (one-line summary at the top)
@@ -131,6 +144,7 @@ If a reference doc is shared by **several skills in the same plugin**, put it in
 - **Skill names use kebab-case**, with **subject-verb** ordering preferred (e.g., `requirements-add`, `task-implement`, `platform-provision`). This groups related skills together when scanning a plugin's `skills/` folder. Deliverable-noun names (e.g., `solution-design`, `requirements-validation`) are also fine where natural.
 - **Plugin directory names end in `-plugin`** and describe the *theme* of the bundle.
 - **The `description` field in SKILL.md frontmatter is critical** — it controls when Claude Code auto-triggers the skill. Include specific trigger phrases users might say. **Hard limit: 1024 characters** — Codex rejects longer descriptions at install time. Verify with `python3 -c "print(len('your description'))"` before committing.
+- **Frontmatter must be valid YAML, or Codex silently skips the whole skill** (Claude Code is lenient, so it can pass locally and vanish in Codex). The common trap is an unquoted `description:` containing a colon-space (`Triggers: …`, `path/: …`) → *"mapping values are not allowed in this context"*. Wrap such values in single quotes. See the verification snippet under "Writing the SKILL.md".
 - **SKILL.md is a prompt, not documentation.** Write it as instructions for an agent, not as a human-readable guide.
 - **Don't duplicate skill content in `README.md`.** The top-level README is deliberately minimal — orient-and-point only. Skill content lives in `marketplace.json`, each `plugin.json`, and each `SKILL.md`.
 

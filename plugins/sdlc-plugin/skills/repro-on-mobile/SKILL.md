@@ -1,6 +1,6 @@
 ---
 name: repro-on-mobile
-description: Reproduce and verify a front-end bug on a MOBILE viewport against the deployed app — a thin entry point to /repro-visual with the device preset set to a phone (narrow width, touch, mobile UA). Use when the user says it's wrong "on mobile / on my phone / on a small screen", or to check a responsive fix at phone widths. Drives the per-repo Playwright harness to measure the real DOM (centre, fill, visibility) at narrow widths, not eyeball screenshots. If no harness exists yet, run /repro-visual-init first. Triggers: repro this on mobile, check it on my phone, it's broken on a small screen, test the mobile layout, see the site as a phone.
+description: 'Reproduce and verify a front-end bug on a MOBILE viewport against the deployed app — a thin entry point to /repro-visual with the device preset set to a phone (narrow width, touch, mobile UA). Use when the user says it''s wrong "on mobile / on my phone / on a small screen", or to check a responsive fix at phone widths. Drives the per-repo Playwright harness to measure the real DOM (centre, fill, visibility) at narrow widths, not eyeball screenshots. If no harness exists yet, run /repro-visual-init first. Triggers: repro this on mobile, check it on my phone, it''s broken on a small screen, test the mobile layout, see the site as a phone.'
 ---
 
 This is the **mobile** entry point to the `/repro-visual` skill. Follow `repro-visual`'s full workflow, with these viewport defaults:

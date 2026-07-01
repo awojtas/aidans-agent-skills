@@ -1,6 +1,6 @@
 ---
 name: ai-check-work
-description: A deliberate "please just check your work carefully" second pass on whatever was just produced. Generic — works on code, plans, writing, analysis, designs, calculations, summaries, anything. Use whenever the user says "check your work", "check my work", "double-check this", "look this over", "did I miss anything", "review what you just did", "self-review", "is this right?", "go over this again", "audit this", or any variation of asking for a deliberate second pass. Reports findings specifically (what's wrong, where) so they're actionable. Doesn't redo the work, doesn't pedant on taste, doesn't request features. Stops after two passes — a third audit is a signal of stuckness, not of high standards. Backed by Madaan et al.'s Self-Refine research — a second-pass critique surfaces something worth changing roughly 80% of the time.
+description: 'A deliberate "please just check your work carefully" second pass on whatever was just produced — code, plans, writing, analysis, designs, calculations, summaries, anything. Reports findings specifically (what''s wrong, where) so they''re actionable; doesn''t redo the work, pedant on taste, or request features; stops after two passes. Use whenever the user says "check your work", "check my work", "double-check this", "look this over", "did I miss anything", "review what you just did", "self-review", "is this right?", "go over this again", or "audit this".'
 ---
 
 # Check your work
